@@ -1,0 +1,178 @@
+syntax = "proto3";
+
+package chat;
+
+option go_package = "github.com/Chorus-Development/Chorus/chat/proto;proto";
+
+import "google/protobuf/timestamp.proto";
+
+// Definition of a chat Room
+message Room {
+  enum Visibility {
+    Public = 0;
+    Private = 1;
+  }
+
+  string id = 1;
+  string name = 2;
+  Visibility visibility = 3;
+  string artist_slug = 4;
+  string artist_id = 5;
+}
+
+message Reaction {
+  string emoji = 1;
+  int64 count = 2;
+}
+
+message RelatesTo {
+  string message_id = 1;
+  // are there different types of relates to?
+}
+
+// Definition of a Chat Message
+message Message {
+  string id = 1;
+  google.protobuf.Timestamp sent_at  = 2;
+  string sender_id = 3;
+  string content = 4;
+  string room_id = 5;
+  string media_url = 6;
+  repeated Reaction reactions = 7;
+  RelatesTo replying_to = 8;
+}
+
+// Definition of a Artist
+message Artist {
+  string id = 1;
+  string name = 2;
+  string artist_slug = 3;
+}
+
+// Definition of a User
+message User {
+  string id = 1;
+  string name = 2;
+  string avatar_url = 3;
+}
+
+
+service ChatService {
+  rpc CreateRoom(CreateRoomRequest) returns (CreateRoomResponse) {}
+  rpc InviteUsersToRoom(InviteUsersToRoomRequest) returns (InviteUsersToRoomResponse) {}
+  rpc GetArtistRooms(GetArtistRoomsRequest) returns (GetArtistRoomsResponse) {}
+  rpc GetRoomsByUser(GetRoomsByUserRequest) returns (GetRoomsByUserResponse) {}
+  rpc SearchInRoom(SearchInRoomRequest) returns (SearchInRoomResponse) {}
+  rpc SyncRoom(SyncRoomRequest) returns (SyncRoomResponse) {}
+  rpc SendTextMessage(SendTextMessageRequest) returns (SendTextMessageResponse) {}
+  rpc UploadFile(UploadFileRequest) returns (UploadFileResponse) {}
+  rpc ReactToMessage(ReactToMessageRequest) returns (ReactToMessageResponse) {}
+  rpc PinMessage(PinMessageRequest) returns (PinMessageResponse) {}
+  rpc DeleteMessage(DeleteMessageRequest) returns (DeleteMessageResponse) {}
+  rpc BanUser(BanUserRequest) returns (BanUserResponse) {}
+
+}
+
+message CreateRoomRequest {
+  Room room = 1;
+}
+
+message CreateRoomResponse {
+  Room room = 1;
+}
+
+message InviteUsersToRoomRequest {
+  string room_id = 1;
+  repeated string user_ids = 2;
+}
+
+message InviteUsersToRoomResponse {
+}
+
+message GetArtistRoomsRequest {
+  string artist_id = 1;
+}
+
+message GetArtistRoomsResponse {
+  repeated Room rooms = 1;
+}
+
+message GetRoomsByUserRequest {
+  string user_id = 1;
+}
+
+message GetRoomsByUserResponse {
+  repeated Room rooms = 1;
+}
+
+message SearchInRoomRequest {
+  string room_id = 1;
+  string text = 2;
+}
+
+message SearchInRoomResponse {
+  repeated Message messages = 1;
+}
+
+message SyncRoomRequest {
+  string room_id = 1;
+  google.protobuf.Timestamp since  = 2;
+  string pagination_token = 3;
+}
+
+message SyncRoomResponse {
+  repeated Message pinned = 1;
+  repeated Message messages = 2;
+  string pagination_token = 3;
+}
+
+message SendTextMessageRequest {
+  string room_id = 1;
+  Message message = 2;
+  RelatesTo relates_to = 3;
+}
+
+message SendTextMessageResponse {
+  string message_id = 1;
+}
+
+message UploadFileRequest {
+  string room_id = 1;
+  string file = 2; // TODO is this a URL or file bytes etc
+}
+
+message UploadFileResponse {
+  string message_id = 1;
+}
+
+message ReactToMessageRequest {
+  string room_id = 1;
+  RelatesTo relates_to = 2;
+  string reaction = 3;
+}
+
+message ReactToMessageResponse {
+}
+
+message PinMessageRequest {
+  string room_id = 1;
+  string message_id = 2;
+}
+
+message PinMessageResponse {
+}
+
+message DeleteMessageRequest {
+  string room_id = 1;
+  string message_id = 2;
+}
+
+message DeleteMessageResponse {
+}
+
+message BanUserRequest {
+  string user_id = 1;
+}
+
+message BanUserResponse {
+}

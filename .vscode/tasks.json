@@ -1,0 +1,116 @@
+{
+	"version": "2.0.0",
+	"presentation": {
+		"panel": "new"
+	},
+	"tasks": [
+		{
+			"label": "Run  Server",
+			"type": "bazel",
+			"command": "run",
+			"targets": [
+				"${input:pickTestServerTarget}"
+			],
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			}
+		},
+		{
+			"label": "Publish Docker",
+			"type": "bazel",
+			"command": "run",
+			"targets": [
+				"${input:pickDockerTarget}"
+			],
+			"group": {
+				"isDefault": false
+			}
+		},
+		{
+			"label": "Generate Snapshot",
+			"type": "bazel",
+			"command": "run",
+			"targets": [
+				"${input:pickSnapshotTarget}"
+			],
+			"group": {
+				"isDefault": false
+			},
+			"problemMatcher": [
+				"$msCompile"
+			]
+		},
+		{
+			"label": "Test",
+			"type": "bazel",
+			"command": "test",
+			"targets": [
+				"${input:pickTestsTarget}"
+			],
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			}
+		},
+		{
+			"label": "Build",
+			"type": "bazel",
+			"command": "build",
+			"targets": [
+				"${input:pickBuildTarget}"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		}
+	],
+	"inputs": [
+		{
+		  "id": "pickDockerTarget",
+		  "type": "command",
+		  "command": "bazel.pickTarget",
+		  "args": {
+			"query": "filter('.*:tar-docker', kind('oci_tarball', //...))",
+			"placeHolder": "Which image to publish to Docker?"
+		  }
+		},
+		{
+		  "id": "pickSnapshotTarget",
+		  "type": "command",
+		  "command": "bazel.pickTarget",
+		  "args": {
+			"query": "filter('.*:snapshot', kind('sh_binary', //...))",
+			"placeHolder": "Which snapshot to generate?"
+		  }
+		},
+		{
+		  "id": "pickTestsTarget",
+		  "type": "command",
+		  "command": "bazel.pickTarget",
+		  "args": {
+			"query": "kind('.*_test', //...)",
+			"placeHolder": "Which tests run?"
+		  }
+		},
+		{
+		  "id": "pickTestServerTarget",
+		  "type": "command",
+		  "command": "bazel.pickTarget",
+		  "args": {
+			"query": "kind('_js_run_devserver', //...)",
+			"placeHolder": "Which Server to run?"
+		  }
+		},
+		{
+		  "id": "pickBuildTarget",
+		  "type": "command",
+		  "command": "bazel.pickTarget",
+		  "args": {
+			"query": "kind('go_library|go_binary|js_library', //...)",
+			"placeHolder": "Which target to build?"
+		  }
+		}
+	  ]
+}

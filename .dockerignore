@@ -1,0 +1,18 @@
+.git
+.dockerignore
+node_modules
+
+
+deployment
+.github
+npm-debug.log
+README.md
+.next
+
+# Docker
+Dockerfile.frontend
+Dockerfile
+Dockerfile.backend
+docker-compose.yml
+
+.env.*

@@ -1,0 +1,51 @@
+{
+  "name": "@chorus/root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "yarn workspaces run test",
+    "dev:backend": "yarn workspace @chorus/backend develop",
+    "dev:backend:seed": "yarn workspace @chorus/backend seed",
+    "dev:frontend": "yarn workspace @chorus/frontend dev",
+    "gen-types:frontend": "yarn workspace @chorus/frontend apollo:codegen",
+    "test:frontend": "yarn workspace @chorus/frontend test",
+    "test:backend": "yarn workspace @chorus/backend test",
+    "build:frontend": "yarn workspace @chorus/frontend build",
+    "build:backend": "yarn workspace @chorus/backend build",
+    "lint:frontend": "yarn workspace @chorus/frontend lint",
+    "lint:backend": "yarn workspace @chorus/backend lint",
+    "start:frontend": "yarn workspace @chorus/frontend start",
+    "start:docker:frontend": "yarn start:frontend",
+    "analyze:frontend": "yarn workspace @chorus/frontend build-analyze",
+    "start:backend": "yarn workspace @chorus/backend start",
+    "start:backend-sync": "yarn workspace @chorus/backend sync-start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shrinedev/Chorus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shrinedev/Chorus/issues"
+  },
+  "homepage": "https://github.com/shrinedev/Chorus#readme",
+  "workspaces": {
+    "packages": [
+      "./packages/*",
+      "./chat/client/*"
+    ],
+    "nohoist": [
+      "next",
+      "@apollo/client"
+    ]
+  },
+  "resolutions": {
+    "@strapi/provider-email-mailgun/**/mailgun.js": "8.2.1",
+    "mailgun.js": "8.2.1",
+    "typescript": "4.9.4"
+  },
+  "devDependencies": {
+    "ts-protoc-gen": "^0.15.0"
+  }
+}

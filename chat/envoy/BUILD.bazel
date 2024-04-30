@@ -1,0 +1,41 @@
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_tarball")
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+
+buildifier(
+    name = "buildifier",
+)
+
+pkg_tar(
+    name = "envoy_config",
+    srcs = ["envoy.yaml"],
+    mode = "0644",
+    package_dir = "/etc/envoy",
+)
+
+oci_image(
+    name = "image",
+    base = "@envoy",
+    exposed_ports = [
+        "8080/tcp",  # requests
+        "10000/tcp",  # admin
+    ],
+    tars = [
+        ":envoy_config",
+    ],
+)
+
+oci_tarball(
+    name = "tar-docker",
+    format = "docker",
+    image = ":image",
+    repo_tags = ["envoy:v0.0.1"],
+)
+
+#TODO
+#oci_push(
+#    name = "push",
+#    image = ":image",
+#    remote_tags = ["v0.0.1"],
+#    repository = "envoy",
+#)

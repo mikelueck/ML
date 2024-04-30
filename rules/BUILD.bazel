@@ -1,0 +1,8 @@
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["copy_into_workspace.sh", "diff_with_workspace.sh"])
+
+sh_binary(
+    name = "build_test",
+    srcs = ["build_test.sh"],
+)

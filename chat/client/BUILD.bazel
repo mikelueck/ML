@@ -1,0 +1,41 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_library", "js_run_devserver")
+load("@npm_rules_js//:http-server/package_json.bzl", http_server_bin = "bin")
+load("@aspect_rules_webpack//webpack:defs.bzl", "webpack_bundle")
+
+http_server_bin.http_server_binary(
+    name = "http_server",
+)
+
+webpack_bundle(
+    name = "bundle",
+    srcs = [
+        "client.js",
+        "//chat/proto:chat_js_proto",
+    ],
+    entry_point = "client.js",
+    node_modules = "//:node_modules",
+    supports_workers = False,
+)
+
+js_library(
+    name = "chat-client",
+    srcs = [
+        "index.html",
+    ],
+    deps = [
+        ":bundle",
+    ],
+)
+
+js_run_devserver(
+    name = "dev",
+    args = ["-p 8081 -c-1"],  # disable cache
+    chdir = package_name(),
+    data = [
+        ":chat-client",
+    ],
+    log_level = "debug",
+    tool = ":http_server",
+)
