@@ -11,6 +11,7 @@ def cf_deploy_(ctx):
     sha_file = ctx.attr.sha_dep[DefaultInfo].files.to_list()[0].short_path
 
     substitutions = {
+      "@@EMULATE@@": shell.quote(ctx.attr.emulate),
       "@@LOCAL_TAR@@": shell.quote(tar_file),
       "@@DIGEST_FILE@@": shell.quote(sha_file),
       "@@PROJECT_ID@@": shell.quote(ctx.attr.project_id),
@@ -19,6 +20,7 @@ def cf_deploy_(ctx):
       "@@ENTRYPOINT@@": shell.quote(ctx.attr.entrypoint),
       "@@RUNTIME@@": shell.quote(ctx.attr.runtime),
       "@@REPOSITORY@@": shell.quote(ctx.attr.repository),
+      "@@SERVICE_ACCT@@": shell.quote(ctx.attr.service_acct),
     }
     out = ctx.actions.declare_file(ctx.label.name + ".sh")
     ctx.actions.expand_template(
@@ -45,6 +47,7 @@ def cf_deploy_impl(ctx, **kwargs):
 _cf_deploy = rule(
   implementation = cf_deploy_impl,
   attrs = {
+    "emulate": attr.string(default="0"),
     "local_tar": attr.label(),
     "sha_dep": attr.label(),
     "project_id": attr.string(),
@@ -53,6 +56,7 @@ _cf_deploy = rule(
     "repository": attr.string(),
     "runtime": attr.string(),
     "entrypoint": attr.string(),
+    "service_acct": attr.string(default="slackbot"),
     "_template": attr.label(
         default = ":deploy_cf.sh",
         allow_single_file = True,
@@ -211,6 +215,18 @@ def cf_deploy(name = "cf_deploy",
              repository = source_bucket,
              **kwargs)
 
+  _cf_deploy(name = name + "-emulate-deploy-sh",
+             emulate = "1",
+             local_tar = ":%s-tar" % name,
+             sha_dep = ":%s-image.digest" % name, 
+             project_id = project_id,
+             location = DEFAULT_GCP_LOCATION,
+             function = name,
+             runtime = "python312",
+             entrypoint = entrypoint,
+             repository = source_bucket,
+             **kwargs)
+
   native.sh_binary(
     name = "%s-deploy" % name,
     srcs = [":%s-deploy-sh" % name],
@@ -220,6 +236,12 @@ def cf_deploy(name = "cf_deploy",
   native.sh_binary(
     name = "%s-local-deploy" % name,
     srcs = [":%s-local-deploy-sh" % name],
+    data = [":%s-tar" % name],
+  )
+
+  native.sh_binary(
+    name = "%s-emulate-deploy" % name,
+    srcs = [":%s-emulate-deploy-sh" % name],
     data = [":%s-tar" % name],
   )
 

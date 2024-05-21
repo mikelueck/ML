@@ -64,8 +64,31 @@ For yarn, make sure you're using node 18, check with `node -v`:
   ```
 - If you get `nvm: command not found after running the install script`, follow the troubleshooting guides under "Installing and Updating" on the documentation https://github.com/nvm-sh/nvm#profile_snippet::
 
-# grpc_base
-
 # Using Cloud functions
 
+#gcloud CLI
+#https://cloud.google.com/sdk/docs/install
+
 brew install jq
+
+# Cloud Functions local development
+# gcloud alpha will first download the alpha commands
+# https://cloud.google.com/functions/docs/running/functions-emulator
+
+# Local Cloud Function Emulator
+# https://buildpacks.io/docs/for-platform-operators/how-to/integrate-ci/pack/
+brew install buildpacks/tap/pack
+
+# deploy locally
+# also bazel run //<package>:<target>-emulate-deploy
+gcloud alpha functions local deploy <local_function_name> \
+    --entry-point=<ENTRY_POINT> \
+    --runtime=python312
+
+# call local function
+gcloud alpha functions local call <local_function_name> \
+    --data='{"message": "<your message>"}'
+
+# delete local function
+gcloud alpha functions local delete <local_function_name>
+

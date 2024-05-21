@@ -1,0 +1,26 @@
+load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+load("@pip_deps//:requirements.bzl", "requirement")
+load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+
+buildifier(
+    name = "buildifier",)
+
+gazelle(name = "gazelle")
+
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+
+compile_pip_requirements(
+        name = "requirements",
+        src = "requirements.in",
+        requirements_txt = "requirements.txt",
+        visibility = ["//visibility:public"],
+)
+
+py_library(
+    name = "slack",
+    srcs = glob(["*.py"]),
+    visibility = ["//visibility:public"],
+    deps=[
+        ],
+)

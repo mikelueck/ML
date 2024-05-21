@@ -1,10 +1,11 @@
 import functions_framework
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-import openai
+#import openai
 
-from utils.secrets import secrets
-from slack import utils
+from ml_python.utils.secrets import secrets
+from ml_python.slack import utils
+from ml_python.slack import events
 
 project_id = secrets.project_id
 
@@ -15,9 +16,8 @@ s = secrets.Secrets([
   secrets.SecretItem("SLACK_APP_ID", "1")])
 
 ROUTES = (
-    ('event/message', get_message),
-    ('event/url_verification', url_verification_event),
-    ('event/event_callback/reaction_added', reaction_added_event),
+    ('event/url_verification', events.url_verification_event),
+    ('event/event_callback/reaction_added', events.reaction_added_event),
     #('command/reflect', reflect_command),
     #('command/recall', recall_command),
 )
@@ -49,18 +49,3 @@ def dispatch(request):
   print("couldn't handle route(%s), json(%s), form(%s)" % (route, request.json, request.form))
   raise Exception("couldn't handle route %s" % (route,))
   
-
-# Define the event handler for message events
-@slack_events_adapter.on("message")
-def handle_message(event_data):
-    message = event_data["event"]
-    user_id = message.get("user")
-    text = message.get("text")
-    if user_id and text:
-        # Filter out messages sent by the bot itself
-        if user_id != BOT_APP_ID:
-            # Generate response using ChatGPT
-            response = generate_response(text)
-            # Send response back to the user
-            slack_client.chat_postMessage(channel=message["channel"], text=response)
-

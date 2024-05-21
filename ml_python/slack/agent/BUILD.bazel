@@ -18,20 +18,19 @@ compile_pip_requirements(
         requirements_txt = "requirements.txt",
         visibility = ["//visibility:public"],
         data = [ 
-          "//utils/secrets:requirements",
+          "//ml_python/utils/secrets:requirements",
         ],
 )
 
 # Needs --build_python_zip (see .bazelrc)
 py_binary(
     name = "main",
-    srcs = [
-        "main.py",
-    ],
+    srcs = glob(["*.py"]),
     visibility = ["//visibility:public"],
     legacy_create_init = 1,
     deps=[
-        "//utils/secrets:secrets",
+        "//ml_python/utils/secrets:secrets",
+        "//ml_python/slack:slack",
         requirement("functions_framework"),
         ],
 )

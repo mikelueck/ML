@@ -1,6 +1,4 @@
 from flask import jsonify
-from slack.api import get_message, slack_api
-from slack.utils import block
 #from storage import reflect, recall
 
 
@@ -24,12 +22,9 @@ def reaction_added_event(request):
             msg = msg_resp['messages'][0]
             msg_team_id, msg_user_id, text  = msg['team'], msg['user'], msg['text']
             if event['reaction'] == 'ididit':
+                return "ididit"
                 #reflect(msg_team_id, msg_user_id, text)
             elif event['reaction'] == 'udidit':
+                return "udidit"
                 #reflect(msg_team_id, event_user_id, text)
     return "Ok"
-
-def get_message(request):
-  parsed = request.json
-  text = parsed['text']
-  return text

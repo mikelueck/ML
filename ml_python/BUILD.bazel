@@ -27,6 +27,13 @@ buildifier(
     name = "buildifier",
 )
 
-load("@npm_rules_js//:defs.bzl", "npm_link_all_packages")
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 
-npm_link_all_packages(name = "node_modules")
+compile_pip_requirements(
+        name = "requirements",
+        src = "requirements.in",
+        requirements_txt = "requirements_lock.txt",
+        data = [ 
+          "//ml_python/utils/secrets:requirements",
+          "//ml_python/slack/agent:requirements" ],
+)

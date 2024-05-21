@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+emulate=@@EMULATE@@
 local_tar=@@LOCAL_TAR@@
 sha_file=@@DIGEST_FILE@@
 project_id=@@PROJECT_ID@@
@@ -8,6 +9,7 @@ function=@@FUNCTION@@
 repository=@@REPOSITORY@@
 runtime=@@RUNTIME@@
 entrypoint=@@ENTRYPOINT@@
+service_acct=@@SERVICE_ACCT@@
 
 sha=""
 tar_file=""
@@ -15,7 +17,10 @@ tar_file=""
 if [ $local_tar != "" ]; then
   sha="local"
   tar_file="$local_tar"
-  echo "Deploying using local artifacts!!!"
+
+  if [ $emulate != "1" ]; then
+    echo "Deploying using local artifacts!!!"
+  fi
 else
   sha=$(eval "cat $sha_file")
 fi
@@ -58,16 +63,25 @@ fi
 mkdir $dest/$function.$sha
 tar xf $tar_file -C $dest/$function.$sha
 
+alpha=""
+if [ $emulate == "1" ]; then
+  alpha="alpha"
+fi
+
 # deploy the Cloud Function
-gcloud functions deploy $function \
+cmd="gcloud $alpha functions deploy $function \
   --gen2 \
   --runtime=$runtime \
   --region=$location \
   --source=$dest/$function.$sha \
   --entry-point=$entrypoint \
   --trigger-http \
-  --set-env-vars "PROJECT_ID=$project_id" \
-  --allow-unauthenticated
+  --set-env-vars 'PROJECT_ID=$project_id' \
+  --service-account=$service_acct@$project_id.iam.gserviceaccount.com \
+  --allow-unauthenticated"
+
+echo "Running: $cmd"
+eval "$cmd"
 
 echo "Cleaning up $dest"
 rm -rf $dest

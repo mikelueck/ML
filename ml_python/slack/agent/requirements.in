@@ -1,5 +1,5 @@
 functions_framework>=v3.5.0
-slack_sdk>=3.27.2
-slackeventsapi>=3.0.1
+slack_sdk>=v3.27.2
+aiohttp>=v3.9.5 # needed for slack_sdk
 
 -r ../../utils/secrets/requirements.txt
