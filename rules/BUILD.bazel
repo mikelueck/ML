@@ -1,6 +1,9 @@
 package(default_visibility = ["//visibility:public"])
 
-exports_files(["copy_into_workspace.sh", "diff_with_workspace.sh"])
+exports_files(["copy_into_workspace.sh", 
+               "diff_with_workspace.sh",
+               "deploy_cf.sh",
+               "package_cf.sh"])
 
 sh_binary(
     name = "build_test",

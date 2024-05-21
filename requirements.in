@@ -1,0 +1,5 @@
+flask==v3.0.3
+slack-sdk==v3.27.1
+
+-r slack/agent/requirements.txt
+-r utils/secrets/requirements.txt

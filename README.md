@@ -65,3 +65,7 @@ For yarn, make sure you're using node 18, check with `node -v`:
 - If you get `nvm: command not found after running the install script`, follow the troubleshooting guides under "Installing and Updating" on the documentation https://github.com/nvm-sh/nvm#profile_snippet::
 
 # grpc_base
+
+# Using Cloud functions
+
+brew install jq

@@ -1,3 +1,6 @@
 test --test_output=errors
 build --color=yes
 build --curses=yes
+
+build --build_python_zip
+run --build_python_zip

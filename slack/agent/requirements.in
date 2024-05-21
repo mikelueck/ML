@@ -1,0 +1,5 @@
+functions_framework>=v3.5.0
+slack_sdk>=3.27.2
+slackeventsapi>=3.0.1
+
+-r ../../utils/secrets/requirements.txt

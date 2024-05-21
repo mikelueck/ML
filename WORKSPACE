@@ -1,4 +1,4 @@
-workspace(name = "Chorus")
+workspace(name = "SlackBotML")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -245,3 +245,48 @@ http_archive(
         "https://github.com/bazelbuild/buildtools/archive/refs/tags/4.2.2.tar.gz",
     ],
 )
+
+# rules_python
+# Update the SHA and VERSION to the lastest version available here:
+# https://github.com/bazelbuild/rules_python/releases.
+
+SHA="c68bdc4fbec25de5b5493b8819cfc877c4ea299c0dcb15c244c5a00208cde311"
+
+VERSION="0.31.0"
+
+http_archive(
+    name = "rules_python",
+    sha256 = SHA,
+    strip_prefix = "rules_python-{}".format(VERSION),
+    url = "https://github.com/bazelbuild/rules_python/releases/download/{}/rules_python-{}.tar.gz".format(VERSION,VERSION),
+)
+
+load("@rules_python//python:repositories.bzl", "py_repositories")
+
+py_repositories()
+
+load("@rules_python//python:repositories.bzl", "python_register_toolchains")
+
+PYTHON_MAJOR_VERSION="3"
+PYTHON_MINOR_VERSION="12"
+
+python_register_toolchains(
+    name = "python_{}_{}".format(PYTHON_MAJOR_VERSION, PYTHON_MINOR_VERSION),
+    # Available versions are listed in @rules_python//python:versions.bzl.
+    # We recommend using the same version your team is already standardized on.
+    python_version = "{}.{}".format(PYTHON_MAJOR_VERSION, PYTHON_MINOR_VERSION),
+)
+
+load("@python_3_12//:defs.bzl", "interpreter")
+
+load("@rules_python//python:pip.bzl", "pip_parse")
+
+pip_parse(
+    name = "pip_deps",
+    python_interpreter_target = interpreter,
+    requirements_lock = "//:requirements_lock.txt"
+)
+
+load("@pip_deps//:requirements.bzl", "install_deps")
+
+install_deps()
