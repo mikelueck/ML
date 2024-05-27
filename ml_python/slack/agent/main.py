@@ -6,6 +6,7 @@ from slack_sdk.errors import SlackApiError
 from ml_python.utils.secrets import secrets
 from ml_python.slack import utils
 from ml_python.slack import events
+from ml_python.slack import commands
 
 project_id = secrets.project_id
 
@@ -18,6 +19,7 @@ s = secrets.Secrets([
 ROUTES = (
     ('event/url_verification', events.url_verification_event),
     ('event/event_callback/reaction_added', events.reaction_added_event),
+    ('command/gpt', commands.gpt_command),
     #('command/reflect', reflect_command),
     #('command/recall', recall_command),
 )
@@ -27,18 +29,21 @@ BOT_APP_ID = s.GetSecret("SLACK_APP_ID")
 slack_client = WebClient(s.GetSecret("SLACK_API_TOKEN"))
 
 def dispatch(request):
-  verify(request, s.GetSecret("SLACK_SIGNING_SECRET"))
+  utils.verify(request, s.GetSecret("SLACK_SIGNING_SECRET"))
 
   # events are application/json, and
   # slash commands are sent as x-www-form-urlencoded
   route = "unknown"
+  print("Content Type %v\n", request.content_type)
   if request.content_type == 'application/json':
+      print("JSON %v\n", request.json)
       parsed = request.json
       event_type = parsed['type']
       route = 'event/' + event_type
       if 'event' in parsed and 'type' in parsed['event']:
           route += '/' + parsed['event']['type']
   elif request.content_type == 'application/x-www-form-urlencoded':
+      print("Form %v\n", request.form)
       data = request.form
       route = 'command/' + data['command'].strip('/')
 

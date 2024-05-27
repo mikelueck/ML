@@ -63,25 +63,68 @@ fi
 mkdir $dest/$function.$sha
 tar xf $tar_file -C $dest/$function.$sha
 
+
 alpha=""
+local=""
 if [ $emulate == "1" ]; then
   alpha="alpha"
+  local="local"
 fi
 
-# deploy the Cloud Function
-cmd="gcloud $alpha functions deploy $function \
-  --gen2 \
-  --runtime=$runtime \
-  --region=$location \
-  --source=$dest/$function.$sha \
-  --entry-point=$entrypoint \
-  --trigger-http \
-  --set-env-vars 'PROJECT_ID=$project_id' \
-  --service-account=$service_acct@$project_id.iam.gserviceaccount.com \
-  --allow-unauthenticated"
+# delete the previous local version 
+if [ $emulate == "1" ]; then
+  echo "Deleting the previous version..."
+  gcloud alpha functions local delete $function
+fi
 
-echo "Running: $cmd"
-eval "$cmd"
+# we need to build it first
+# I tried just using gcloud alpha functions local deploy but couldn't figure 
+# out the authentication aspects
+if [ $emulate == "1" ]; then
+  pushd $dest/$function.$sha
+  pack build $function --builder gcr.io/buildpacks/builder:v1 \
+      --env GOOGLE_FUNCTION_SIGNATURE_TYPE=http \
+      --env GOOGLE_FUNCTION_TARGET=$entrypoint
+  popd
+  # map our local ADC (Application Default Credentials) into th container
+  adc="$HOME/.config/gcloud/application_default_credentials.json"
+  mount="/tmp/keys/adc.json"
+  port=8080
+  docker run \
+    --name $function \
+    -e PROJECT_ID=$project_id \
+    -e GOOGLE_APPLICATION_CREDENTIALS=$mount \
+    -e PORT=$port \
+    -p $port:$port \
+    -v $adc:$mount:ro \
+    $function 
+else
+  args=() 
+
+  args+=("gcloud")
+  args+=("$alpha")
+  args+=("functions")
+  args+=("$local")
+  args+=("deploy")
+  args+=("$function")
+  args+=("--gen2")
+  args+=("--runtime=$runtime")
+  args+=("--region=$location")
+  args+=("--trigger-http")
+  args+=("--service-account=$service_acct@$project_id.iam.gserviceaccount.com")
+  args+=("--allow-unauthenticated")
+  args+=("--source=$dest/$function.$sha")
+  args+=("--entry-point=$entrypoint")
+  args+=("--set-env-vars 'PROJECT_ID=$project_id'")
+
+  IFS=' '
+  cmd="${args[*]}"
+
+  # deploy the Cloud Function
+  echo "Running: $cmd"
+  eval "$cmd"
+fi
+
 
 echo "Cleaning up $dest"
 rm -rf $dest

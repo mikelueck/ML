@@ -1,7 +1,6 @@
 # grpc_base
 
 ## Description
-
 ## Setup
 
 If using ubuntu, perform these steps first
@@ -79,16 +78,27 @@ brew install jq
 # https://buildpacks.io/docs/for-platform-operators/how-to/integrate-ci/pack/
 brew install buildpacks/tap/pack
 
+*********** Failed...couldnt figure out how to setup authentication properly
+*************************************
 # deploy locally
-# also bazel run //<package>:<target>-emulate-deploy
-gcloud alpha functions local deploy <local_function_name> \
-    --entry-point=<ENTRY_POINT> \
-    --runtime=python312
+bazel run //<package>:<target>-emulate-deploy
 
 # call local function
+# curl  -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+#  https://FUNCTION_URL
 gcloud alpha functions local call <local_function_name> \
     --data='{"message": "<your message>"}'
 
 # delete local function
 gcloud alpha functions local delete <local_function_name>
 
+# authentication
+# need to add role/iam.serviceAccountTokenCreator to your account
+# https://cloud.google.com/docs/authentication/use-service-account-impersonation
+gcloud auth application-default login --impersonate-service-account=<service acct email>
+
+*************************************
+*************************************
+# Trying with functions-framework
+
+pip install functions-framework
