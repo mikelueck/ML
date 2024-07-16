@@ -1,0 +1,3 @@
+-r ../ai/llm/requirements.txt
+-r ../ai/messages/requirements.txt
+-r ../ai/translation/requirements.txt

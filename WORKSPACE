@@ -250,9 +250,9 @@ http_archive(
 # Update the SHA and VERSION to the lastest version available here:
 # https://github.com/bazelbuild/rules_python/releases.
 
-SHA="c68bdc4fbec25de5b5493b8819cfc877c4ea299c0dcb15c244c5a00208cde311"
+SHA="4912ced70dc1a2a8e4b86cec233b192ca053e82bc72d877b98e126156e8f228d"
 
-VERSION="0.31.0"
+VERSION="0.32.2"
 
 http_archive(
     name = "rules_python",

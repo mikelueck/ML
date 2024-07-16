@@ -2,11 +2,9 @@ load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
 load("@pip_deps//:requirements.bzl", "requirement")
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
-load("//rules:cloud_function_deploy.bzl", "cf_deploy")
 
 buildifier(
-    name = "buildifier",
-)
+    name = "buildifier",)
 
 gazelle(name = "gazelle")
 
@@ -17,25 +15,13 @@ compile_pip_requirements(
         src = "requirements.in",
         requirements_txt = "requirements.txt",
         visibility = ["//visibility:public"],
-        data = [ 
-          "//ml_python/ai/llm/openai:requirements",
-          "//ml_python/utils/secrets:requirements",
-          "//ml_python/slack:requirements",
-        ],
 )
 
-# Needs --build_python_zip (see .bazelrc)
-py_binary(
-    name = "main",
+py_library(
+    name = "llm",
     srcs = glob(["*.py"]),
     visibility = ["//visibility:public"],
-    legacy_create_init = 1,
     deps=[
         "//ml_python/ai/llm/openai:openai",
-        "//ml_python/utils/secrets:secrets",
-        "//ml_python/slack:slack",
-        requirement("functions_framework"),
         ],
 )
-
-cf_deploy(name="slackbot", dep=":main", entrypoint="dispatch")

@@ -12,6 +12,8 @@ def reaction_added_event(request):
     parsed = request.json
     team_id = parsed['team_id']
     event = parsed['event']
+    print(event)
+    print(parsed)
     if event['reaction'] in ('ididit', 'udidit'):
         item = event['item']
         event_user_id = event['user']

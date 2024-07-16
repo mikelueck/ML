@@ -1,14 +1,17 @@
 import functions_framework
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-#import openai
 
 from ml_python.utils.secrets import secrets
 from ml_python.slack import utils
 from ml_python.slack import events
 from ml_python.slack import commands
 
+from ml_python.ai.llm.openai import openai
+
 project_id = secrets.project_id
+
+o = openai.OpenAILLM
 
 #TODO should probably take the version as an environment variable
 s = secrets.Secrets([ 
@@ -19,9 +22,7 @@ s = secrets.Secrets([
 ROUTES = (
     ('event/url_verification', events.url_verification_event),
     ('event/event_callback/reaction_added', events.reaction_added_event),
-    ('command/gpt', commands.gpt_command),
-    #('command/reflect', reflect_command),
-    #('command/recall', recall_command),
+    ('command/translate', commands.translate_command),
 )
 
 # Initialize the Slack client

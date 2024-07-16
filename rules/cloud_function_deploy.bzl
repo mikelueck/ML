@@ -97,7 +97,7 @@ def _py_cloud_function_src_impl(ctx, **kwargs):
       src_py = f
 
   if not src_zip:
-    fail('ZIP src input not found.', 'src')
+    fail('ZIP src input not found. Maybe run with --build_python_zip.', 'src')
   if not src_py:
     fail('PY src input not found.', 'src')
 

@@ -4,3 +4,6 @@ aiohttp>=v3.9.5 # needed for slack_sdk
 
 -r ../../utils/secrets/requirements.txt
 -r ../../slack/requirements.txt
+
+# force linking this
+-r ../../ai/llm/openai/requirements.txt
