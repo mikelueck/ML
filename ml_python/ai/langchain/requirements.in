@@ -1,0 +1,3 @@
+-r ../../ai/llm/requirements.txt
+-r ../../ai/langchain/messages/requirements.txt
+-r ../../ai/langchain/translation/requirements.txt
