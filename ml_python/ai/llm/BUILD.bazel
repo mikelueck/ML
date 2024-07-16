@@ -22,6 +22,5 @@ py_library(
     srcs = glob(["*.py"]),
     visibility = ["//visibility:public"],
     deps=[
-        "//ml_python/ai/llm/openai:openai",
         ],
 )

@@ -18,7 +18,7 @@ compile_pip_requirements(
         requirements_txt = "requirements.txt",
         visibility = ["//visibility:public"],
         data = [ 
-          "//ml_python/ai/llm/openai:requirements",
+          "//ml_python/ai/langchain/llm/openai:requirements",
           "//ml_python/utils/secrets:requirements",
           "//ml_python/slack:requirements",
         ],
@@ -31,7 +31,7 @@ py_binary(
     visibility = ["//visibility:public"],
     legacy_create_init = 1,
     deps=[
-        "//ml_python/ai/llm/openai:openai",
+        "//ml_python/ai/langchain/llm/openai:openai",
         "//ml_python/utils/secrets:secrets",
         "//ml_python/slack:slack",
         requirement("functions_framework"),

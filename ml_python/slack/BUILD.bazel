@@ -16,8 +16,8 @@ compile_pip_requirements(
         requirements_txt = "requirements.txt",
         visibility = ["//visibility:public"],
         data = [
-          "//ml_python/ai/messages:requirements",
-          "//ml_python/ai/translation:requirements",
+          "//ml_python/ai/langchain/messages:requirements",
+          "//ml_python/ai/langchain/translation:requirements",
         ],
 )
 
@@ -26,7 +26,7 @@ py_library(
     srcs = glob(["*.py"]),
     visibility = ["//visibility:public"],
     deps=[
-        "//ml_python/ai/translation:translation",
-        "//ml_python/ai/messages:messages",
+        "//ml_python/ai/langchain/translation:translation",
+        "//ml_python/ai/langchain/messages:messages",
         ],
 )

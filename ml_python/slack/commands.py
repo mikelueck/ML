@@ -1,7 +1,7 @@
 from flask import jsonify
 
-from ml_python.ai.translation import translate
-from ml_python.ai.messages import human
+from ml_python.ai.langchain.translation import translate
+from ml_python.ai.langchain.messages import human
 
 BASE_MODEL = "llm://openai/gpt-3.5-turbo"
 BASE_FROM = "english"

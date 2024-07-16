@@ -7,7 +7,7 @@ from ml_python.slack import utils
 from ml_python.slack import events
 from ml_python.slack import commands
 
-from ml_python.ai.llm.openai import openai
+from ml_python.ai.langchain.llm.openai import openai
 
 project_id = secrets.project_id
 

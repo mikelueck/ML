@@ -16,9 +16,7 @@ compile_pip_requirements(
         requirements_txt = "requirements.txt",
         visibility = ["//visibility:public"],
         data = [
-          "//ml_python/ai/llm:requirements",
-          "//ml_python/ai/messages:requirements",
-          "//ml_python/ai/translation:requirements",
+          "//ml_python/ai/langchain:requirements",
         ],
 )
 
