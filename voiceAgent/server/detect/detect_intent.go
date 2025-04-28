@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"log"
 
+	pb "github.com/ML/voiceAgent/proto"
 	"github.com/ML/voiceAgent/server/functions"
 	"github.com/ML/voiceAgent/sessions"
-	pb "github.com/ML/voiceAgent/proto"
 )
 
 var SessionClient *dialogflow.SessionsClient
@@ -42,9 +42,9 @@ func HandleFunctionCallsIfNeeded(ctx context.Context, sessionPath string, queryR
 			}
 
 			request := dialogflowpb.DetectIntentRequest{
-				Session:    sessionPath,
-				QueryInput: queryInput,
-        OutputAudioConfig: getOutputAudioConfig(),
+				Session:           sessionPath,
+				QueryInput:        queryInput,
+				OutputAudioConfig: getOutputAudioConfig(),
 			}
 
 			response, err := SessionClient.DetectIntent(ctx, &request)
@@ -59,29 +59,29 @@ func HandleFunctionCallsIfNeeded(ctx context.Context, sessionPath string, queryR
 }
 
 func GetPartialInteraction(recognitionResult *dialogflowpb.StreamingRecognitionResult) (*pb.Interaction, error) {
-  var retval *pb.Interaction
-  if recognitionResult != nil {
-    if recognitionResult.GetMessageType() == dialogflowpb.StreamingRecognitionResult_TRANSCRIPT && recognitionResult.GetTranscript() != "" {
-      // Maybe only care about final results?
-      retval = &pb.Interaction{
-        IsPartial: true,
-        Text: recognitionResult.GetTranscript(),
-      }
-    }
+	var retval *pb.Interaction
+	if recognitionResult != nil {
+		if recognitionResult.GetMessageType() == dialogflowpb.StreamingRecognitionResult_TRANSCRIPT && recognitionResult.GetTranscript() != "" {
+			// Maybe only care about final results?
+			retval = &pb.Interaction{
+				IsPartial: true,
+				Text:      recognitionResult.GetTranscript(),
+			}
+		}
 
-    // Results here include partial and final results.
-    // See: https://github.com/googleapis/google-cloud-go/blob/dialogflow/v1.68.1/dialogflow/cx/apiv3beta1/cxpb/session.pb.go#L1243
-    // concatenting the IsFinal results will give the full transcript
-    // TODO concatete these
-    log.Printf("Recognition transcript: %s %s isFinal: %v\n", 
-        recognitionResult.GetMessageType(), 
-        recognitionResult.GetTranscript(),
-        recognitionResult.GetIsFinal())
+		// Results here include partial and final results.
+		// See: https://github.com/googleapis/google-cloud-go/blob/dialogflow/v1.68.1/dialogflow/cx/apiv3beta1/cxpb/session.pb.go#L1243
+		// concatenting the IsFinal results will give the full transcript
+		// TODO concatete these
+		log.Printf("Recognition transcript: %s %s isFinal: %v\n",
+			recognitionResult.GetMessageType(),
+			recognitionResult.GetTranscript(),
+			recognitionResult.GetIsFinal())
 
-    // TODO could do something in here with
-    // Confidence, Stability, SpeechWordInfo
-  }
-  return retval, nil
+		// TODO could do something in here with
+		// Confidence, Stability, SpeechWordInfo
+	}
+	return retval, nil
 }
 
 func GetResultInteraction(queryResult *dialogflowpb.QueryResult) (*pb.Interaction, error) {
@@ -97,10 +97,10 @@ func GetResultInteraction(queryResult *dialogflowpb.QueryResult) (*pb.Interactio
 	// Match_KNOWLEDGE_CONNECTOR
 	// Match_PLAYBOOK
 
-  retval := &pb.Interaction{IsPartial: false}
+	retval := &pb.Interaction{IsPartial: false}
 
 	if queryResult.GetTranscript() != "" {
-    retval.RecognizedText = queryResult.GetTranscript()
+		retval.RecognizedText = queryResult.GetTranscript()
 		log.Printf("Recognized Text: %s\n", queryResult.GetTranscript())
 	}
 
@@ -111,7 +111,7 @@ func GetResultInteraction(queryResult *dialogflowpb.QueryResult) (*pb.Interactio
 		} else if rm.GetOutputAudioText() != nil {
 			log.Printf("OutputAudioText %v\n", *rm.GetOutputAudioText())
 		} else if rm.GetText() != nil {
-      retval.Text = rm.GetText().GetText()[0]
+			retval.Text = rm.GetText().GetText()[0]
 			log.Printf("Text %v\n", rm.GetText())
 		} else if rm.GetConversationSuccess() != nil {
 			log.Printf("ConversationSuccess %v\n", *rm.GetConversationSuccess())
@@ -122,14 +122,14 @@ func GetResultInteraction(queryResult *dialogflowpb.QueryResult) (*pb.Interactio
 		} else if rm.GetPlayAudio() != nil {
 			log.Printf("PlayAudio %v\n", *rm.GetPlayAudio())
 		} else if rm.GetMixedAudio() != nil {
-      retval.Audio = &pb.Interaction_Output{
-        Output: &pb.OutputAudio{
-          Encoding: pb.OutputAudio_LINEAR_16,
-          AudioData: rm.GetMixedAudio().GetSegments()[0].GetAudio(),
-        },
-      }
+			retval.Audio = &pb.Interaction_Output{
+				Output: &pb.OutputAudio{
+					Encoding:  pb.OutputAudio_LINEAR_16,
+					AudioData: rm.GetMixedAudio().GetSegments()[0].GetAudio(),
+				},
+			}
 			log.Printf("MixedAudio:\n")
-      log.Printf("Number of segments: %s\n", len(rm.GetMixedAudio().GetSegments()))
+			log.Printf("Number of segments: %s\n", len(rm.GetMixedAudio().GetSegments()))
 		} else if rm.GetLiveAgentHandoff() != nil {
 			log.Printf("LiveAgentHandoff %v\n", *rm.GetLiveAgentHandoff())
 		} else if rm.GetTelephonyTransferCall() != nil {
@@ -139,12 +139,12 @@ func GetResultInteraction(queryResult *dialogflowpb.QueryResult) (*pb.Interactio
 			//} else if rm.GetToolCall() != nil {
 			//log.Printf("ToolCall %v\n", *rm.GetToolCall())
 		} else {
-			log.Printf("Unknown data %v\n", *rm)
+			log.Printf("Unknown data %v\n", rm.String())
 		}
 	}
 
 	if match != nil {
-		log.Printf("Got Match: %v\n", *match)
+		log.Printf("Got Match: %s\n", match.String())
 		log.Printf("Got Match Event: %v\n", match.GetEvent())
 		if match.GetParameters() != nil {
 			log.Printf("MatchParameters: %v\n", *match.GetParameters())
@@ -199,13 +199,13 @@ func MakeQueryInputForAudio(encoding dialogflowpb.AudioEncoding, sampleRate int3
 		SampleRateHertz: sampleRate,
 		//TODO EnableWordInfo:
 		//TODO PhraseHints
-    /* This will be taken from the agent configuration
-    // Models are here: https://cloud.google.com/speech-to-text/docs/transcription-model
-    // Model: "telephony_short",
-		//TODO ModelVariant
-		//TODO BargeInConfig
-    */
-    SingleUtterance: true,
+		/* This will be taken from the agent configuration
+		    // Models are here: https://cloud.google.com/speech-to-text/docs/transcription-model
+		    // Model: "telephony_short",
+				//TODO ModelVariant
+				//TODO BargeInConfig
+		*/
+		SingleUtterance: true,
 	}
 
 	queryAudioInput := &dialogflowpb.AudioInput{
@@ -243,22 +243,22 @@ func DetectIntentText(ctx context.Context, sessionPath, text string) (*pb.Intera
 // [END dialogflow_detect_intent_text]
 
 func getOutputAudioConfig() *dialogflowpb.OutputAudioConfig {
-  return &dialogflowpb.OutputAudioConfig{
-    AudioEncoding: dialogflowpb.OutputAudioEncoding_OUTPUT_AUDIO_ENCODING_LINEAR_16,
-    SampleRateHertz: 16000,
-    /* This is not need and will be chosen by the agent
-    SynthesizeSpeechConfig: &dialogflowpb.SynthesizeSpeechConfig{
-      SpeakingRate: 1.0, // [0.25, 4.0]
-      Pitch: 0, // [-20, 20]
-      VolumeGainDb: 0, // [-96.0, 16.0]
-      EffectsProfileId: []string{"telephony-class-application"}, // https://cloud.google.com/text-to-speech/docs/audio-profiles
-      Voice: &dialogflowpb.VoiceSelectionParams{
-        Name: "Aoede", // https://cloud.google.com/text-to-speech/docs/voices
-        SsmlGender: dialogflowpb.SsmlVoiceGender_SSML_VOICE_GENDER_UNSPECIFIED,
-      },
-    },
-    */
-  }
+	return &dialogflowpb.OutputAudioConfig{
+		AudioEncoding:   dialogflowpb.OutputAudioEncoding_OUTPUT_AUDIO_ENCODING_LINEAR_16,
+		SampleRateHertz: 16000,
+		/* This is not need and will be chosen by the agent
+		   SynthesizeSpeechConfig: &dialogflowpb.SynthesizeSpeechConfig{
+		     SpeakingRate: 1.0, // [0.25, 4.0]
+		     Pitch: 0, // [-20, 20]
+		     VolumeGainDb: 0, // [-96.0, 16.0]
+		     EffectsProfileId: []string{"telephony-class-application"}, // https://cloud.google.com/text-to-speech/docs/audio-profiles
+		     Voice: &dialogflowpb.VoiceSelectionParams{
+		       Name: "Aoede", // https://cloud.google.com/text-to-speech/docs/voices
+		       SsmlGender: dialogflowpb.SsmlVoiceGender_SSML_VOICE_GENDER_UNSPECIFIED,
+		     },
+		   },
+		*/
+	}
 }
 
 /*
@@ -276,7 +276,7 @@ func DetectIntentStream(ctx context.Context, sessionPath, audioFile string) (*pb
     sessions.AddStreamerToSession(sessionPath, newStreamer)
     streamer = newStreamer
   }
-  
+
 	f, err := os.Open(audioFile)
 	if err != nil {
 		return nil, err
@@ -349,132 +349,130 @@ func DetectIntentStream(ctx context.Context, sessionPath, audioFile string) (*pb
 */
 
 func streamAudioBytes(ctx context.Context, streamer sessions.StreamInterface, sessionPath string, audioBytes []byte, encoding dialogflowpb.AudioEncoding, sampleRate int32) error {
-  fmt.Printf(">")
-  if len(audioBytes) == 0 {
-    log.Printf("Received 0 bytes\n")
-    streamer.CloseSend()
-    return nil
-  }
+	fmt.Printf(">")
+	if len(audioBytes) == 0 {
+		log.Printf("Received 0 bytes\n")
+		streamer.CloseSend()
+		return nil
+	}
 	queryInput, err := MakeQueryInputForAudio(encoding, sampleRate)
 
-  request := dialogflowpb.StreamingDetectIntentRequest{
-    Session: sessionPath,
-    //TODO QueryParams
-    QueryInput: queryInput,
-    OutputAudioConfig: getOutputAudioConfig(),
-  }
+	request := dialogflowpb.StreamingDetectIntentRequest{
+		Session: sessionPath,
+		//TODO QueryParams
+		QueryInput:        queryInput,
+		OutputAudioConfig: getOutputAudioConfig(),
+	}
 
 	queryInput.GetAudio().Audio = audioBytes
 
-  request = dialogflowpb.StreamingDetectIntentRequest{QueryInput: queryInput}
-  err = streamer.Send(&request)
-  if err != nil {
-    log.Printf("Error sending audio: %v\n", err)
-    return err
-  }
-  return nil
+	request = dialogflowpb.StreamingDetectIntentRequest{QueryInput: queryInput}
+	err = streamer.Send(&request)
+	if err != nil {
+		log.Printf("Error sending audio: %v\n", err)
+		return err
+	}
+	return nil
 }
 
-
-// From the following description: 
+// From the following description:
 // https://github.com/googleapis/google-cloud-go/blob/dialogflow/v1.68.1/dialogflow/cx/apiv3beta1/cxpb/session.pb.go#L746
 // We need to initialize a streamer
 // then repeatedly send audio bytes
-// 
+//
 // So first we see if we have a streamer in the session
 // if not create one and then stream audio
 // otherwise just stream audio
-//
 func DetectIntentStreamAudioBytes(ctx context.Context, sessionPath string, audioBytes []byte, encoding dialogflowpb.AudioEncoding, sampleRate int32) (*pb.Interaction, error) {
 	queryInput, err := MakeQueryInputForAudio(encoding, sampleRate)
 
-  streamer, ok := sessions.GetStreamerForSession(sessionPath)
-  if !ok {
-    log.Printf("Creating a new streamer\n")
-    newStreamer, err := NewStreamer(ctx, sessionPath)
-    if err != nil {
-      return nil, err
-    }
-    // Initialize the streamer
-    request := dialogflowpb.StreamingDetectIntentRequest{
-      Session: sessionPath,
-      //TODO QueryParams
-      QueryInput: queryInput,
-      OutputAudioConfig: getOutputAudioConfig(),
-    }
+	streamer, ok := sessions.GetStreamerForSession(sessionPath)
+	if !ok {
+		log.Printf("Creating a new streamer\n")
+		newStreamer, err := NewStreamer(ctx, sessionPath)
+		if err != nil {
+			return nil, err
+		}
+		// Initialize the streamer
+		request := dialogflowpb.StreamingDetectIntentRequest{
+			Session: sessionPath,
+			//TODO QueryParams
+			QueryInput:        queryInput,
+			OutputAudioConfig: getOutputAudioConfig(),
+		}
 
-    err = newStreamer.Send(&request)
-    if err != nil {
-      log.Printf("Error initializing streamer: %v\n", err)
-      return nil, err
-    }
-    sessions.AddStreamerToSession(sessionPath, newStreamer)
-    streamer = newStreamer
-    streamer.Recv()
-  }
+		err = newStreamer.Send(&request)
+		if err != nil {
+			log.Printf("Error initializing streamer: %v\n", err)
+			return nil, err
+		}
+		sessions.AddStreamerToSession(sessionPath, newStreamer)
+		streamer = newStreamer
+		streamer.Recv()
+	}
 
-  err = streamAudioBytes(ctx, streamer, sessionPath, audioBytes, encoding, sampleRate)
-  if err != nil {
-    log.Printf("Err: %v\n", err)
-    sessions.ClearStreamerForSession(sessionPath)
-  }
+	err = streamAudioBytes(ctx, streamer, sessionPath, audioBytes, encoding, sampleRate)
+	if err != nil {
+		log.Printf("Err: %v\n", err)
+		sessions.ClearStreamerForSession(sessionPath)
+	}
 
 	var queryResult *dialogflowpb.QueryResult
 
-  for {
-    if streamer.Error() != nil {
-      log.Printf("Got Error\n")
-      streamer.Stop()
-      break
-    }
-    if !streamer.HasResponse() {
-      break
-    }
+	for {
+		if streamer.Error() != nil {
+			log.Printf("Got Error\n")
+			streamer.Stop()
+			break
+		}
+		if !streamer.HasResponse() {
+			break
+		}
 
-    response := streamer.NextResponse()
+		response := streamer.NextResponse()
 
-    // We separately store intent responses
-    // If we have one then we just skip to the end of the response
-    // and use the intent directly
-    intent := streamer.GetIntent()
-    if intent != nil {
-      log.Printf("Got an intent...skipping responses")
-      response = intent
-    }
+		// We separately store intent responses
+		// If we have one then we just skip to the end of the response
+		// and use the intent directly
+		intent := streamer.GetIntent()
+		if intent != nil {
+			log.Printf("Got an intent...skipping responses")
+			response = intent
+		}
 
-    if response != nil {
-      recognitionResult := response.GetRecognitionResult()
-      if recognitionResult != nil {
-        interaction, err := GetPartialInteraction(recognitionResult)
-        if interaction != nil {
-          return interaction, err
-        }
-      }
+		if response != nil {
+			recognitionResult := response.GetRecognitionResult()
+			if recognitionResult != nil {
+				interaction, err := GetPartialInteraction(recognitionResult)
+				if interaction != nil {
+					return interaction, err
+				}
+			}
 
-      intentResponse := response.GetDetectIntentResponse()
-      if intentResponse != nil {
-        log.Printf("Got Intent:%s\n", intentResponse.GetResponseType())
-        queryResult = intentResponse.GetQueryResult()
+			intentResponse := response.GetDetectIntentResponse()
+			if intentResponse != nil {
+				log.Printf("Got Intent:%s\n", intentResponse.GetResponseType())
+				queryResult = intentResponse.GetQueryResult()
 
-        // Save the recognized text here in case we have to do tools
-        // calls.  The resulting queryResult will lose these transcription
-        // results
-        originalRecognizedText := queryResult.GetTranscript()
+				// Save the recognized text here in case we have to do tools
+				// calls.  The resulting queryResult will lose these transcription
+				// results
+				originalRecognizedText := queryResult.GetTranscript()
 
-        queryResult, err = HandleFunctionCallsIfNeeded(ctx, sessionPath, queryResult)
-        // On successful intent detection we should start a new stream
-        interaction,err := GetResultInteraction(queryResult)
-        if interaction.GetRecognizedText() == "" {
-          interaction.RecognizedText = originalRecognizedText
-        }
-        defer sessions.ClearStreamerForSession(sessionPath)
+				queryResult, err = HandleFunctionCallsIfNeeded(ctx, sessionPath, queryResult)
+				// On successful intent detection we should start a new stream
+				interaction, err := GetResultInteraction(queryResult)
+				if interaction.GetRecognizedText() == "" {
+					interaction.RecognizedText = originalRecognizedText
+				}
+				defer sessions.ClearStreamerForSession(sessionPath)
 
-        return interaction, err
-      }
-    }
-  }
+				return interaction, err
+			}
+		}
+	}
 
-  return nil, nil
+	return nil, nil
 }
 
 // [END dialogflow_detect_intent_streaming]

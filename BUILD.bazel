@@ -7,7 +7,10 @@ load("@bazel_gazelle//:def.bzl", "gazelle")
 
 # Modify the prefix to your project name in your git repository.
 
-# gazelle:prefix github.com/Chorus-Development/Chorus/tree/master
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@npm//:defs.bzl", "npm_link_all_packages")
+
+# gazelle:prefix github.com/ML/voiceAgent/server
 gazelle(name = "gazelle")
 
 # Add a rule to call gazelle and pull in new go dependencies.
@@ -21,12 +24,8 @@ gazelle(
     command = "update-repos",
 )
 
-load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
-
 buildifier(
     name = "buildifier",
 )
-
-load("@npm//:defs.bzl", "npm_link_all_packages")
 
 npm_link_all_packages(name = "node_modules")

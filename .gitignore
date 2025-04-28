@@ -41,6 +41,9 @@ build/Release
 node_modules/
 jspm_packages/
 
+# venv directories
+venv/
+
 # TypeScript v1 declaration files
 typings/
 

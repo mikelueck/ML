@@ -1,6 +1,6 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("//rules:gofmt.bzl", "gofmt_test")
 
 buildifier(
@@ -13,12 +13,14 @@ gofmt_test()
 gazelle(name = "gazelle")
 
 go_library(
-    name = "go_default_library",
-    srcs = ["all_functions.go",
-            "getCar.go"],
+    name = "functions",
+    srcs = [
+        "all_functions.go",
+        "getCar.go",
+    ],
     importpath = "github.com/ML/voiceAgent/server/functions",
     visibility = ["//visibility:public"],
     deps = [
-      "@org_golang_google_protobuf//types/known/structpb:go_default_library",
+        "@org_golang_google_protobuf//types/known/structpb",
     ],
 )

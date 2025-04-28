@@ -1,26 +1,26 @@
-load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
-load("@pip_deps//:requirements.bzl", "requirement")
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@pip_deps//:requirements.bzl", "requirement")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 
 buildifier(
-    name = "buildifier",)
+    name = "buildifier",
+)
 
 gazelle(name = "gazelle")
 
-load("@rules_python//python:pip.bzl", "compile_pip_requirements")
-
 compile_pip_requirements(
-        name = "requirements",
-        src = "requirements.in",
-        requirements_txt = "requirements.txt",
-        visibility = ["//visibility:public"],
+    name = "requirements",
+    src = "requirements.in",
+    requirements_txt = "requirements.txt",
+    visibility = ["//visibility:public"],
 )
 
 py_library(
     name = "llm",
     srcs = glob(["*.py"]),
     visibility = ["//visibility:public"],
-    deps=[
-        ],
+    deps = [
+    ],
 )

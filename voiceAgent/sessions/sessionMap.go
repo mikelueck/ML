@@ -8,16 +8,16 @@ import (
 )
 
 type (
-  StreamInterface interface {
-    Send(*dialogflowpb.StreamingDetectIntentRequest) error
-    Recv()
-    Stop()
-    CloseSend()
-    HasResponse() bool
-    GetIntent() *dialogflowpb.StreamingDetectIntentResponse
-    NextResponse() *dialogflowpb.StreamingDetectIntentResponse
-    Error() error
-  }
+	StreamInterface interface {
+		Send(*dialogflowpb.StreamingDetectIntentRequest) error
+		Recv()
+		Stop()
+		CloseSend()
+		HasResponse() bool
+		GetIntent() *dialogflowpb.StreamingDetectIntentResponse
+		NextResponse() *dialogflowpb.StreamingDetectIntentResponse
+		Error() error
+	}
 )
 
 type SessionMap struct {
@@ -45,11 +45,11 @@ func (sm *SessionMap) Set(key string, value StreamInterface) {
 }
 
 func (sm *SessionMap) Delete(key string) {
-  streamer, ok := sm.Get(key)
-  if ok {
-    fmt.Printf("Closing stream\n")
-    streamer.Stop()
-  }
+	streamer, ok := sm.Get(key)
+	if ok {
+		fmt.Printf("Closing stream\n")
+		streamer.Stop()
+	}
 
 	sm.Lock()
 	defer sm.Unlock()

@@ -1,11 +1,11 @@
-load("@rules_proto//proto:defs.bzl", "proto_library")
-load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
-load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@aspect_rules_ts//ts:proto.bzl", "ts_proto_library")
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
 load("//rules:gofmt.bzl", "gofmt_test")
 load("//rules:snapshot.bzl", "snapshot")
-load("@aspect_rules_ts//ts:proto.bzl", "ts_proto_library")
 
 buildifier(
     name = "buildifier",
@@ -13,26 +13,23 @@ buildifier(
 
 gofmt_test()
 
-snapshot(dep=":voice_agent_go_proto")
+snapshot(dep = ":go_proto")
 
 # gazelle:prefix github.com/ML/voiceAgent/proto
 gazelle(name = "gazelle")
 
-
 proto_srcs = ["messages.proto"]
 
 proto_library(
-    name = "voice_agent_proto",
+    name = "proto",
     srcs = proto_srcs,
     visibility = ["//visibility:public"],
-    deps = [
-    ],
 )
 
 ts_proto_library(
     name = "voice_agent_ts_proto",
     node_modules = "//:node_modules",
-    proto = ":voice_agent_proto",
+    proto = ":proto",
     proto_srcs = proto_srcs,
     protoc_gen_options = {"import_extension": "js"},
     visibility = ["//visibility:public"],
@@ -43,17 +40,22 @@ ts_proto_library(
 )
 
 go_proto_library(
-    name = "voice_agent_go_proto",
+    name = "go_proto",
     compiler = "@io_bazel_rules_go//proto:go_grpc",
     importpath = "github.com/ML/voiceAgent/proto",
-    protos = [":voice_agent_proto"],
+    proto = ":proto_proto",
     visibility = ["//visibility:public"],
 )
 
 go_library(
     name = "go_default_library",
-    embed = [":voice_agent_go_proto"],
+    embed = [":go_proto"],
     importpath = "github.com/ML/voiceAgent/proto",
     visibility = ["//visibility:public"],
 )
 
+proto_library(
+    name = "proto_proto",
+    srcs = ["messages.proto"],
+    visibility = ["//visibility:public"],
+)

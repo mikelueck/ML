@@ -96,8 +96,6 @@ oci_register_toolchains(
     crane_version = LATEST_CRANE_VERSION,
 )
 
-load("@rules_oci//oci:pull.bzl", "oci_pull")
-
 # You can pull your base images using oci_pull like this:
 load("@rules_oci//oci:pull.bzl", "oci_pull")
 

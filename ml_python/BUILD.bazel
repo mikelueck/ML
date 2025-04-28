@@ -7,6 +7,9 @@ load("@bazel_gazelle//:def.bzl", "gazelle")
 
 # Modify the prefix to your project name in your git repository.
 
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+
 # gazelle:prefix github.com/Chorus-Development/Chorus/tree/master
 gazelle(name = "gazelle")
 
@@ -21,19 +24,16 @@ gazelle(
     command = "update-repos",
 )
 
-load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
-
 buildifier(
     name = "buildifier",
 )
 
-load("@rules_python//python:pip.bzl", "compile_pip_requirements")
-
 compile_pip_requirements(
-        name = "requirements",
-        src = "requirements.in",
-        requirements_txt = "requirements_lock.txt",
-        data = [ 
-          "//ml_python/utils/secrets:requirements",
-          "//ml_python/slack/agent:requirements" ],
+    name = "requirements",
+    src = "requirements.in",
+    data = [
+        "//ml_python/slack/agent:requirements",
+        "//ml_python/utils/secrets:requirements",
+    ],
+    requirements_txt = "requirements_lock.txt",
 )

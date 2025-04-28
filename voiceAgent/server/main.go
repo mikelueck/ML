@@ -11,8 +11,8 @@ import (
 	"google.golang.org/protobuf/proto"
 	"net/http"
 
-	pb "github.com/ML/voiceAgent/proto"
 	dialogflowpb "cloud.google.com/go/dialogflow/cx/apiv3beta1/cxpb"
+	pb "github.com/ML/voiceAgent/proto"
 )
 
 // Upgrader is used to upgrade HTTP connections to WebSocket connections.
@@ -22,35 +22,35 @@ var upgrader = websocket.Upgrader{
 }
 
 func handleMessage(ctx context.Context, msg *pb.Interaction) (*pb.Interaction, error) {
-  sessionId := msg.GetSessionId()
+	sessionId := msg.GetSessionId()
 	sessionPath := getSessionPath(sessionId)
 
-  var interaction *pb.Interaction
+	var interaction *pb.Interaction
 	var err error
 
 	if msg.GetText() != "" {
-    log.Printf("GetText: %v\n", msg.GetText())
+		log.Printf("GetText: %v\n", msg.GetText())
 		interaction, err = detect.DetectIntentText(ctx, sessionPath, msg.GetText())
 	} else if msg.GetInput() != nil {
-    sampleRate := msg.GetInput().GetSampleRateHertz()
-    encoding := dialogflowpb.AudioEncoding(msg.GetInput().GetEncoding())
+		sampleRate := msg.GetInput().GetSampleRateHertz()
+		encoding := dialogflowpb.AudioEncoding(msg.GetInput().GetEncoding())
 
 		interaction, err = detect.DetectIntentStreamAudioBytes(ctx, sessionPath, msg.GetInput().GetAudioData(), encoding, sampleRate)
 	}
 
 	if err != nil {
-    log.Printf("Error: %v\n", err)
+		log.Printf("Error: %v\n", err)
 		return nil, err
 	}
-  if interaction != nil {
-    interaction.SessionId = sessionId
-  }
+	if interaction != nil {
+		interaction.SessionId = sessionId
+	}
 	return interaction, nil
 }
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {
 	// Upgrade the HTTP connection to a WebSocket connection
-  upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
