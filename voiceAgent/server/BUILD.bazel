@@ -1,0 +1,39 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary")
+load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("//rules:gofmt.bzl", "gofmt_test")
+
+buildifier(
+    name = "buildifier",
+)
+
+gofmt_test()
+
+# gazelle:prefix github.com/ML/voiceAgent/server/detect
+gazelle(name = "gazelle")
+
+filegroup(
+  name = "audio",
+  srcs = [
+    "buy_car.flac",
+  ]
+)
+
+go_binary(
+    name = "server",
+    srcs = ["main.go"],
+    importpath = "github.com/ML/voiceAgent/server",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//voiceAgent/server/detect:go_default_library",
+        "//voiceAgent/proto:go_default_library",
+        "@org_golang_google_protobuf//proto:go_default_library",
+        "@com_github_google_uuid//:go_default_library",
+        "@com_google_cloud_go_dialogflow//cx/apiv3beta1:go_default_library",
+        "@com_google_cloud_go_dialogflow//cx/apiv3beta1/cxpb:go_default_library",
+        "@com_github_gorilla_websocket//:go_default_library",
+    ],
+    data = [
+      "buy_car.flac",
+    ]
+)

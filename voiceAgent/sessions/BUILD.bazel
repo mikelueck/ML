@@ -1,0 +1,24 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("//rules:gofmt.bzl", "gofmt_test")
+
+buildifier(
+    name = "buildifier",
+)
+
+gofmt_test()
+
+# gazelle:prefix github.com/ML/voiceAgent/sessions
+gazelle(name = "gazelle")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["sessions.go",
+            "sessionMap.go"],
+    importpath = "github.com/ML/voiceAgent/sessions",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_google_cloud_go_dialogflow//cx/apiv3beta1/cxpb:go_default_library",
+    ],
+)

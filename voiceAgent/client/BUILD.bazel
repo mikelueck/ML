@@ -11,16 +11,21 @@ http_server_bin.http_server_binary(
 webpack_bundle(
     name = "bundle",
     srcs = [
-        "client.js",
-        "//chat/proto:chat_js_proto",
+      "audio_playback.js",
+      "speech_detection.js",
     ],
-    entry_point = "client.js",
+    entry_point = "audio.js",
     node_modules = "//:node_modules",
     supports_workers = False,
+    deps = [
+      "//:node_modules/hark",
+      "//:node_modules/recordrtc",
+      "//voiceAgent/proto:voice_agent_ts_proto",
+    ],
 )
 
 js_library(
-    name = "chat-client",
+    name = "voice-agent-client",
     srcs = [
         "index.html",
     ],
@@ -34,7 +39,7 @@ js_run_devserver(
     args = ["-p 8081 -c-1"],  # disable cache
     chdir = package_name(),
     data = [
-        ":chat-client",
+        ":voice-agent-client",
     ],
     log_level = "debug",
     tool = ":http_server",

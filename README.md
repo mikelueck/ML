@@ -102,3 +102,23 @@ gcloud auth application-default login --impersonate-service-account=<service acc
 # Trying with functions-framework
 
 pip install functions-framework
+
+
+Had some problems with gax_go_v2
+Added to the deps.bzl go_repository
+
+build_directives = [
+  "gazelle:proto disable",
+],
+
+so it looks like this
+    go_repository(
+        name = "com_github_googleapis_gax_go_v2",
+        importpath = "github.com/googleapis/gax-go/v2",
+        sum = "h1:hb0FFeiPaQskmvakKu5EbCbpntQn48jyHuvrkurSS/Q=",
+        version = "v2.14.1",
+        build_directives = [
+          "gazelle:proto disable",
+        ],
+    )
+

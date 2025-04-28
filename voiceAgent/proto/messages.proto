@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package voice_agent;
+
+option go_package = "github.com/ML/voiceAgent/proto;proto";
+
+
+// A message that supports input and output audio
+message InputAudio {
+  // Stolen from dialogflow
+  enum AudioEncoding {
+    // Not specified.
+    UNSPECIFIED = 0;
+    // Uncompressed 16-bit signed little-endian samples (Linear PCM).
+    LINEAR_16 = 1;
+    // [`FLAC`](https://xiph.org/flac/documentation.html) (Free Lossless Audio
+    // Codec) is the recommended encoding because it is lossless (therefore
+    // recognition is not compromised) and requires only about half the
+    // bandwidth of `LINEAR16`. `FLAC` stream encoding supports 16-bit and
+    // 24-bit samples, however, not all fields in `STREAMINFO` are supported.
+    FLAC = 2;
+    // 8-bit samples that compand 14-bit audio samples using G.711 PCMU/mu-law.
+    MULAW = 3;
+    // Adaptive Multi-Rate Narrowband codec. `sample_rate_hertz` must be 8000.
+    AMR = 4;
+    // Adaptive Multi-Rate Wideband codec. `sample_rate_hertz` must be 16000.
+    AMR_WB = 5;
+    // Opus encoded audio frames in Ogg container
+    // ([OggOpus](https://wiki.xiph.org/OggOpus)).
+    // `sample_rate_hertz` must be 16000.
+    OGG_OPUS = 6;
+    // Although the use of lossy encodings is not recommended, if a very low
+    // bitrate encoding is required, `OGG_OPUS` is highly preferred over
+    // Speex encoding. The [Speex](https://speex.org/) encoding supported by
+    // Dialogflow API has a header byte in each block, as in MIME type
+    // `audio/x-speex-with-header-byte`.
+    // It is a variant of the RTP Speex encoding defined in
+    // [RFC 5574](https://tools.ietf.org/html/rfc5574).
+    // The stream is a sequence of blocks, one block per RTP packet. Each block
+    // starts with a byte containing the length of the block, in bytes, followed
+    // by one or more frames of Speex data, padded to an integral number of
+    // bytes (octets) as specified in RFC 5574. In other words, each RTP header
+    // is replaced with a single byte containing the block length. Only Speex
+    // wideband is supported. `sample_rate_hertz` must be 16000.
+    SPEEX_WITH_HEADER_BYTE = 7;
+    // 8-bit samples that compand 13-bit audio samples using G.711 PCMU/a-law.
+    ALAW = 8;
+  }
+  bytes audio_data = 1;
+  AudioEncoding encoding = 2;
+  int32 sample_rate_hertz = 3;
+}
+
+message OutputAudio {
+  enum OutputAudioEncoding {
+    UNSPECIFIED = 0;
+    // Uncompressed 16-bit signed little-endian samples (Linear PCM).
+    // Audio content returned as LINEAR16 also contains a WAV header.
+    LINEAR_16 = 1;
+    // MP3 audio at 32kbps.
+    MP3 = 2;
+    // MP3 audio at 64kbps.
+    MP3_64_KBPS = 4;
+    // Opus encoded audio wrapped in an ogg container. The result will be a
+    // file which can be played natively on Android, and in browsers (at least
+    // Chrome and Firefox). The quality of the encoding is considerably higher
+    // than MP3 while using approximately the same bitrate.
+    OGG_OPUS = 3;
+    // 8-bit samples that compand 14-bit audio samples using G.711 PCMU/mu-law.
+    MULAW = 5;
+    // 8-bit samples that compand 13-bit audio samples using G.711 PCMU/a-law.
+    ALAW = 6;
+  }
+  bytes audio_data = 1;
+  OutputAudioEncoding encoding = 2;
+}
+
+message Interaction {
+  string session_id = 1;
+  string text = 2;
+  // Partial recognition results will be supplied here
+  // Idea is to have these indicate "BargeIn" if audio is playing
+  bool isPartial = 7; 
+  oneof Audio {
+    InputAudio input = 3;
+    OutputAudio output = 4;
+  }
+  string lanugage_code = 5;
+  string recognized_text = 6;
+  // TODO can add voices and other information here.
+}
