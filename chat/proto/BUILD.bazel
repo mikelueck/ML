@@ -1,5 +1,4 @@
 load("@aspect_rules_ts//ts:proto.bzl", "ts_proto_library")
-load("@aspect_rules_js//js:defs.bzl", "js_library")
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
