@@ -1,7 +1,7 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
-load("@rules_oci//oci:defs.bzl", "oci_image", "oci_image_index", "oci_push", "oci_tarball")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_tarball")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 load("//rules:gofmt.bzl", "gofmt_test")
 
@@ -19,7 +19,7 @@ go_binary(
     visibility = ["//visibility:public"],
 )
 
-# gazelle:prefix github.com/Chorus-Development/Chorus
+# gazelle:prefix github.com/ML/Chorus
 gazelle(name = "gazelle")
 
 go_library(
@@ -83,7 +83,7 @@ go_library(
         "main.go",
         "server.go",
     ],
-    importpath = "github.com/Chorus-Development/Chorus",
+    importpath = "github.com/ML/Chorus",
     visibility = ["//visibility:private"],
     deps = [
         "//chat/proto:go_default_library",

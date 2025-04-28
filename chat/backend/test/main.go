@@ -12,7 +12,7 @@ import (
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
 
-	pb "github.com/Chorus-Development/Chorus/chat/proto"
+	pb "github.com/ML/chat/proto"
 )
 
 var (

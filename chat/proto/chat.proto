@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package chat;
 
-option go_package = "github.com/Chorus-Development/Chorus/chat/proto;proto";
+option go_package = "github.com/ML/chat/proto;proto";
 
 import "google/protobuf/timestamp.proto";
 

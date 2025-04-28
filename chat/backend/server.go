@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 
-	pb "github.com/Chorus-Development/Chorus/chat/proto"
+	pb "github.com/ML/chat/proto"
 )
 
 var (

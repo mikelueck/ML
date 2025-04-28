@@ -1,10 +1,11 @@
+load("@aspect_rules_ts//ts:proto.bzl", "ts_proto_library")
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
-load("@rules_proto_grpc//js:defs.bzl", "js_grpc_web_compile")
+#load("@rules_proto_grpc//js:defs.bzl", "js_grpc_web_compile")
 load("//rules:gofmt.bzl", "gofmt_test")
 load("//rules:snapshot.bzl", "snapshot")
 
@@ -16,7 +17,7 @@ gofmt_test()
 
 snapshot(dep = ":chat_go_proto")
 
-# gazelle:prefix github.com/Chorus-Development/Chorus
+# gazelle:prefix github.com/ML/chat/proto
 gazelle(name = "gazelle")
 
 proto_library(
@@ -29,15 +30,17 @@ proto_library(
 )
 
 # This uses commonjs+dts format
-js_grpc_web_compile(
-    name = "chat_js_proto_pb",
-    protos = [":chat_proto"],
-    visibility = ["//visibility:public"],
-)
-
-js_library(
-    name = "chat_js_proto",
-    srcs = [":chat_js_proto_pb"],
+#js_grpc_web_compile(
+#    name = "chat_js_proto_pb",
+#    protos = [":chat_proto"],
+#    visibility = ["//visibility:public"],
+#)
+ts_proto_library(
+    name = "chat_ts_proto",
+    node_modules = "//:node_modules",
+    proto = ":chat_proto",
+    proto_srcs = ["chat.proto"],
+    protoc_gen_options = {"import_extension": "js"},
     visibility = ["//visibility:public"],
     deps = [
         "//:node_modules/google-protobuf",
@@ -49,7 +52,7 @@ go_proto_library(
     name = "chat_go_proto",
     compiler = "@io_bazel_rules_go//proto:go_grpc",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "github.com/Chorus-Development/Chorus/chat/proto",
+    importpath = "github.com/ML/chat/proto",
     proto = ":chat_proto",
     visibility = ["//visibility:public"],
 )
@@ -57,6 +60,6 @@ go_proto_library(
 go_library(
     name = "go_default_library",
     embed = [":chat_go_proto"],
-    importpath = "github.com/Chorus-Development/Chorus/chat/proto",
+    importpath = "github.com/ML/chat/proto",
     visibility = ["//visibility:public"],
 )

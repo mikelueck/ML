@@ -10,7 +10,7 @@ load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 
-# gazelle:prefix github.com/Chorus-Development/Chorus/tree/master
+# gazelle:prefix github.com/ML/tree/master
 gazelle(name = "gazelle")
 
 # Add a rule to call gazelle and pull in new go dependencies.

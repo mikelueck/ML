@@ -7,7 +7,7 @@ import (
 	"log"
 	"strconv"
 
-	pb "github.com/Chorus-Development/Chorus/chat/proto"
+	pb "github.com/ML/chat/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
