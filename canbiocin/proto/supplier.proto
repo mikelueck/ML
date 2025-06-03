@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "github.com/canbiocin/proto";
+
+import "google/protobuf/timestamp.proto";
+
+message Supplier {
+    string id = 1;
+    string name = 2;
+    string contact_name = 3;
+    string email = 4;
+    string phone = 5;
+    string address = 6;
+    string website = 7;
+    string notes = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+    bool is_active = 11;
+    repeated string product_categories = 12;
+    string payment_terms = 13;
+    string shipping_terms = 14;
+}

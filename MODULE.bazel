@@ -5,6 +5,7 @@
 # For more details, please check https://github.com/bazelbuild/bazel/issues/18958
 ###############################################################################
 
+bazel_dep(name = "protobuf", version = "23.1")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 
 bazel_dep(name = "rules_python", version = "0.31.0")
@@ -55,4 +56,3 @@ rules_ts_ext.deps(
 )
 
 use_repo(rules_ts_ext, "npm_typescript")
-

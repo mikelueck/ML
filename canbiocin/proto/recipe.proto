@@ -1,0 +1,79 @@
+syntax = "proto3";
+option go_package = "github.com/canbiocin/proto";
+
+import "canbiocin/proto/money.proto";
+import "canbiocin/proto/prebiotics.proto";
+import "canbiocin/proto/probiotics.proto";
+import "canbiocin/proto/postbiotics.proto";
+
+message ProbioticIngredient {
+  string item = 1;
+  int32 cfu_g = 2; // * 10^6
+}
+
+message PrebioticIngredient {
+  string item = 1;
+  float mg_serving = 2;
+}
+
+message PostbioticIngredient {
+  string item = 1;
+  float mg_serving = 2;
+}
+
+message PackagingIngredient {
+  string item = 1;
+  int32 count_per_kg = 2;
+}
+
+message MillingIngredient {
+  string item = 1;
+  int32 count_per_kg = 2;
+}
+
+message Company {
+  string name = 1;
+}
+
+message Recipe {
+  string id = 1;
+  string name = 2;
+  Company company = 7;
+  repeated ProbioticIngredient probiotics = 3;
+  repeated PrebioticIngredient prebiotics = 4;
+  repeated PostbioticIngredient postbiotics = 5;
+  int32 probiotic_overage_percent = 6;
+}
+
+message PackagingAndMilling {
+  string id = 1;
+  Recipe recipe = 2;
+  repeated PackagingIngredient packaging = 3;
+  repeated MillingIngredient milling = 4;
+}
+
+message RecipeDetails {
+  Recipe recipe = 1;
+  int32 serving_size_grams = 2;
+  int32 total_grams = 3;
+  repeated IngredientDetails ingredients = 4;
+}
+
+message Ingredient {
+    oneof item {
+      Probiotic probiotic = 1;
+      Prebiotic prebiotic = 2;
+      Postbiotic postbiotic = 3;
+    }
+}
+
+message IngredientDetails {
+    Ingredient ingredient = 1;
+    double percent = 2;
+    double perserving_mg = 3;
+    double total_grams = 4;
+    Money cb_cost_kg = 5;
+    Money cb_cost_per_container = 6;
+    Money cb_total = 7;
+    Money client_total = 8;
+}

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "github.com/canbiocin/proto";
+
+import "google/protobuf/timestamp.proto";
+import "canbiocin/proto/money.proto";
+import "canbiocin/proto/supplier.proto";
+
+message Probiotic {
+    string id = 1;
+    string spp = 2;
+    string strain = 3;
+    int32 stock_cfu_g = 4; // * 10^6
+    Money cost_kg = 5;
+    Money cost_shipping_kg = 6;
+    Supplier supplier = 7;
+    google.protobuf.Timestamp most_recent_quote_date = 8;       
+    int32 markup_percent = 9;    
+}

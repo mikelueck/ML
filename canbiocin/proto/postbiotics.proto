@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option go_package = "github.com/canbiocin/proto";
+
+import "google/protobuf/timestamp.proto";
+import "canbiocin/proto/money.proto";
+import "canbiocin/proto/supplier.proto";
+
+message Postbiotic {
+    string id = 1;
+    string name = 2;
+    int32 bag_size_kg = 3;
+    Money cost_kg = 4;
+    Money cost_shipping_kg = 5;
+    Supplier supplier = 6;
+    google.protobuf.Timestamp most_recent_quote_date = 7;       
+    int32 markup_percent = 8;    
+    string function = 9;
+    string notes = 10;
+}

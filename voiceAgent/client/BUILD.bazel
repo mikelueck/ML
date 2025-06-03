@@ -19,12 +19,15 @@ webpack_bundle(
     name = "bundle",
     srcs = [
         "audio_playback.js",
+        "elevenlabs.js",
+        "logger.js",
         "speech_detection.js",
     ],
     entry_point = "audio.js",
     node_modules = "//:node_modules",
     supports_workers = False,
     deps = [
+        "//:node_modules/@11labs/client",
         "//:node_modules/hark",
         "//:node_modules/recordrtc",
         "//voiceAgent/proto:voice_agent_ts_proto",

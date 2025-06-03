@@ -64,6 +64,32 @@
 				"kind": "build",
 				"isDefault": false
 			}
+		},
+		{
+			"type": "go",
+			"label": "go: build package",
+			"command": "build",
+			"args": [
+				"${fileDirname}"
+			],
+			"problemMatcher": [
+				"$go"
+			],
+			"group": "build",
+			"detail": "cd /Users/mikelueck/src/ML; go build ${fileDirname}"
+		},
+		{
+			"type": "go",
+			"label": "go: test package",
+			"command": "test",
+			"args": [
+				"${fileDirname}"
+			],
+			"problemMatcher": [
+				"$go"
+			],
+			"group": "test",
+			"detail": "cd /Users/mikelueck/src/ML; go test ${fileDirname}"
 		}
 	],
 	"inputs": [

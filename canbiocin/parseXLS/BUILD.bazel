@@ -1,0 +1,55 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("//rules:gofmt.bzl", "gofmt_test")
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+
+buildifier(
+    name = "buildifier",
+)
+
+gofmt_test()
+
+# gazelle:prefix github.com/ML/canbiocin/parseXLS
+gazelle(name = "gazelle")
+
+filegroup(
+    name = "initfiles",
+    srcs = [
+      "GMP - Probiotic Supplement for Cats and Dogs.xlsx",
+    ]
+)
+
+pkg_tar(
+    name = "initfiles_tar",
+    srcs = [
+      ":initfiles",
+    ],
+    visibility = ["//visibility:public"],
+    package_dir = "/canbiocin/parseXLS",
+)
+
+
+go_library(
+    name = "parseXLS_lib",
+    srcs = [
+        "init.go",
+        "prebiotics.go",
+        "postbiotics.go",
+        "probiotics.go",
+        "process_file.go", 
+        "recipe.go", 
+    ],
+    importpath = "github.com/ML/canbiocin/parseXLS",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//canbiocin/proto:canbiocin_go_grpc",
+        "//canbiocin/db:db_lib",
+        "//canbiocin/utils:utils_lib",
+        "@com_github_thedatashed_xlsxreader//:go_default_library",
+    ],
+    data = [
+      ":initfiles",
+    ]
+)
+

@@ -1,0 +1,39 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("//rules:gofmt.bzl", "gofmt_test")
+
+buildifier(
+    name = "buildifier",
+)
+
+gofmt_test()
+
+# gazelle:prefix github.com/ML/voiceAgent/server
+gazelle(name = "gazelle")
+
+go_binary(
+    name = "server",
+    embed = [":test_lib"],
+    importpath = "github.com/ML/canbiocin/test",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//canbiocin/parseXLS:parseXLS_lib", # Just to initialize ...TODO remove
+    ]
+)
+
+go_library(
+    name = "test_lib",
+    srcs = [
+      "main.go"],
+    importpath = "github.com/ML/canbiocin/test",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//canbiocin/proto:canbiocin_go_grpc",
+        "//canbiocin/db:db_lib",
+        "//canbiocin/recipe:recipe_lib",
+        "//canbiocin/utils:utils_lib",
+        "@com_github_golang_protobuf//ptypes:go_default_library",
+        "@com_github_golang_protobuf//ptypes/timestamp:go_default_library",
+    ],
+)

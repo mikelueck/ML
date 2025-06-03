@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "github.com/canbiocin/proto";
+
+import "google/protobuf/timestamp.proto";
+import "canbiocin/proto/money.proto";
+import "canbiocin/proto/supplier.proto";
+
+message Packaging {
+    int32 id = 1;
+    string name = 2;
+    Money cost_package = 3;
+    int32 units_package = 4;
+    Supplier supplier = 5;
+    google.protobuf.Timestamp most_recent_quote_date = 6;
+    int32 amount_needed_per_order = 7;
+    int32 markup_percent = 8;    
+}
+
+message Milling_Blending_Packaging {
+    int32 id = 1;
+    string name = 2;
+    Money cost_package = 3;
+    int32 num_kg = 7;
+    Supplier supplier = 4;
+    google.protobuf.Timestamp most_recent_quote_date = 5;
+    int32 markup_percent = 6;    
+}

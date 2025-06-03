@@ -1,0 +1,85 @@
+load("@aspect_rules_js//js:defs.bzl", "js_library", "js_run_devserver")
+load("@aspect_rules_webpack//webpack:defs.bzl", "webpack_bundle")
+load("@bazel_gazelle//:def.bzl", "gazelle") 
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@npm//:http-server/package_json.bzl", http_server_bin = "bin")
+
+buildifier(
+    name = "buildifier",
+)
+
+# gazelle:prefix github.com/ML/canbiocin/server
+gazelle(name = "gazelle")
+
+http_server_bin.http_server_binary(
+    name = "http_server",
+)
+
+webpack_bundle(
+    name = "bundle",
+    srcs = [
+      ".babelrc",
+      "App.jsx",
+      "Dialog.jsx",
+      "Field.jsx",
+      "grpc.js",
+      "timestamp.js",
+      "money.js",
+      "logger.js",
+      "Ingredient.jsx",
+      "Ingredients.jsx",
+      "Recipes.jsx",
+      "Recipe.jsx",
+      "public/index.html",
+      "Tabs.jsx",
+    ],
+    output_dir = True,
+    webpack_config = "webpack.config.js",
+    entry_point = "index.js",
+    node_modules = "//:node_modules",
+    supports_workers = False,
+    deps = [
+        "//:node_modules/react",
+        "//:node_modules/react-dom",
+        "//:node_modules/react-router",
+        "//canbiocin/proto:canbiocin_ts_proto",
+        "//:node_modules/@connectrpc/connect-web",
+        "//:node_modules/@connectrpc/connect",
+
+        # These are for building the bundle
+        "//:node_modules/html-webpack-plugin",
+        "//:node_modules/mini-css-extract-plugin",
+        "//:node_modules/babel-loader",
+        "//:node_modules/@babel/preset-env",
+        "//:node_modules/@babel/preset-react",
+
+        # various react/material dependencies
+        "//:node_modules/dayjs",
+        "//:node_modules/@mui/material",
+        "//:node_modules/@mui/x-data-grid",
+        "//:node_modules/@mui/x-date-pickers",
+        "//:node_modules/@mui/icons-material",
+        "//:node_modules/prop-types",
+    ],
+)
+
+js_library(
+    name = "canbiocin-client",
+    srcs = [
+        "public/index.html",
+    ],
+    deps = [
+        ":bundle",
+    ],
+)
+
+js_run_devserver(
+    name = "dev",
+    args = ["-p 8081 -c-1 --proxy http://localhost:8081?"],  # disable cache pass all queries through to the app
+    chdir = package_name() + "/bundle",
+    data = [
+        ":canbiocin-client",
+    ],
+    log_level = "debug",
+    tool = ":http_server",
+)

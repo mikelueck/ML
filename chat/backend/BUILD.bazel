@@ -99,7 +99,7 @@ go_library(
     importpath = "github.com/ML/Chorus",
     visibility = ["//visibility:private"],
     deps = [
-        "//chat/proto:go_default_library",
+        "//chat/proto",
         "@org_golang_google_grpc//:grpc",
         "@org_golang_google_grpc//codes",
         "@org_golang_google_grpc//health",

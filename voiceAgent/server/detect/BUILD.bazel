@@ -22,7 +22,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//voiceAgent/proto:go_default_library",
-        "//voiceAgent/server/functions:functions",
+        "//voiceAgent/server/functions",
         "//voiceAgent/sessions",
         "@com_google_cloud_go_dialogflow//cx/apiv3beta1",
         "@com_google_cloud_go_dialogflow//cx/apiv3beta1/cxpb",

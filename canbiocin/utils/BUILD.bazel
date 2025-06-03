@@ -1,0 +1,29 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("//rules:gofmt.bzl", "gofmt_test")
+
+buildifier(
+    name = "buildifier",
+)
+
+gofmt_test()
+
+# gazelle:prefix github.com/ML/canbiocin/recipe
+gazelle(name = "gazelle")
+
+go_library(
+    name = "utils_lib",
+    srcs = [
+        "money.go",
+        "date.go",
+    ],
+    importpath = "github.com/ML/canbiocin/utils",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//canbiocin/proto:canbiocin_go_grpc",
+        "@com_github_golang_protobuf//ptypes:go_default_library",
+        "@com_github_golang_protobuf//ptypes/timestamp:go_default_library",
+    ],
+)
+
