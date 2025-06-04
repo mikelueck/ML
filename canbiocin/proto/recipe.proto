@@ -69,6 +69,7 @@ message Ingredient {
 
 message IngredientDetails {
     Ingredient ingredient = 1;
+    int32 desired_cfu_g = 9; // * 10^6
     double percent = 2;
     double perserving_mg = 3;
     double total_grams = 4;

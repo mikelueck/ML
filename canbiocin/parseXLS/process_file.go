@@ -58,6 +58,11 @@ func Money(row *xlsxreader.Row, col string) (*pb.Money, error) {
     }
   }
   if len(parts) == 2 && len(parts[1]) > 0 {
+    // In cases where we have $34.30 this will look like 34.3 so it will get parsed as 3 instead of 30
+    // we pad parts[1] to have it be 30 instead
+    for len(parts[1]) < 2 {
+      parts[1] = fmt.Sprintf("%s0", parts[1])
+    }
     cents, err = strconv.ParseInt(parts[1], 10, 64)
     // for some reason some of these values in the spreadsheet are very large probably due to float issues
     // try to compensate here and just convert this to cents

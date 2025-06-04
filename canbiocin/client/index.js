@@ -17,11 +17,8 @@ import logger from './logger.js';
 
 
 const theme = createTheme({
-  palete: {
+  palette: {
     primary: {
-      main: "#ffffff",
-    },
-    secondary: {
       main: "rgb(116,160,63)",
     },
   },

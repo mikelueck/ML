@@ -43,6 +43,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 
 		row := &pb.IngredientDetails{
 			Ingredient:         &pb.Ingredient{Item: &pb.Ingredient_Probiotic{Probiotic: probiotic}},
+      DesiredCfuG:        i.GetCfuG(),
 			Percent:            percent,
 			PerservingMg:       perserving * 1000.0,
 			TotalGrams:         total,
@@ -72,7 +73,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 		row := &pb.IngredientDetails{
 			Ingredient:         &pb.Ingredient{Item: &pb.Ingredient_Prebiotic{Prebiotic: prebiotic}},
 			Percent:            percent,
-			PerservingMg:       perserving * 1000.0,
+			PerservingMg:       perserving,
 			TotalGrams:         total,
 			CbCostKg:           cbCostKg,
 			CbCostPerContainer: cbCostPerContainer,
@@ -100,7 +101,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 		row := &pb.IngredientDetails{
 			Ingredient:         &pb.Ingredient{Item: &pb.Ingredient_Postbiotic{Postbiotic: postbiotic}},
 			Percent:            percent,
-			PerservingMg:       perserving * 1000.0,
+			PerservingMg:       perserving,
 			TotalGrams:         total,
 			CbCostKg:           cbCostKg,
 			CbCostPerContainer: cbCostPerContainer,

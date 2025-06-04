@@ -238,5 +238,5 @@ func (s *server) CalculateRecipe(ctx context.Context, req *pb.CalculateRecipeReq
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
 	}
-	return &pb.CalculateRecipeResponse{Recipe: details}, nil
+	return &pb.CalculateRecipeResponse{RecipeDetails: details}, nil
 }

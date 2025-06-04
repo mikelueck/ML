@@ -23,6 +23,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import BlenderIcon from '@mui/icons-material/Blender';
 
 import { DataGrid,
          GridRowModes,
@@ -293,6 +294,10 @@ export function RecipeDialog() {
     setErrorOpen(false)
   }
 
+  const handleCreateRecipe = () => {
+    navigate(`/recipeMix?recipeId=${recipeId}`);
+  }
+
   return (
     <>
     <AppBar sx={{ position: 'relative' }}>
@@ -306,6 +311,14 @@ export function RecipeDialog() {
           <CloseIcon />
         </IconButton>
         <Box sx={{ flexGrow: 1}} />
+        <IconButton
+          edge="end"
+          color="inherit"
+          onClick={handleCreateRecipe}
+          aria-label={editable ? "save" : "edit"}
+        >
+        <BlenderIcon />
+        </IconButton>
         <IconButton
           edge="end"
           color="inherit"

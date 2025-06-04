@@ -30,6 +30,7 @@ webpack_bundle(
       "Ingredients.jsx",
       "Recipes.jsx",
       "Recipe.jsx",
+      "RecipeMix.jsx",
       "public/index.html",
       "Tabs.jsx",
     ],

@@ -91,7 +91,7 @@ message CalculateRecipeRequest {
 }
 
 message CalculateRecipeResponse {
-  RecipeDetails recipe = 1;
+  RecipeDetails recipe_details = 1;
 }
 
 service CanbiocinService {
