@@ -146,6 +146,16 @@ func (s *server) ListIngredients(ctx context.Context, req *pb.ListIngredientsReq
 	return resp, nil
 }
 
+func (s *server) ListProbioticSpp(ctx context.Context, req *pb.ListProbioticSppRequest) (*pb.ListProbioticSppResponse, error) {
+	spp, err := db.GetProbioticsCollection().GetSppList(ctx)
+  return &pb.ListProbioticSppResponse{Spps: spp}, err
+}
+
+func (s *server) ListPrebioticCategory(ctx context.Context, req *pb.ListPrebioticCategoryRequest) (*pb.ListPrebioticCategoryResponse, error) {
+	category, err := db.GetPrebioticsCollection().GetCategoryList(ctx)
+  return &pb.ListPrebioticCategoryResponse{Categories: category}, err
+}
+
 func (s *server) CreateRecipe(ctx context.Context, req *pb.CreateRecipeRequest) (*pb.CreateRecipeResponse, error) {
 	err := db.GetRecipesCollection().Create(ctx, req.GetRecipe())
 	return nil, err

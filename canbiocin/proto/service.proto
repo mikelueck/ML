@@ -44,6 +44,20 @@ message ListIngredientsResponse {
     repeated Ingredient ingredients = 1;
 }
 
+message ListProbioticSppRequest {
+}
+
+message ListProbioticSppResponse {
+  repeated string spps = 1;
+}
+
+message ListPrebioticCategoryRequest {
+}
+
+message ListPrebioticCategoryResponse {
+  repeated string categories = 1;
+}
+
 message CreateRecipeRequest {
     Recipe recipe = 1;
 }
@@ -100,6 +114,8 @@ service CanbiocinService {
   rpc UpdateIngredient(UpdateIngredientRequest) returns (UpdateIngredientResponse) {}
   rpc DeleteIngredient(DeleteIngredientRequest) returns (DeleteIngredientResponse) {}
   rpc ListIngredients(ListIngredientsRequest) returns (ListIngredientsResponse) {}
+  rpc ListProbioticSpp(ListProbioticSppRequest) returns (ListProbioticSppResponse) {}
+  rpc ListPrebioticCategory(ListPrebioticCategoryRequest) returns (ListPrebioticCategoryResponse) {}
   rpc CreateRecipe(CreateRecipeRequest) returns (CreateRecipeResponse) {}
   rpc GetRecipe(GetRecipeRequest) returns (GetRecipeResponse) {}
   rpc UpdateRecipe(UpdateRecipeRequest) returns (UpdateRecipeResponse) {}

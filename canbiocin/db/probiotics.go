@@ -2,6 +2,9 @@ package db
 
 import (
 	"context"
+  "maps"
+	"slices"
+	"sync"
 
 	pb "github.com/ML/canbiocin/proto"
 	"github.com/google/uuid"
@@ -16,8 +19,10 @@ func init() {
 			BaseCollection: BaseCollection[pb.Probiotic, *ProbioticDoc]{
 				collectionName: probioticsCollection,
 			},
+      probioticSpp: []string{},
 		}
 		c.setAdapt(c.adapt)
+    c.SetSppList(context.Background())
 		return c
 	}
 
@@ -27,6 +32,33 @@ func init() {
 // ProbioticsCollection handles operations for the prebiotics collection
 type ProbioticsCollection struct {
 	BaseCollection[pb.Probiotic, *ProbioticDoc]
+
+  // We keep a list of all the Spp associated with the Probiotics so we can
+  // quickly populate dropdowns on the client
+  lock sync.RWMutex
+  probioticSpp []string
+}
+
+func (b *ProbioticsCollection) SetSppList(ctx context.Context) {
+  b.lock.Lock()
+  defer b.lock.Unlock()
+
+  docs, _ := b.List(ctx)
+
+  spp := make(map[string]bool)
+
+  for _, p := range docs {
+    spp[p.GetSpp()] = true
+  }
+
+  b.probioticSpp = slices.Sorted(maps.Keys(spp))
+}
+
+func (b *ProbioticsCollection) GetSppList(ctx context.Context) ([]string, error) {
+  b.lock.RLock()
+  defer b.lock.RUnlock()
+
+  return b.probioticSpp, nil
 }
 
 func (p *ProbioticsCollection) adapt(pb *pb.Probiotic) (*ProbioticDoc, error) {

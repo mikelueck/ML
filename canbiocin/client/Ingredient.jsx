@@ -8,6 +8,8 @@ import { Link, useNavigate, useSearchParams } from 'react-router';
 import { Field } from './Field';
 import { ConfirmDialog } from './Dialog';
 import { AlertDialog } from './Dialog';
+import { SppDropdown } from './Dropdowns';
+import { CategoryDropdown } from './Dropdowns';
 
 import { getGrpcClient } from './grpc.js';
 
@@ -37,34 +39,71 @@ function getItemValue(ingredient) {
   return ingredient.item.value
 }
 
-export function Ingredient({type, ingredientId, editable}) {
-  const [isLoading, setIsLoading] = React.useState(true)
-  const [ingredient, setIngredient] = React.useState(null);
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const response = await getGrpcClient().getIngredient({type: type, id: ingredientId});
-        let i = response.ingredient
-
-        setIngredient(i);
-      } catch (error) {
-        setError(error);
-        console.log(error);
-      } finally {
-        setIsLoading(false)
-      }
-    };
-    fetchData();
-  }, [ingredientId]);
-
+export function Ingredient({type, ingredient, editable, handleChange}) {
   if (ingredient == null) {
     return (
         <>
         "Not Found"
         </>
     )
+  }
+
+  const SppFieldOrDropdown = (ingredient, optional, editable) => {
+    let value = getItemValue(ingredient).spp
+
+    if (optional && !value) {
+      return null
+    }
+
+    if (editable) {
+      return (
+        <SppDropdown
+          defaultValue={value} />
+      )
+    } else {
+      return (
+      <Field
+          id='spp'
+          label='Spp' 
+          defaultValue={value}
+          editable={editable}
+          size="small"
+          variant="standard"
+      />)
+    }
+  }
+
+  const CategoryFieldOrDropdown = (ingredient, optional, editable) => {
+    let value = getItemValue(ingredient).category
+
+    if (optional && !value) {
+      return null
+    }
+
+    if (editable) {
+      return (
+        <CategoryDropdown
+          defaultValue={value} />
+      )
+    } else {
+      return (
+      <Field
+          id='category'
+          label='Category' 
+          defaultValue={value}
+          editable={editable}
+          size="small"
+          variant="standard"
+      />)
+    }
+  }
+
+  const validateIngredient() {
+  }
+
+  const updateIngredient = (f) => {
+    f()
+    validateIngredient()
   }
 
   return (
@@ -75,18 +114,11 @@ export function Ingredient({type, ingredientId, editable}) {
           label='ID' 
           defaultValue={getItemValue(ingredient).id}
           size="small"
+          optional
           variant="standard"
       />
       {/* Probiotics */}
-      <Field
-          id='spp'
-          label='Spp' 
-          defaultValue={getItemValue(ingredient).spp}
-          optional
-          editable={editable}
-          size="small"
-          variant="standard"
-      />
+      {SppFieldOrDropdown(ingredient, true, editable)}
       <Field
           id='strain'
           label='Strain' 
@@ -97,15 +129,7 @@ export function Ingredient({type, ingredientId, editable}) {
           variant="standard"
       />
       {/* Prebiotics & Postbiotics */}
-      <Field
-          id='category'
-          label='Category' 
-          defaultValue={getItemValue(ingredient).category}
-          optional
-          editable={editable}
-          size="small"
-          variant="standard"
-      />
+      {CategoryFieldOrDropdown(ingredient, true, editable)}
       <Field
           id='name'
           label='Name' 
@@ -169,6 +193,7 @@ export function Ingredient({type, ingredientId, editable}) {
           editable={editable}
           size="small"
           units="%"
+          onChange={updateIngredient('markup_percent', event.target.value)}
           variant="standard"
       />
     </Grid>
@@ -206,6 +231,10 @@ export function IngredientDialog() {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const [ingredient, setIngredient] = React.useState(null);
+  const [updatedIngredient, setUpdatedIngredient] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(true)
+
   const ingredientId = searchParams.get('ingredientId')
   const type = searchParams.get('type')
   const navigate = useNavigate();
@@ -221,6 +250,10 @@ export function IngredientDialog() {
 
   const handleClose = () => () => {
     navigate(-1);
+  }
+
+  const handleIngredientChange = (ingredient) => {
+    setUpdatedIngredient(ingredient)
   }
 
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false)
@@ -261,6 +294,24 @@ export function IngredientDialog() {
     };
     deleteIngredient();
   }, [isDeleting, ingredientId]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await getGrpcClient().getIngredient({type: type, id: ingredientId});
+        let i = response.ingredient
+
+        setIngredient(i);
+      } catch (error) {
+        setError(error);
+        console.log(error);
+      } finally {
+        setIsLoading(false)
+      }
+    };
+    fetchData();
+  }, [ingredientId]);
 
 
   const handleDeleteConfirm = () => {
@@ -315,7 +366,7 @@ export function IngredientDialog() {
 
       </Toolbar>
     </AppBar>
-    <Ingredient type={type} ingredientId={ingredientId} editable={editable} />
+    <Ingredient type={type} ingredient={ingredient} editable={editable} handleChange={handleIngredientChange} />
     </>
   )
 }

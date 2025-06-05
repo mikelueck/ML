@@ -21,6 +21,7 @@ webpack_bundle(
       ".babelrc",
       "App.jsx",
       "Dialog.jsx",
+      "Dropdowns.jsx",
       "Field.jsx",
       "grpc.js",
       "timestamp.js",

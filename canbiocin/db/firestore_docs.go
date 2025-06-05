@@ -60,6 +60,7 @@ func NewPostbioticDoc(msg *pb.Postbiotic) (*PostbioticDoc, error) {
 // PrebioticDoc wraps a prebiotic document for Firestore storage
 type PrebioticDoc struct {
 	ID         string `firestore:"id"`
+	Category   string `firestore:"category"`
 	Name       string `firestore:"name"`
 	ProtoBytes []byte `firestore:"proto_bytes"`
 }
@@ -67,6 +68,11 @@ type PrebioticDoc struct {
 // GetID returns the document ID
 func (d *PrebioticDoc) GetID() string {
 	return d.ID
+}
+
+// GetCategory returns the category
+func (d *PrebioticDoc) GetCategory() string {
+	return d.Category
 }
 
 // GetProtoBytes returns the raw proto bytes
@@ -96,6 +102,7 @@ func NewPrebioticDoc(msg *pb.Prebiotic) (*PrebioticDoc, error) {
 	}
 	return &PrebioticDoc{
 		ID:         msg.GetId(),
+		Category:   msg.GetCategory(),
 		Name:       msg.GetName(),
 		ProtoBytes: bytes,
 	}, nil
@@ -104,6 +111,7 @@ func NewPrebioticDoc(msg *pb.Prebiotic) (*PrebioticDoc, error) {
 // ProbioticDoc wraps a probiotic document for Firestore storage
 type ProbioticDoc struct {
 	ID         string `firestore:"id"`
+	Spp        string `firestore:"spp"`
 	Name       string `firestore:"name"`
 	ProtoBytes []byte `firestore:"proto_bytes"`
 }
@@ -132,6 +140,11 @@ func (d *ProbioticDoc) GetName() string {
 	return d.Name
 }
 
+// GetName returns the document name
+func (d *ProbioticDoc) GetSpp() string {
+	return d.Spp
+}
+
 // NewProbioticDoc creates a new ProbioticDoc from a proto message
 func NewProbioticDoc(msg *pb.Probiotic) (*ProbioticDoc, error) {
 	bytes, err := proto.Marshal(msg)
@@ -140,6 +153,7 @@ func NewProbioticDoc(msg *pb.Probiotic) (*ProbioticDoc, error) {
 	}
 	return &ProbioticDoc{
 		ID:         msg.GetId(),
+    Spp:        msg.GetSpp(),
 		Name:       msg.GetStrain(),
 		ProtoBytes: bytes,
 	}, nil
