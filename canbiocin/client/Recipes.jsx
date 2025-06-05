@@ -6,6 +6,7 @@ import { Box, Tooltip } from '@mui/material';
 
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import Fab from '@mui/material/Fab';
 
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -203,6 +204,9 @@ export function Recipes() {
         pageSizeOptions={[20]}
       />
     </Box>
+    <Fab color='primary' sx={{position:'absolute', bottom: 16, right: 16,}}>
+      <AddIcon />
+    </Fab>
     </>
   )
 }

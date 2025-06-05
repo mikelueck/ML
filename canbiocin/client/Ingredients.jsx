@@ -9,6 +9,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
+import Fab from '@mui/material/Fab';
 
 import { Link } from 'react-router';
 
@@ -140,6 +141,7 @@ export function Ingredients() {
   ];
 
   return (
+    <>
     <Box sx={{ height: 800, width: '100%' }}>
       <DataGrid
         onCellDoubleClick={(params, event) => {
@@ -164,5 +166,9 @@ export function Ingredients() {
         }}
       />
     </Box>
+    <Fab color='primary' sx={{position:'absolute', bottom: 16, right: 16,}}>
+      <AddIcon />
+    </Fab>
+    </>
   )
 }
