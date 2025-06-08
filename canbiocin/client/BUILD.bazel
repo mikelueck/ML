@@ -23,6 +23,7 @@ webpack_bundle(
       "Dialog.jsx",
       "Dropdowns.jsx",
       "Field.jsx",
+      "FormItem.jsx",
       "grpc.js",
       "timestamp.js",
       "money.js",

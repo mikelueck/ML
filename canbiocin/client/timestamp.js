@@ -1,3 +1,5 @@
+import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb"
+
 export function timestampToDate(timestamp) {
   if (timestamp) {
     let milliseconds = BigInt(timestamp.seconds) * BigInt(1000) + BigInt(timestamp.nanos / 1000000);
@@ -5,6 +7,10 @@ export function timestampToDate(timestamp) {
   } else {
     return null
   }
+}
+
+export function dateToTimestamp(date) {
+  return Timestamp.fromDate(date)
 }
 
 export function timestampToDateString(timestamp) {

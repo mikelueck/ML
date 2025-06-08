@@ -31,6 +31,7 @@ export function Field(props) {
                       type: props.type,
                       fullWidth: props.fullWidth,
                       onChange: props.onChange,
+                      error: props.error,
                     }
     if (!props.label) {
       textProps.hiddenLabel = true

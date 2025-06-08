@@ -3,9 +3,12 @@ const React = require('React');
 import dayjs from 'dayjs';
 
 import { timestampToDate } from './timestamp.js';
+import { dateToTimestamp } from './timestamp.js';
 import { moneyToString } from './money.js';
+import { floatToMoney } from './money.js';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { Field } from './Field';
+import { FormItem, TEXTFIELD, DROPDOWN, DATEPICKER } from './FormItem';
 import { ConfirmDialog } from './Dialog';
 import { AlertDialog } from './Dialog';
 import { SppDropdown } from './Dropdowns';
@@ -57,19 +60,20 @@ export function Ingredient({type, ingredient, editable, handleChange}) {
 
     if (editable) {
       return (
-        <SppDropdown
-          defaultValue={value} />
+      <NewFormItem
+        field="spp"
+        type={DROPDOWN}
+        renderItem={(params) => (
+          <SppDropdown
+              {...params}
+          />
+        )} 
+      />
       )
     } else {
       return (
-      <Field
-          id='spp'
-          label='Spp' 
-          defaultValue={value}
-          editable={editable}
-          size="small"
-          variant="standard"
-      />)
+      NewFormItem({field:'spp'})
+      )
     }
   }
 
@@ -82,145 +86,158 @@ export function Ingredient({type, ingredient, editable, handleChange}) {
 
     if (editable) {
       return (
-        <CategoryDropdown
-          defaultValue={value} />
+      <NewFormItem
+        field="category"
+        type={DROPDOWN}
+        renderItem={(params) => (
+          <CategoryDropdown
+              {...params}
+          />
+        )} />
       )
     } else {
       return (
-      <Field
-          id='category'
-          label='Category' 
-          defaultValue={value}
-          editable={editable}
-          size="small"
-          variant="standard"
-      />)
+      NewFormItem({field:'category'})
+      )
     }
   }
 
-  const validateIngredient() {
+  let defaultProps = {
+    obj: ingredient,
+    editable: editable,
   }
 
-  const updateIngredient = (f) => {
-    f()
-    validateIngredient()
+  let defaultFieldProps = {
+    ...defaultProps,
+    params: {
+      size: "small",
+      variant: "standard",
+      optional: true,
+    }
   }
+
+  const CapitalizeFirstLetter = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  const NewFormItem = ({field, label, type, units, renderItem, extra_params = {}}) => {
+      if (!renderItem) {
+        renderItem = (params) => (
+            <Field
+                {...params}
+            />
+        )
+      }
+
+      if (label == undefined) {
+        label = CapitalizeFirstLetter(field)
+      }
+
+      let fieldType = 'string';
+      let dollars = false;
+
+      if (type == 'number' || type == 'money') {
+        fieldType = 'number'
+      }
+
+      let getter = (obj) => {return getItemValue(obj)[field]}
+      let setter = (obj, newValue) => {getItemValue(obj)[field] = newValue}
+
+      if (type == 'money') {
+        getter = (obj) => {return moneyToString(getItemValue(obj)[field], 2, true)};
+        setter = (obj, newValue) => {getItemValue(obj)[field] = floatToMoney(newValue)};
+        dollars = true;
+      } else if (type == DATEPICKER) {
+        getter = (obj) => {return dayjs(timestampToDate(getItemValue(obj)[field]))};
+        setter = (obj, newValue) => {getItemValue(obj)[field] = dateToTimestamp(newValue.toDate())};
+
+        renderItem = (params) => (
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker {...params} />
+          </LocalizationProvider>
+        );
+      }
+
+    
+      let props
+      let itemType 
+
+      if (!type || type == 'number' || type == 'money') {
+        props = defaultFieldProps
+        itemType = TEXTFIELD
+      } else {
+        props = defaultProps
+        itemType = type
+      }
+
+
+      let validater
+      if (type == 'number' || type == 'money' || type == DATEPICKER || type == DROPDOWN) {
+        validater=(obj, newValue) => {return newValue && newValue > 0}
+      } else {
+        validater=(obj, newValue) => {return newValue && newValue.length > 0}
+      }
+
+      return (
+      <FormItem
+        type={itemType}
+        {...props}
+        getter={getter}
+        setter={setter}
+        renderItem={renderItem}
+        validater={validater}
+        params={{
+          id: field,
+          label: label,
+          type: fieldType,
+          units: units,
+          dollars:dollars,
+          ...defaultFieldProps.params,
+          ...extra_params,
+        }}
+      />
+      )
+  }
+
 
   return (
     <>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      <Field
-          id='id'
-          label='ID' 
-          defaultValue={getItemValue(ingredient).id}
-          size="small"
-          optional
-          variant="standard"
-      />
+      {NewFormItem({field:'id', extra_params:{editable:false}})}
       {/* Probiotics */}
       {SppFieldOrDropdown(ingredient, true, editable)}
-      <Field
-          id='strain'
-          label='Strain' 
-          defaultValue={getItemValue(ingredient).strain}
-          optional
-          editable={editable}
-          size="small"
-          variant="standard"
-      />
+      {NewFormItem({field:'strain'})}
       {/* Prebiotics & Postbiotics */}
       {CategoryFieldOrDropdown(ingredient, true, editable)}
-      <Field
-          id='name'
-          label='Name' 
-          defaultValue={getItemValue(ingredient).name}
-          optional
-          editable={editable}
-          size="small"
-          variant="standard"
-      />
+      {NewFormItem({field:'name'})}
     </Grid>
     {/* Probiotics */}
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-        <Field
-            id='stock_cfu_g'
-            defaultValue={getItemValue(ingredient).stockCfuG}
-            optional
-            editable={editable}
-            units="M CFU/g"
-            size="small"
-            variant="standard"
-        />
+      {NewFormItem({field:'stockCfuG', label: '', type:'number', units:'M CFU/g'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      <Field
-          id='cost_kg'
-          label='Cost/kg' 
-          defaultValue={moneyToString(getItemValue(ingredient).costKg, 2, true)}
-          optional
-          editable={editable}
-          dollars
-          size="small"
-          variant="standard"
-      />
-      <Field
-          id='cost_shipping_kg'
-          label='Cost+Shipping/kg' 
-          defaultValue={moneyToString(getItemValue(ingredient).costShippingKg, 2, true)}
-          optional
-          editable={editable}
-          dollars
-          size="small"
-          variant="standard"
-      />
+      {NewFormItem({field:'costKg', label: 'Cost / kg', type:'money'})}
+      {NewFormItem({field:'costShippingKg', label: 'Cost+Shipping / kg', type:'money'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <DatePicker 
-      name="most_recent_quote_date" 
-      readOnly={!editable}
-      openTo="day"
-      slotProps={{ textField: { variant: 'standard' } }}
-      views={['year', 'month', 'day']}
-      defaultValue={dayjs(timestampToDate(getItemValue(ingredient).mostRecentQuoteDate))} />
-    </LocalizationProvider>
+      {NewFormItem({
+        field: 'mostRecentQuoteDate', label: 'Most Recent Quote Date',
+        type:DATEPICKER,
+        extra_params: {
+          openTo:"day",
+          slotProps:{ textField: { variant: 'standard' } },
+          readOnly:!editable,
+        }})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      <Field
-          id='markup_percent'
-          label='Markup' 
-          defaultValue={getItemValue(ingredient).markupPercent}
-          editable={editable}
-          size="small"
-          units="%"
-          onChange={updateIngredient('markup_percent', event.target.value)}
-          variant="standard"
-      />
+      {NewFormItem({field:'markupPercent', label: 'Markup', type:'number', units:"%"})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      <Field
-          id='function'
-          label='Function' 
-          defaultValue={getItemValue(ingredient).function}
-          optional
-          editable={editable}
-          size="small"
-          variant="standard"
-      />
+      {NewFormItem({field:'function'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      <Field
-          id='notes'
-          label='Notes' 
-          defaultValue={getItemValue(ingredient).notes}
-          optional={type=="probiotic"}
-          editable={editable}
-          size="small"
-          multiline
-          rows={4}
-          fullWidth
-          variant="standard"
-      />
+      {NewFormItem({field:'function'})}
+      {NewFormItem({field:'notes', extra_params:{optional: false, multiline: true, rows: 4}})}
     </Grid>
     </>
   )
@@ -276,7 +293,6 @@ export function IngredientDialog() {
         let isError = false
         try {
           const response = await getGrpcClient().deleteIngredient({id: ingredientId, type: type});
-          console.log(response)
         } catch (e) {
           isError = true
           setError(e.message);
