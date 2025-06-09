@@ -43,7 +43,7 @@ function getItemValue(ingredient) {
   return ingredient.item.value
 }
 
-export function Ingredient({type, ingredient, editable, handleChange}) {
+export function Ingredient({ingredientType, ingredient, editable, handleChange}) {
   if (ingredient == null) {
     return (
         <>
@@ -52,12 +52,8 @@ export function Ingredient({type, ingredient, editable, handleChange}) {
     )
   }
 
-  const SppFieldOrDropdown = (ingredient, optional, editable) => {
+  const SppFieldOrDropdown = (ingredient, editable) => {
     let value = getItemValue(ingredient).spp
-
-    if (optional && !value) {
-      return null
-    }
 
     if (editable) {
       return (
@@ -78,12 +74,8 @@ export function Ingredient({type, ingredient, editable, handleChange}) {
     }
   }
 
-  const CategoryFieldOrDropdown = (ingredient, optional, editable) => {
+  const CategoryFieldOrDropdown = (ingredient, editable) => {
     let value = getItemValue(ingredient).category
-
-    if (optional && !value) {
-      return null
-    }
 
     if (editable) {
       return (
@@ -113,7 +105,6 @@ export function Ingredient({type, ingredient, editable, handleChange}) {
     params: {
       size: "small",
       variant: "standard",
-      optional: true,
     }
   }
 
@@ -121,8 +112,26 @@ export function Ingredient({type, ingredient, editable, handleChange}) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
+  const commonFields = {  
+    "id": true,
+    "costKg": true,
+    "costShippingKg": true,
+    "supplier" : true,
+    "mostRecentQuoteDate": true,
+    "markupPercent": true,
+  }
+
+  const fieldsByType = {
+    "probiotic": {...commonFields, "spp": true, "strain": true},
+    "prebiotic": {...commonFields, "category": true, "name": true, "function": true, "notes": true},
+    "postbiotic": {...commonFields, "spp": true, "strain": true, "name": true, "bag_size_kg": true, "function": true, "notes": true},
+  }
+
 
   const NewFormItem = ({field, label, type, units, renderItem, extra_params = {}}) => {
+      if (!fieldsByType[ingredientType][field]) {
+        return null
+      }
       if (!renderItem) {
         renderItem = (params) => (
             <Field
@@ -239,8 +248,7 @@ export function Ingredient({type, ingredient, editable, handleChange}) {
       {NewFormItem({field:'function'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {NewFormItem({field:'function'})}
-      {NewFormItem({field:'notes', extra_params:{optional: false, multiline: true, rows: 4}})}
+      {NewFormItem({field:'notes', extra_params:{multiline: true, rows: 4}})}
     </Grid>
     </>
   )
@@ -294,7 +302,6 @@ export function IngredientDialog() {
   const handleDeleteClick = () => () => {
     setDeleteConfirmOpen(true);
   };
-
   const handleDeleteConfirmClose = () => {
     setDeleteConfirmOpen(false);
   }
@@ -418,7 +425,7 @@ export function IngredientDialog() {
 
       </Toolbar>
     </AppBar>
-    <Ingredient type={type} ingredient={editable ? updatedIngredient : ingredient} editable={editable} handleChange={handleIngredientChange} />
+    <Ingredient ingredientType={type} ingredient={editable ? updatedIngredient : ingredient} editable={editable} handleChange={handleIngredientChange} />
     </>
   )
 }
