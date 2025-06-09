@@ -10,9 +10,9 @@ const WIDTH_PADDING=50;
 const DEFAULT_WIDTH = 150 + WIDTH_PADDING;
 
 
-export function SppDropdown({defaultValue, changeOption}) {
+export function SppDropdown({value, changeOption}) {
   const [options, setOptions] = React.useState([]);
-  const [value, setValue] = React.useState(defaultValue);
+  const [v, setV] = React.useState(value);
 
   let id_prefix = "spp"
   let label = "Spp"
@@ -23,7 +23,7 @@ export function SppDropdown({defaultValue, changeOption}) {
     return w
   }
 
-  const [inputWidth, setInputWidth] = React.useState(computeWidth(defaultValue))
+  const [inputWidth, setInputWidth] = React.useState(computeWidth(value))
 
   const updateWidth = (v) => {
     setInputWidth(computeWidth(v))
@@ -46,7 +46,7 @@ export function SppDropdown({defaultValue, changeOption}) {
     if (changeOption) {
        changeOption(newValue);
     }
-    setValue(newValue)
+    setV(newValue)
     updateWidth(newValue)
   }
 
@@ -67,9 +67,9 @@ export function SppDropdown({defaultValue, changeOption}) {
   )
 }
 
-export function CategoryDropdown({defaultValue, changeOption}) {
+export function CategoryDropdown({value, changeOption}) {
   const [options, setOptions] = React.useState([]);
-  const [value, setValue] = React.useState(defaultValue);
+  const [v, setV] = React.useState(value);
 
   let id_prefix = "category"
   let label = "Category"
@@ -80,7 +80,7 @@ export function CategoryDropdown({defaultValue, changeOption}) {
     return w
   }
 
-  const [inputWidth, setInputWidth] = React.useState(computeWidth(defaultValue))
+  const [inputWidth, setInputWidth] = React.useState(computeWidth(value))
 
   const updateWidth = (v) => {
     setInputWidth(computeWidth(v))
@@ -100,10 +100,10 @@ export function CategoryDropdown({defaultValue, changeOption}) {
   }, []);
 
   const handleChange = (event, newValue) => {
-    if (changeOption) {
-       changeOption(newValue);
+    if (onChange) {
+       onChange(newValue);
     }
-    setValue(newValue)
+    setV(newValue)
     updateWidth(newValue)
   }
 

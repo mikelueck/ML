@@ -77,7 +77,10 @@ func (s *server) UpdateIngredient(ctx context.Context, req *pb.UpdateIngredientR
 	if req.GetIngredient().GetPostbiotic() != nil {
 		err = db.GetPostbioticsCollection().Update(ctx, req.GetIngredient().GetPostbiotic())
 	}
-	return nil, status.Error(codes.Unknown, err.Error())
+  if err != nil {
+    return nil, status.Error(codes.Unknown, err.Error())
+  }
+  return nil, nil
 }
 
 func (s *server) DeleteIngredient(ctx context.Context, req *pb.DeleteIngredientRequest) (*pb.DeleteIngredientResponse, error) {

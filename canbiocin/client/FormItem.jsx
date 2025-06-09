@@ -11,10 +11,12 @@ export function FormItem({
   setter,
   validater,
   renderItem,
+  handleIngredientChange,
   editable,
   params,
 }) {
   const [error, setError] = React.useState(false);
+  const [value, setValue] = React.useState(getter(obj));
 
   const handleDatePickerChange = (newValue) => {
     handleBaseChange(newValue)
@@ -27,9 +29,9 @@ export function FormItem({
     if (validater) {
       isError = !validater(obj, newValue)
     }
-    if (!isError) {
-      setter(obj, newValue)
-    }
+    setter(obj, newValue)
+    setValue(getter(obj))
+    handleIngredientChange()
     setError(isError)
   }
 
@@ -53,13 +55,19 @@ export function FormItem({
     }
   }
 
-  let updatedParams = {
-    onChange: handleChange,
-    defaultValue: getter(obj),
-    editable: editable,
-    error: error,
-    ...params,
+  const getParams = () => {
+    if (!editable && error) {
+      setError(false)
+    }
+    let updatedParams = {
+      onChange: handleChange,
+      value: getter(obj),
+      editable: editable,
+      error: error,
+      ...params,
+    }
+    return updatedParams
   }
 
-  return (renderItem(updatedParams))
+  return (renderItem(getParams()))
 }

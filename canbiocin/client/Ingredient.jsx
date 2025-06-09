@@ -2,6 +2,7 @@ const React = require('React');
 
 import dayjs from 'dayjs';
 
+
 import { timestampToDate } from './timestamp.js';
 import { dateToTimestamp } from './timestamp.js';
 import { moneyToString } from './money.js';
@@ -120,6 +121,7 @@ export function Ingredient({type, ingredient, editable, handleChange}) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
+
   const NewFormItem = ({field, label, type, units, renderItem, extra_params = {}}) => {
       if (!renderItem) {
         renderItem = (params) => (
@@ -185,6 +187,7 @@ export function Ingredient({type, ingredient, editable, handleChange}) {
         getter={getter}
         setter={setter}
         renderItem={renderItem}
+        handleIngredientChange={handleChange}
         validater={validater}
         params={{
           id: field,
@@ -257,24 +260,33 @@ export function IngredientDialog() {
   const navigate = useNavigate();
 
   const handleEditClick = () => () => {
+    let clone = structuredClone(ingredient)
+    setUpdatedIngredient(clone)
     setEditable(true)
   };
 
+
   const handleSaveClick = () => () => {
     setEditable(false)
-    alert("implement me")
+    setIsSaving(true)
   };
 
   const handleClose = () => () => {
-    navigate(-1);
+    if (editable) {
+      setEditable(false)
+    } else {
+      navigate(-1);
+    }
   }
 
-  const handleIngredientChange = (ingredient) => {
-    setUpdatedIngredient(ingredient)
+  const handleIngredientChange = () => {
+    setUpdatedIngredient(updatedIngredient)
   }
 
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false)
   const [isDeleting, setIsDeleting] = React.useState(false)
+
+  const [isSaving, setIsSaving] = React.useState(false)
   
   const [errorOpen, setErrorOpen] = React.useState(false)
   const [error, setError] = React.useState("")
@@ -286,6 +298,30 @@ export function IngredientDialog() {
   const handleDeleteConfirmClose = () => {
     setDeleteConfirmOpen(false);
   }
+
+  React.useEffect(() => {
+    const updateIngredient = async () => {
+      if (isSaving) {
+        let isError = false
+        try {
+          const response = await getGrpcClient().updateIngredient({ingredient: updatedIngredient});
+        } catch (e) {
+          isError = true
+          setError(e.message);
+          console.log(e);
+        } finally {
+          setIsSaving(false);
+          if (!isError) {
+            setIngredient(updatedIngredient)
+          } else {
+            setErrorOpen(true);
+          }
+        }
+        setIsSaving(false)
+      }
+    };
+    updateIngredient();
+  }, [isSaving, updatedIngredient]);
 
   React.useEffect(() => {
     const deleteIngredient = async () => {
@@ -382,7 +418,7 @@ export function IngredientDialog() {
 
       </Toolbar>
     </AppBar>
-    <Ingredient type={type} ingredient={ingredient} editable={editable} handleChange={handleIngredientChange} />
+    <Ingredient type={type} ingredient={editable ? updatedIngredient : ingredient} editable={editable} handleChange={handleIngredientChange} />
     </>
   )
 }

@@ -48,6 +48,7 @@ webpack_bundle(
         "//canbiocin/proto:canbiocin_ts_proto",
         "//:node_modules/@connectrpc/connect-web",
         "//:node_modules/@connectrpc/connect",
+        "//:node_modules/@bufbuild/protobuf",
 
         # These are for building the bundle
         "//:node_modules/html-webpack-plugin",

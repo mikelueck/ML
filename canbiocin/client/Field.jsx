@@ -16,13 +16,13 @@ function addInputProp(props, name, value) {
 }
 
 export function Field(props) {
-    if (props.optional && !props.defaultValue) {
+    if (props.optional && !props.value) {
       return null
     }
 
     let textProps = { id: props.id,
                       label: props.label,
-                      defaultValue: props.defaultValue,
+                      value: props.value,
                       sx: props.sx,
                       size: props.size,
                       variant: props.variant,
