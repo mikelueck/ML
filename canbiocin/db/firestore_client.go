@@ -12,9 +12,12 @@ type FireStoreClient struct {
 	client *firestore.Client
 }
 
-func (c *FireStoreClient) Create(ctx context.Context, folder string, doc Document) error {
+func (c *FireStoreClient) Create(ctx context.Context, folder string, doc Document) (string, error) {
 	_, err := c.client.Collection(folder).Doc(doc.GetID()).Create(ctx, doc)
-	return err
+  if err != nil {
+    return "", err
+  }
+	return doc.GetID(), nil
 }
 
 func (c *FireStoreClient) Get(ctx context.Context, folder string, id string, doc Document) error {

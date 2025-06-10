@@ -35,6 +35,7 @@ webpack_bundle(
       "RecipeMix.jsx",
       "public/index.html",
       "Tabs.jsx",
+      "utils.js",
     ],
     output_dir = True,
     webpack_config = "webpack.config.js",

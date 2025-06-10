@@ -32,7 +32,7 @@ type Document interface {
 }
 
 type ClientInterface interface {
-	Create(context.Context, string, Document) error
+	Create(context.Context, string, Document) (string, error)
 	Get(context.Context, string, string, Document) error
 	Update(context.Context, string, Document) error
 	Delete(context.Context, string, string) error
@@ -46,7 +46,7 @@ type DbClient struct {
 	client ClientInterface
 }
 
-func (c *DbClient) Create(ctx context.Context, folder string, doc Document) error {
+func (c *DbClient) Create(ctx context.Context, folder string, doc Document) (string, error) {
 	return c.client.Create(ctx, folder, doc)
 }
 

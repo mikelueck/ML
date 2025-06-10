@@ -21,16 +21,20 @@ type server struct{}
 
 func (s *server) CreateIngredient(ctx context.Context, req *pb.CreateIngredientRequest) (*pb.CreateIngredientResponse, error) {
 	var err error
+  var id string
 	if req.GetIngredient().GetProbiotic() != nil {
-		err = db.GetProbioticsCollection().Create(ctx, req.GetIngredient().GetProbiotic())
+		id, err = db.GetProbioticsCollection().Create(ctx, req.GetIngredient().GetProbiotic())
 	}
 	if req.GetIngredient().GetPrebiotic() != nil {
-		err = db.GetPrebioticsCollection().Create(ctx, req.GetIngredient().GetPrebiotic())
+		id, err = db.GetPrebioticsCollection().Create(ctx, req.GetIngredient().GetPrebiotic())
 	}
 	if req.GetIngredient().GetPostbiotic() != nil {
-		err = db.GetPostbioticsCollection().Create(ctx, req.GetIngredient().GetPostbiotic())
+		id, err = db.GetPostbioticsCollection().Create(ctx, req.GetIngredient().GetPostbiotic())
 	}
-	return nil, status.Error(codes.Unknown, err.Error())
+  if err != nil {
+    return nil, status.Error(codes.Unknown, err.Error())
+  }
+	return &pb.CreateIngredientResponse{Id: id}, nil
 }
 
 func (s *server) GetIngredient(ctx context.Context, req *pb.GetIngredientRequest) (*pb.GetIngredientResponse, error) {
@@ -160,8 +164,11 @@ func (s *server) ListPrebioticCategory(ctx context.Context, req *pb.ListPrebioti
 }
 
 func (s *server) CreateRecipe(ctx context.Context, req *pb.CreateRecipeRequest) (*pb.CreateRecipeResponse, error) {
-	err := db.GetRecipesCollection().Create(ctx, req.GetRecipe())
-	return nil, err
+	id, err := db.GetRecipesCollection().Create(ctx, req.GetRecipe())
+  if err != nil {
+    return nil, err
+  }
+	return &pb.CreateRecipeResponse{Id: id}, nil
 }
 
 func (s *server) GetRecipe(ctx context.Context, req *pb.GetRecipeRequest) (*pb.GetRecipeResponse, error) {

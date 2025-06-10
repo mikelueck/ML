@@ -47,14 +47,14 @@ func NewMockClient() *MockClient {
 	return &MockClient{collections: make(map[string]*Collection)}
 }
 
-func (c *MockClient) Create(ctx context.Context, folder string, doc Document) error {
+func (c *MockClient) Create(ctx context.Context, folder string, doc Document) (string, error) {
 	docs, ok := c.collections[folder]
 	if !ok {
 		docs = newCollection()
 		c.collections[folder] = docs
 	}
 	docs.Add(doc)
-	return nil
+	return doc.GetID(), nil
 }
 
 func copy(from Document, to Document) {

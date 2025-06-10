@@ -10,7 +10,7 @@ import (
 )
 
 type CollectionInterface[ProtoType any, DocType Document] interface {
-	Create(context.Context, *ProtoType) error
+	Create(context.Context, *ProtoType) (string, error)
 	Update(context.Context, *ProtoType) error
 	Delete(context.Context, string) error
 	Get(context.Context, string) (DocType, error)
@@ -44,10 +44,10 @@ func (b *BaseCollection[ProtoType, DocType]) getWrapper() DocType {
 }
 
 // Create adds a new postbiotic to the collection
-func (b *BaseCollection[ProtoType, DocType]) Create(ctx context.Context, p *ProtoType) error {
+func (b *BaseCollection[ProtoType, DocType]) Create(ctx context.Context, p *ProtoType) (string, error) {
 	doc, err := b.adapt(p)
 	if err != nil {
-		return err
+		return "", err
 	}
 	return client.Create(ctx, b.collectionName, doc)
 }

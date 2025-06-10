@@ -14,6 +14,7 @@ import { ConfirmDialog } from './Dialog';
 import { AlertDialog } from './Dialog';
 import { SppDropdown } from './Dropdowns';
 import { CategoryDropdown } from './Dropdowns';
+import { emptyIngredient } from './utils.js';
 
 import { getGrpcClient } from './grpc.js';
 
@@ -43,6 +44,25 @@ function getItemValue(ingredient) {
   return ingredient.item.value
 }
 
+const CapitalizeFirstLetter = (str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+const commonFields = {  
+  "id": true,
+  "costKg": true,
+  "costShippingKg": true,
+  // TODO "supplier" : true,
+  "mostRecentQuoteDate": true,
+  "markupPercent": true,
+}
+
+const fieldsByType = {
+  "probiotic": {...commonFields, "spp": true, "strain": true},
+  "prebiotic": {...commonFields, "category": true, "name": true, "function": true, "notes": true},
+  "postbiotic": {...commonFields, "name": true, "bagSizeKg": true, "function": true, "notes": true},
+}
+
 export function Ingredient({ingredientType, ingredient, editable, handleChange}) {
   if (ingredient == null) {
     return (
@@ -53,8 +73,6 @@ export function Ingredient({ingredientType, ingredient, editable, handleChange})
   }
 
   const SppFieldOrDropdown = (ingredient, editable) => {
-    let value = getItemValue(ingredient).spp
-
     if (editable) {
       return (
       <NewFormItem
@@ -75,8 +93,6 @@ export function Ingredient({ingredientType, ingredient, editable, handleChange})
   }
 
   const CategoryFieldOrDropdown = (ingredient, editable) => {
-    let value = getItemValue(ingredient).category
-
     if (editable) {
       return (
       <NewFormItem
@@ -107,26 +123,6 @@ export function Ingredient({ingredientType, ingredient, editable, handleChange})
       variant: "standard",
     }
   }
-
-  const CapitalizeFirstLetter = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-
-  const commonFields = {  
-    "id": true,
-    "costKg": true,
-    "costShippingKg": true,
-    "supplier" : true,
-    "mostRecentQuoteDate": true,
-    "markupPercent": true,
-  }
-
-  const fieldsByType = {
-    "probiotic": {...commonFields, "spp": true, "strain": true},
-    "prebiotic": {...commonFields, "category": true, "name": true, "function": true, "notes": true},
-    "postbiotic": {...commonFields, "spp": true, "strain": true, "name": true, "bag_size_kg": true, "function": true, "notes": true},
-  }
-
 
   const NewFormItem = ({field, label, type, units, renderItem, extra_params = {}}) => {
       if (!fieldsByType[ingredientType][field]) {
@@ -168,7 +164,6 @@ export function Ingredient({ingredientType, ingredient, editable, handleChange})
           </LocalizationProvider>
         );
       }
-
     
       let props
       let itemType 
@@ -181,17 +176,17 @@ export function Ingredient({ingredientType, ingredient, editable, handleChange})
         itemType = type
       }
 
-
       let validater
-      if (type == 'number' || type == 'money' || type == DATEPICKER || type == DROPDOWN) {
-        validater=(obj, newValue) => {return newValue && newValue > 0}
+      if (type == 'number' || type == 'money' || type == DATEPICKER ) {
+        validater=(obj, newValue) => {return Boolean(newValue && (newValue > 0))}
       } else {
-        validater=(obj, newValue) => {return newValue && newValue.length > 0}
+        validater=(obj, newValue) => {return Boolean(newValue && (newValue.length > 0))}
       }
 
       return (
       <FormItem
         type={itemType}
+        field={field}
         {...props}
         getter={getter}
         setter={setter}
@@ -215,12 +210,12 @@ export function Ingredient({ingredientType, ingredient, editable, handleChange})
   return (
     <>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {NewFormItem({field:'id', extra_params:{editable:false}})}
+      {/*{NewFormItem({field:'id', extra_params:{editable:false}})}*/}
       {/* Probiotics */}
-      {SppFieldOrDropdown(ingredient, true, editable)}
+      {SppFieldOrDropdown(ingredient, editable)}
       {NewFormItem({field:'strain'})}
       {/* Prebiotics & Postbiotics */}
-      {CategoryFieldOrDropdown(ingredient, true, editable)}
+      {CategoryFieldOrDropdown(ingredient, editable)}
       {NewFormItem({field:'name'})}
     </Grid>
     {/* Probiotics */}
@@ -228,6 +223,7 @@ export function Ingredient({ingredientType, ingredient, editable, handleChange})
       {NewFormItem({field:'stockCfuG', label: '', type:'number', units:'M CFU/g'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
+      {NewFormItem({field:'bagSizeKg', label: 'Bag Size (kg)', type:'number'})}
       {NewFormItem({field:'costKg', label: 'Cost / kg', type:'money'})}
       {NewFormItem({field:'costShippingKg', label: 'Cost+Shipping / kg', type:'money'})}
     </Grid>
@@ -254,6 +250,69 @@ export function Ingredient({ingredientType, ingredient, editable, handleChange})
   )
 }
 
+function Delete({ingredientId, ingredientType}) {
+  if (!ingredientId || ingredientId.length == 0) {
+    return null
+  }
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false)
+  const [isDeleting, setIsDeleting] = React.useState(false)
+  const navigate = useNavigate();
+
+  const handleDeleteClick = () => {
+    setDeleteConfirmOpen(true);
+  };
+  const handleDeleteConfirmClose = () => {
+    setDeleteConfirmOpen(false);
+  }
+
+  const handleDeleteConfirm = () => {
+    setIsDeleting(true); // Should trigger useEffect
+  }
+
+  React.useEffect(() => {
+    const deleteIngredient = async () => {
+      if (isDeleting) {
+        let isError = false
+        try {
+          const response = await getGrpcClient().deleteIngredient({id: ingredientId, type: ingredientType});
+        } catch (e) {
+          isError = true
+          setError(e.message);
+          console.log(e);
+        } finally {
+          setIsDeleting(false);
+          setDeleteConfirmOpen(false);
+          if (!isError) {
+            navigate(-1);
+          } else {
+            setErrorOpen(true);
+          }
+        }
+      }
+    };
+    deleteIngredient();
+  }, [isDeleting, ingredientId]);
+
+  return(
+        <>
+        <IconButton
+          edge="end"
+          color="inherit"
+          onClick={handleDeleteClick}
+          aria-label="delete"
+        >
+          <DeleteIcon />
+        </IconButton>
+        <ConfirmDialog
+          title="Delete Ingredient"
+          content="Are you sure you want to delete this ingredient?"
+          open={deleteConfirmOpen}
+          onClose={handleDeleteConfirmClose}
+          onConfirm={handleDeleteConfirm} />
+        </>
+   )
+}
+
 export function IngredientDialog() {
   const [editable, setEditable] = React.useState(false);
 
@@ -263,23 +322,31 @@ export function IngredientDialog() {
   const [updatedIngredient, setUpdatedIngredient] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true)
 
-  const ingredientId = searchParams.get('ingredientId')
-  const type = searchParams.get('type')
+  const [ingredientId, setIngredientId] = React.useState(searchParams.get('ingredientId'))
+
+  const [isAdd, setIsAdd] = React.useState(searchParams.get('add'))
+  const ingredientType = searchParams.get('type')
   const navigate = useNavigate();
 
-  const handleEditClick = () => () => {
+  const handleEditClick = () => {
     let clone = structuredClone(ingredient)
     setUpdatedIngredient(clone)
     setEditable(true)
   };
 
+  const handleSaveClick = () => {
+    // Make sure the object is valid
+    if (Object.values(formValid.current).every(isValid => isValid)) {
+      setEditable(false)
+      setIsSaving(true)
+    } else {
+      setError("Please check that the fields have appropriate values.")
+      setErrorOpen(true)
+    }
 
-  const handleSaveClick = () => () => {
-    setEditable(false)
-    setIsSaving(true)
   };
 
-  const handleClose = () => () => {
+  const handleClose = () => {
     if (editable) {
       setEditable(false)
     } else {
@@ -287,31 +354,41 @@ export function IngredientDialog() {
     }
   }
 
-  const handleIngredientChange = () => {
+  let refObj = {}
+  Object.keys(fieldsByType[ingredientType]).forEach((key) => {
+    let isValid = false
+    if (key == "id") {
+      // The id field is not editable and doesn't need validation
+      isValid = true
+    }
+    refObj[key] = isValid
+  })
+
+  const formValid = React.useRef(refObj)
+
+  const handleIngredientChange = (key, isValid) => {
+    formValid.current[key] = isValid
     setUpdatedIngredient(updatedIngredient)
   }
-
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false)
-  const [isDeleting, setIsDeleting] = React.useState(false)
 
   const [isSaving, setIsSaving] = React.useState(false)
   
   const [errorOpen, setErrorOpen] = React.useState(false)
   const [error, setError] = React.useState("")
 
-  const handleDeleteClick = () => () => {
-    setDeleteConfirmOpen(true);
-  };
-  const handleDeleteConfirmClose = () => {
-    setDeleteConfirmOpen(false);
-  }
-
   React.useEffect(() => {
     const updateIngredient = async () => {
       if (isSaving) {
         let isError = false
         try {
-          const response = await getGrpcClient().updateIngredient({ingredient: updatedIngredient});
+          if (isAdd) {
+            const response = await getGrpcClient().createIngredient({ingredient: updatedIngredient});
+            setIngredientId(response.id)
+            navigate(`/ingredient?type=${ingredientType}&ingredientId=${response.id}`, { replace: true });
+            setIsAdd(false)
+          } else {
+            const response = await getGrpcClient().updateIngredient({ingredient: updatedIngredient});
+          }
         } catch (e) {
           isError = true
           setError(e.message);
@@ -331,34 +408,25 @@ export function IngredientDialog() {
   }, [isSaving, updatedIngredient]);
 
   React.useEffect(() => {
-    const deleteIngredient = async () => {
-      if (isDeleting) {
-        let isError = false
-        try {
-          const response = await getGrpcClient().deleteIngredient({id: ingredientId, type: type});
-        } catch (e) {
-          isError = true
-          setError(e.message);
-          console.log(e);
-        } finally {
-          setIsDeleting(false);
-          setDeleteConfirmOpen(false);
-          if (!isError) {
-            navigate(-1);
-          } else {
-            setErrorOpen(true);
-          }
-        }
+    const triggerAddEdit = async () => {
+      if (isAdd && ingredient) {
+        // Force us into edit mode
+        handleEditClick()
       }
     };
-    deleteIngredient();
-  }, [isDeleting, ingredientId]);
+    triggerAddEdit()
+  }, [ingredient]);
 
   React.useEffect(() => {
     const fetchData = async () => {
+      if (!ingredientId) {
+        // make empty ingredient
+        setIngredient(emptyIngredient(ingredientType))
+        return
+      }
       setIsLoading(true);
       try {
-        const response = await getGrpcClient().getIngredient({type: type, id: ingredientId});
+        const response = await getGrpcClient().getIngredient({type: ingredientType, id: ingredientId});
         let i = response.ingredient
 
         setIngredient(i);
@@ -373,10 +441,6 @@ export function IngredientDialog() {
   }, [ingredientId]);
 
 
-  const handleDeleteConfirm = () => {
-    setIsDeleting(true); // Should trigger useEffect
-  }
-
   const handleErrorClose = () => {
     setErrorOpen(false)
   }
@@ -389,7 +453,7 @@ export function IngredientDialog() {
         <IconButton
           edge="start"
           color="inherit"
-          onClick={handleClose()}
+          onClick={handleClose}
           aria-label="close"
         >
           <CloseIcon />
@@ -398,25 +462,12 @@ export function IngredientDialog() {
         <IconButton
           edge="end"
           color="inherit"
-          onClick={editable ? handleSaveClick() : handleEditClick() }
+          onClick={editable ? handleSaveClick : handleEditClick }
           aria-label={editable ? "save" : "edit"}
         >
           {editable ? <SaveIcon /> : <EditIcon />}
         </IconButton>
-        <IconButton
-          edge="end"
-          color="inherit"
-          onClick={handleDeleteClick()}
-          aria-label="delete"
-        >
-          <DeleteIcon />
-        </IconButton>
-        <ConfirmDialog
-          title="Delete Ingredient"
-          content="Are you sure you want to delete this ingredient?"
-          open={deleteConfirmOpen}
-          onClose={handleDeleteConfirmClose}
-          onConfirm={handleDeleteConfirm} />
+        <Delete ingredientId={ingredientId} ingredientType={ingredientType} />
         <AlertDialog
           title="Error"
           content={error}
@@ -425,7 +476,7 @@ export function IngredientDialog() {
 
       </Toolbar>
     </AppBar>
-    <Ingredient ingredientType={type} ingredient={editable ? updatedIngredient : ingredient} editable={editable} handleChange={handleIngredientChange} />
+    <Ingredient ingredientType={ingredientType} ingredient={editable ? updatedIngredient : ingredient} editable={editable} handleChange={handleIngredientChange} />
     </>
   )
 }

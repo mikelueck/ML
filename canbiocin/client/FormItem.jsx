@@ -6,6 +6,7 @@ export const DATEPICKER = "DatePicker";
 
 export function FormItem({
   obj,
+  field,
   type,  // TextField, Dropdown, Datepicker
   getter,
   setter,
@@ -15,7 +16,12 @@ export function FormItem({
   editable,
   params,
 }) {
-  const [error, setError] = React.useState(false);
+  const isValid = () => {
+    let v = validater(obj, getter(obj))
+    return validater(obj, getter(obj))
+  }
+
+  const [error, setError] = React.useState(!isValid())
   const [value, setValue] = React.useState(getter(obj));
 
   const handleDatePickerChange = (newValue) => {
@@ -31,9 +37,18 @@ export function FormItem({
     }
     setter(obj, newValue)
     setValue(getter(obj))
-    handleIngredientChange()
+    handleIngredientChange(field, !isError)
     setError(isError)
   }
+
+  // Initialize the error state
+  React.useEffect(() => {
+    const initErrorState = async () => {
+      handleIngredientChange(field, isValid())
+    };
+    initErrorState()
+  })
+  
 
   const handleDropdownChange = (newValue) => {
     handleBaseChange(newValue)
@@ -49,21 +64,18 @@ export function FormItem({
     if (type == TEXTFIELD) {
       handleFieldChange(a)
     } else if (type == DROPDOWN) {
-      handleDropdownChange(b)
+      handleDropdownChange(a)
     } else if (type == DATEPICKER) {
       handleDatePickerChange(a)
     }
   }
 
   const getParams = () => {
-    if (!editable && error) {
-      setError(false)
-    }
     let updatedParams = {
       onChange: handleChange,
       value: getter(obj),
       editable: editable,
-      error: error,
+      error: !editable ? false : error,
       ...params,
     }
     return updatedParams

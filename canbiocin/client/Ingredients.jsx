@@ -1,4 +1,5 @@
 const React = require('React');
+import { useNavigate } from 'react-router';
 import { timestampToDate } from './timestamp.js';
 import { timestampToDateString } from './timestamp.js';
 import { moneyToString } from './money.js';
@@ -10,6 +11,8 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import Fab from '@mui/material/Fab';
+
+import { OptionDialog } from './Dialog';
 
 import { Link } from 'react-router';
 
@@ -38,6 +41,8 @@ function getRowId(row) {
 export function Ingredients() {
   const [isLoading, setIsLoading] = React.useState(true)
   const [rows, setRows] = React.useState([]);
+
+  const navigate = useNavigate();
 
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -140,6 +145,26 @@ export function Ingredients() {
     },
   ];
 
+  const onClickAdd = () => {
+    setOpenAdd(true)
+  }
+
+  const [openAdd, setOpenAdd] = React.useState(false)
+  const [addType, setAddType] = React.useState("")
+
+  const CloseAdd = () => {
+    setOpenAdd(false)
+  }
+
+  const TypeSelect = (ingredientType) => {
+    setAddType(ingredientType)
+  }
+
+  const DoAdd = () => {
+    setOpenAdd(false)
+    navigate(`/ingredient?add=true&type=${addType}`);
+  }
+
   return (
     <>
     <Box sx={{ height: 800, width: '100%' }}>
@@ -166,7 +191,23 @@ export function Ingredients() {
         }}
       />
     </Box>
-    <Fab color='primary' sx={{position:'absolute', bottom: 16, right: 16,}}>
+    <OptionDialog
+      title="What type of ingredient?"
+      content="Please select the type of ingredient you'd like to add."
+      options={[
+        {label: "Prebiotic", id:"prebiotic"},
+        {label: "Probiotic", id:"probiotic"},
+        {label: "Postbiotic", id:"postbiotic"},
+        ]}
+      open={openAdd}
+      onClose={CloseAdd}
+      onSelect={TypeSelect}
+      onConfirm={DoAdd}
+    />
+    <Fab 
+      color='primary' 
+      sx={{position:'absolute', bottom: 16, right: 16,}}
+      onClick={onClickAdd}>
       <AddIcon />
     </Fab>
     </>
