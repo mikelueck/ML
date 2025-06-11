@@ -1,15 +1,7 @@
 const React = require('React');
 
-import dayjs from 'dayjs';
-
-
-import { timestampToDate } from './timestamp.js';
-import { dateToTimestamp } from './timestamp.js';
-import { moneyToString } from './money.js';
-import { floatToMoney } from './money.js';
 import { Link, useNavigate, useSearchParams } from 'react-router';
-import { Field } from './Field';
-import { FormItem, TEXTFIELD, DROPDOWN, DATEPICKER } from './FormItem';
+import { NewFormItem, PropsProvider, DROPDOWN, DATEPICKER } from './FormItem';
 import { ConfirmDialog } from './Dialog';
 import { AlertDialog } from './Dialog';
 import { SppDropdown } from './Dropdowns';
@@ -31,9 +23,6 @@ import { AppBar,
          Tooltip,
          Typography } from '@mui/material';
 
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
@@ -42,10 +31,6 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 
 function getItemValue(ingredient) {
   return ingredient.item.value
-}
-
-const CapitalizeFirstLetter = (str) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 const commonFields = {  
@@ -72,10 +57,12 @@ export function Ingredient({ingredientType, ingredient, editable, handleChange})
     )
   }
 
+  const allowed_fields = fieldsByType[ingredientType]
+
   const SppFieldOrDropdown = (ingredient, editable) => {
     if (editable) {
       return (
-      <NewFormItem
+      <MyNewFormItem
         field="spp"
         type={DROPDOWN}
         renderItem={(params) => (
@@ -87,7 +74,7 @@ export function Ingredient({ingredientType, ingredient, editable, handleChange})
       )
     } else {
       return (
-      NewFormItem({field:'spp'})
+      MyNewFormItem({field:'spp'})
       )
     }
   }
@@ -95,7 +82,7 @@ export function Ingredient({ingredientType, ingredient, editable, handleChange})
   const CategoryFieldOrDropdown = (ingredient, editable) => {
     if (editable) {
       return (
-      <NewFormItem
+      <MyNewFormItem
         field="category"
         type={DROPDOWN}
         renderItem={(params) => (
@@ -106,130 +93,44 @@ export function Ingredient({ingredientType, ingredient, editable, handleChange})
       )
     } else {
       return (
-      NewFormItem({field:'category'})
+      MyNewFormItem({field:'category'})
       )
     }
   }
 
-  let defaultProps = {
-    obj: ingredient,
-    editable: editable,
-  }
 
-  let defaultFieldProps = {
-    ...defaultProps,
-    params: {
-      size: "small",
-      variant: "standard",
-    }
-  }
-
-  const NewFormItem = ({field, label, type, units, renderItem, extra_params = {}}) => {
-      if (!fieldsByType[ingredientType][field]) {
+  const MyNewFormItem = ({field, label, type, units, renderItem, extra_params = {}}) => {
+      if (!allowed_fields[field]) {
         return null
       }
-      if (!renderItem) {
-        renderItem = (params) => (
-            <Field
-                {...params}
-            />
-        )
-      }
-
-      if (label == undefined) {
-        label = CapitalizeFirstLetter(field)
-      }
-
-      let fieldType = 'string';
-      let dollars = false;
-
-      if (type == 'number' || type == 'money') {
-        fieldType = 'number'
-      }
-
-      let getter = (obj) => {return getItemValue(obj)[field]}
-      let setter = (obj, newValue) => {getItemValue(obj)[field] = newValue}
-
-      if (type == 'money') {
-        getter = (obj) => {return moneyToString(getItemValue(obj)[field], 2, true)};
-        setter = (obj, newValue) => {getItemValue(obj)[field] = floatToMoney(newValue)};
-        dollars = true;
-      } else if (type == DATEPICKER) {
-        getter = (obj) => {return dayjs(timestampToDate(getItemValue(obj)[field]))};
-        setter = (obj, newValue) => {getItemValue(obj)[field] = dateToTimestamp(newValue.toDate())};
-
-        renderItem = (params) => (
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker {...params} />
-          </LocalizationProvider>
-        );
-      }
-    
-      let props
-      let itemType 
-
-      if (!type || type == 'number' || type == 'money') {
-        props = defaultFieldProps
-        itemType = TEXTFIELD
-      } else {
-        props = defaultProps
-        itemType = type
-      }
-
-      let validater
-      if (type == 'number' || type == 'money' || type == DATEPICKER ) {
-        validater=(obj, newValue) => {return Boolean(newValue && (newValue > 0))}
-      } else {
-        validater=(obj, newValue) => {return Boolean(newValue && (newValue.length > 0))}
-      }
-
-      return (
-      <FormItem
-        type={itemType}
-        field={field}
-        {...props}
-        getter={getter}
-        setter={setter}
-        renderItem={renderItem}
-        handleIngredientChange={handleChange}
-        validater={validater}
-        params={{
-          id: field,
-          label: label,
-          type: fieldType,
-          units: units,
-          dollars:dollars,
-          ...defaultFieldProps.params,
-          ...extra_params,
-        }}
-      />
-      )
+      let props_provider = PropsProvider(getItemValue(ingredient), editable, handleChange)
+      return NewFormItem({field, label, type, units, renderItem, props_provider, extra_params});
   }
-
 
   return (
     <>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {/*{NewFormItem({field:'id', extra_params:{editable:false}})}*/}
+      {/*{MyNewFormItem({field:'id', extra_params:{editable:false}})}*/}
       {/* Probiotics */}
       {SppFieldOrDropdown(ingredient, editable)}
-      {NewFormItem({field:'strain'})}
+      {MyNewFormItem({field:'strain'})}
       {/* Prebiotics & Postbiotics */}
       {CategoryFieldOrDropdown(ingredient, editable)}
-      {NewFormItem({field:'name'})}
+      {MyNewFormItem({field:'name'})}
     </Grid>
     {/* Probiotics */}
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {NewFormItem({field:'stockCfuG', label: '', type:'number', units:'M CFU/g'})}
+      {MyNewFormItem({field:'stockCfuG', label: '', type:'number', units:'M CFU/g'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {NewFormItem({field:'bagSizeKg', label: 'Bag Size (kg)', type:'number'})}
-      {NewFormItem({field:'costKg', label: 'Cost / kg', type:'money'})}
-      {NewFormItem({field:'costShippingKg', label: 'Cost+Shipping / kg', type:'money'})}
+      {MyNewFormItem({field:'bagSizeKg', label: 'Bag Size (kg)', type:'number'})}
+      {MyNewFormItem({field:'costKg', label: 'Cost / kg', type:'money'})}
+      {MyNewFormItem({field:'costShippingKg', label: 'Cost+Shipping / kg', type:'money'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {NewFormItem({
-        field: 'mostRecentQuoteDate', label: 'Most Recent Quote Date',
+      {MyNewFormItem({
+        field: 'mostRecentQuoteDate', 
+        label: 'Most Recent Quote Date',
         type:DATEPICKER,
         extra_params: {
           openTo:"day",
@@ -238,13 +139,17 @@ export function Ingredient({ingredientType, ingredient, editable, handleChange})
         }})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {NewFormItem({field:'markupPercent', label: 'Markup', type:'number', units:"%"})}
+      {MyNewFormItem({
+        field:'markupPercent', 
+        label: 'Markup', 
+        type:'number', 
+        units:"%"})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {NewFormItem({field:'function'})}
+      {MyNewFormItem({field:'function'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {NewFormItem({field:'notes', extra_params:{multiline: true, rows: 4}})}
+      {MyNewFormItem({field:'notes', extra_params:{multiline: true, rows: 4}})}
     </Grid>
     </>
   )

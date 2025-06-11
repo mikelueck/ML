@@ -1,4 +1,5 @@
 const React = require('React');
+import { useNavigate } from 'react-router';
 import { timestampToDate } from './timestamp.js';
 import { moneyToString } from './money.js';
 
@@ -46,7 +47,6 @@ export function IngredientFilterSelect({changeFilterValue, ingredientFilter}) {
     }
     changeFilterValue(value)
     setValue(newValue)
-    
   }
 
   React.useEffect(() => {
@@ -135,6 +135,12 @@ export function Recipes() {
   const handleFilterChange = (value) => {
     setIngredientFilter(value)
   }
+    
+  const navigate = useNavigate();
+    
+  const onClickAdd = () => {
+    navigate(`/recipe?add=true`);
+  }
 
   React.useEffect(() => {
     const fetchRecipes = async () => {
@@ -204,7 +210,10 @@ export function Recipes() {
         pageSizeOptions={[20]}
       />
     </Box>
-    <Fab color='primary' sx={{position:'absolute', bottom: 16, right: 16,}}>
+    <Fab 
+      color='primary' 
+      sx={{position:'absolute', bottom: 16, right: 16,}}
+      onClick={onClickAdd}>
       <AddIcon />
     </Fab>
     </>

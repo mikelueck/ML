@@ -20,6 +20,7 @@ webpack_bundle(
     srcs = [
       ".babelrc",
       "App.jsx",
+      "DataGridEditToolbar.jsx",
       "Dialog.jsx",
       "Dropdowns.jsx",
       "Field.jsx",
