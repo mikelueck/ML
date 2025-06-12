@@ -21,6 +21,10 @@ const theme = createTheme({
     primary: {
       main: "rgb(116,160,63)",
     },
+    error: {
+      main: "rgb(255,204,204)",
+      contrastText: "rgb(0,0,0)", 
+    }
   },
 });
 

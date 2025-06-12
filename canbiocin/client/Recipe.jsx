@@ -6,6 +6,8 @@ import { moneyToString } from './money.js';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { ConfirmDialog } from './Dialog';
 import { AlertDialog } from './Dialog';
+import { getNameForIngredient } from './utils.js';
+import { verifyIngredient } from './utils.js';
 
 import { getGrpcClient } from './grpc.js';
 
@@ -42,17 +44,24 @@ import { DataGrid,
 } from '@mui/x-data-grid';
 
 function getItemValue(row) {
-  return row.item
+  return row.item.value
 }
 
 function getRowId(row) {
   return getItemValue(row).id
 }
 
-const validateNumber = (params) => {
+const validateNumber = (f) => (params) => {
+  const field = f;
   const hasError = params.props.value <= 0;
+  let msg = ""
   if (hasError) {
-    return {...params.props, error: "Must be greater than 0"}
+    msg = "Must be greater than 0"
+  } else {
+    msg = verifyIngredient(params.row, field, params.props.value) 
+  }
+  if (msg) {
+    return {...params.props, error: msg}
   } else {
     return {...params.props, error: false}
   }
@@ -61,20 +70,25 @@ const validateNumber = (params) => {
 const renderEditCell = (params) => {
   const { error } = params;
   return (
-    <Tooltip open={!!error} title={error} arrow >
+    <>
     <GridEditInputCell {...params}/>
-    </Tooltip>
+    <Tooltip open={!!error} title={error} arrow />
+    </>
   )
 }
 
-const probioticColumns = (editable) => {return [
-  { field: 'strain',
+const editNameField = "edittedName";
+
+const probioticColumns = (editable, nameOptions) => {return [
+  { field: editNameField,
     headerName: 'Strain', 
-    editable: false, 
+    editable: editable, 
     sortable:true,
     valueGetter: (value, row) => {
       return getItemValue(row).strain;
     },
+    valueOptions: nameOptions,
+    type: "singleSelect",
     flex: 4,
     renderHeader: () => (
       <strong>{'Strain'}</strong>
@@ -98,7 +112,7 @@ const probioticColumns = (editable) => {return [
     valueGetter: (value, row) => {
       return row.cfuG
     },
-    preProcessEditCellProps: validateNumber,
+    preProcessEditCellProps: validateNumber('cfuG'),
     renderEditCell: renderEditCell,
     flex: 1,
     type: 'number',
@@ -108,14 +122,16 @@ const probioticColumns = (editable) => {return [
   },
 ]};
 
-const prebioticColumns = (editable) => {return [
-  { field: 'name',
+const prebioticColumns = (editable, nameOptions) => {return [
+  { field: editNameField,
     headerName: 'Name', 
-    editable: false, 
+    editable: editable, 
     sortable:true,
     valueGetter: (value, row) => {
       return getItemValue(row).name;
     },
+    valueOptions: nameOptions,
+    type: "singleSelect",
     flex: 4,
     renderHeader: () => (
       <strong>{'Name'}</strong>
@@ -124,7 +140,7 @@ const prebioticColumns = (editable) => {return [
   { field: 'mgServing', 
     headerName: 'mg / Serving', 
     editable: editable,
-    preProcessEditCellProps: validateNumber,
+    preProcessEditCellProps: validateNumber('mgServing'),
     renderEditCell: renderEditCell,
     type: 'number',
     valueGetter: (value, row) => {
@@ -174,13 +190,18 @@ function IngredientRows({title, columnDef, editable, ingredients, setIngredients
   )
 }
 
-export function Recipe({recipe, editable, actionColumns, rowModels, handleChange}) {
-  if (recipe == null) {
-    return (
-        <>
-        "Not Found"
-        </>
-    )
+export function Recipe({recipe, editable, ingredientsByType, actionColumns, rowModels, handleChange}) {
+
+  const getNamesForType = (type) => {
+    let names = [];
+    if (editable) {
+      if (ingredientsByType.has(type)) {
+        for (let i = 0; i < ingredientsByType.get(type).length; i++) {
+          names.push(getNameForIngredient(ingredientsByType.get(type)[i]))
+        }
+      }
+    }
+    return names.sort()
   }
 
   const MyNewFormItem = ({field, label, type, units, renderItem, extra_params = {}}) => {
@@ -193,6 +214,15 @@ export function Recipe({recipe, editable, actionColumns, rowModels, handleChange
     // basically we are trying to add a new row here
   }
 
+  if (recipe == null) {
+    return (
+        <>
+        "Not Found"
+        </>
+    )
+  }
+
+
   return (
     <>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }}spacing={2}>
@@ -203,7 +233,7 @@ export function Recipe({recipe, editable, actionColumns, rowModels, handleChange
       </Grid>
       <IngredientRows 
           title="Probiotics" 
-          columnDef={probioticColumns(editable).concat(actionColumns(editable, rowModels.probiotics.rowModesModel))} 
+          columnDef={probioticColumns(editable, getNamesForType('probiotic')).concat(actionColumns(editable, rowModels.probiotics.rowModesModel))} 
           editable={editable}
           ingredients={recipe.probiotics}
           setIngredients={setIngredients(recipe.probiotics)}
@@ -215,7 +245,7 @@ export function Recipe({recipe, editable, actionColumns, rowModels, handleChange
       />
       <IngredientRows 
           title="Prebiotics" 
-          columnDef={prebioticColumns(editable).concat(actionColumns(editable, rowModels.prebiotics.rowModesModel))} 
+          columnDef={prebioticColumns(editable, getNamesForType('prebiotic')).concat(actionColumns(editable, rowModels.prebiotics.rowModesModel))} 
           editable={editable}
           ingredients={recipe.prebiotics}
           setIngredients={setIngredients(recipe.probiotics)}
@@ -227,7 +257,7 @@ export function Recipe({recipe, editable, actionColumns, rowModels, handleChange
       />
       <IngredientRows 
           title="Postbiotics" 
-          columnDef={prebioticColumns(editable).concat(actionColumns(editable, rowModels.prebiotics.rowModesModel))} 
+          columnDef={prebioticColumns(editable, getNamesForType('postbiotic')).concat(actionColumns(editable, rowModels.prebiotics.rowModesModel))} 
           editable={editable}
           ingredients={recipe.postbiotics}
           setIngredients={setIngredients(recipe.probiotics)}
@@ -242,7 +272,7 @@ export function Recipe({recipe, editable, actionColumns, rowModels, handleChange
   )
 }
 
-function Delete({recipeId}) {
+function Delete({recipeId, setError, setErrorOpen}) {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false)
   const [isDeleting, setIsDeleting] = React.useState(false)
 
@@ -316,16 +346,49 @@ export function RecipeDialog() {
   const [recipe, setRecipe] = React.useState(null);
   const [updatedRecipe, setUpdatedRecipe] = React.useState(null);
 
+  const [ingredientsByType, setIngredientsByType] = React.useState(new Map());
+  const [ingredientsByName, setIngredientsByName] = React.useState(new Map());
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await getGrpcClient().listIngredients({});
+        let typeMap = new Map()
+        let nameMap = new Map()
+        for (let i = 0; i < response.ingredients.length; i++) {
+          let type = response.ingredients[i].item.case
+          let value = response.ingredients[i]
+
+          if (!typeMap.has(type)) {
+            typeMap.set(type, []);
+          }
+          typeMap.get(type).push(value)
+
+          nameMap.set(getNameForIngredient(response.ingredients[i]), value);
+        }
+        setIngredientsByType(typeMap)
+        setIngredientsByName(nameMap)
+      } catch (error) {
+        setError(error);
+        setErrorOpen(true)
+        console.log(error);
+      } finally {
+        setIsLoading(false)
+      }
+    };
+    fetchData();
+  }, []);
+
   const[probioticRowModesModel, setProbioticRowModesModel] = React.useState({});
   const[prebioticRowModesModel, setPrebioticRowModesModel] = React.useState({});
   const[postbioticRowModesModel, setPostbioticRowModesModel] = React.useState({});
 
   const handleRowDeleteClick = (id) => () => {
-    console.log("RowDelete implement me")
     let r = updatedRecipe
 
     for (let i = 0; i < r.probiotics.length; i++) {
-      if (r.probiotics[i].item.id == id) {
+      if (getItemValue(r.probiotics[i]).id == id) {
         // Can probably do something better here than copying things around
         let clone = structuredClone(r)
         clone.id = "handleRowDelete"
@@ -335,7 +398,7 @@ export function RecipeDialog() {
       }
     }
     for (let i = 0; i < r.prebiotics.length; i++) {
-      if (r.prebiotics[i].item.id == id) {
+      if (getItemValue(r.prebiotics[i]).id == id) {
         let clone = structuredClone(r)
         clone.id = "handleRowDelete"
         clone.prebiotics.splice(i, 1)
@@ -344,7 +407,7 @@ export function RecipeDialog() {
       }
     }
     for (let i = 0; i < r.postbiotics.length; i++) {
-      if (r.postbiotics[i].item.id == id) {
+      if (getItemValue(r.postbiotics[i]).id == id) {
         let clone = structuredClone(r)
         clone.id = "handleRowDelete"
         clone.postbiotics.splice(i, 1)
@@ -434,14 +497,58 @@ export function RecipeDialog() {
     }
   }
 
+  const verifyRecipe = (recipe) => {
+    // A few rules
+    // You can't use the same ingredient more than once
+    // Probiotics: desired CFU can't be more than Stock CFU
+    // Others: mgPerServing can be greater than 1000 (assumes 1g per serving)
+    let map = [];
+    let ingredients = [].concat(recipe.probiotics, recipe.prebiotics, recipe.postbiotics);
+    let ingredientMsg
+    for (let i = 0; i < ingredients.length; i++) {
+      let name = getNameForIngredient(ingredients[i])
+      if (map?.[name]) {
+        setError(`Your recipe is using "${name}" more than once.`)
+        setErrorOpen(true)
+        return false
+      }
+      map[name] = true
+      ingredientMsg = verifyIngredient(ingredients[i])
+    }
+    if (ingredientMsg) {
+      setError(ingredientMsg)
+      setErrorOpen(true)
+      return false
+    }
+    return true
+  }
+
   const processRowUpdate = (newRow) => {
     // Can probably do something better here than copying things around
     let clone = structuredClone(updatedRecipe);
     let [ingredients, index] = findIngredientForRow(clone, newRow);
 
     if (ingredients && index >= 0 && index < ingredients.length) {
+      let oldIngredient;
+
+      if (newRow[editNameField] && newRow[editNameField] != getNameForIngredient(ingredients[index])) {
+        // They changed the type of the ingredient
+        let updatedIngredient = ingredientsByName.get(newRow[editNameField])
+        if (updatedIngredient) {
+          oldIngredient = ingredients[index]
+          newRow.item = updatedIngredient.item
+          delete newRow[editNameField]
+        } else {
+          console.log(`An ingredient was selected but we couldn't find it ${newRow[editNameField]}`);
+        }
+      }
       ingredients.splice(index, 1, newRow)
       clone.id = "processRowUpdate"
+      if (!verifyRecipe(clone) && oldIngredient) {
+        // Datagrid behaves badly if two rows have the same id
+        ingredients.splice(index, 1, oldIngredient)
+      }
+      // We update the updatedRecipe even if it isn't valid so that it renders correctly
       setUpdatedRecipe(clone)
     } else {
       console.log(`Couldn't find ingredients to update for ${newRow}`)
@@ -526,7 +633,7 @@ export function RecipeDialog() {
         for (let i = 0; i < r.probiotics.length; i++) {
           for (let j = 0; j < response.probiotics.length; j++) {
             if (response.probiotics[j].id == r.probiotics[i].item) {
-              r.probiotics[i].item = response.probiotics[j];
+              r.probiotics[i].item = { case: 'probiotic', value: response.probiotics[j]};
               break;
             }
           }
@@ -536,7 +643,7 @@ export function RecipeDialog() {
         for (let i = 0; i < r.prebiotics.length; i++) {
           for (let j = 0; j < response.prebiotics.length; j++) {
             if (response.prebiotics[j].id == r.prebiotics[i].item) {
-              r.prebiotics[i].item = response.prebiotics[j];
+              r.prebiotics[i].item = {case: 'prebiotic', value: response.prebiotics[j]};
               break;
             }
           }
@@ -546,7 +653,7 @@ export function RecipeDialog() {
         for (let i = 0; i < r.postbiotics.length; i++) {
           for (let j = 0; j < response.postbiotics.length; j++) {
             if (response.postbiotics[j].id == r.postbiotics[i].item) {
-              r.postbiotics[i].item = response.postbiotics[j];
+              r.postbiotics[i].item = {case: 'postbiotic', value: response.postbiotics[j]};
               break;
             }
           }
@@ -554,7 +661,8 @@ export function RecipeDialog() {
 
         setRecipe(r);
       } catch (error) {
-        //setError(error);
+        setError(error);
+        setErrorOpen(true);
         console.log(error);
       } finally {
         setIsLoading(false)
@@ -640,7 +748,7 @@ export function RecipeDialog() {
         >
           {editable ? <SaveIcon /> : <EditIcon />}
         </IconButton>
-        <Delete recipeId={recipeId}/>
+        <Delete recipeId={recipeId} setError={setError} setErrorOpen={setErrorOpen}/>
         <AlertDialog
           title="Error"
           content={error}
@@ -651,6 +759,7 @@ export function RecipeDialog() {
     <Recipe 
         recipe={editable ? updatedRecipe : recipe} 
         editable={editable} 
+        ingredientsByType={ingredientsByType}
         actionColumns={actionColumns}
         rowModels={rowModels}
         handleChange={handleChange}
