@@ -44,6 +44,29 @@ export const getNameForIngredient = (i) => {
   }
 }
 
+export const getGroupForIngredient = (i) => {
+  if (!i) {
+    return null
+  }  
+
+  let type = i.item.case
+
+  switch (type) {
+    case 'probiotic':
+      return i.item.value.spp
+      break;
+    case 'prebiotic':
+      return i.item.value.category
+      break
+    case 'postbiotic':
+      return i.item.value.function
+      break;
+    default:
+      alert(`missing type: ${type}`)
+      return null
+  }
+}
+
 export const verifyIngredient = (i, field, newValue) => {
   let type = i.item.case
   let name = getNameForIngredient(i)

@@ -7,6 +7,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router';
 import { ConfirmDialog } from './Dialog';
 import { AlertDialog } from './Dialog';
 import { getNameForIngredient } from './utils.js';
+import { getGroupForIngredient } from './utils.js';
 import { verifyIngredient } from './utils.js';
 import { emptyIngredientForType } from "./utils.js";
 import { emptyRecipe } from "./utils.js";
@@ -350,6 +351,9 @@ export function RecipeHelper({recipe, editable}) {
     <CardContentNoPadding>
     <Field value={computeWeight(true)} label="Weight (including Overage)" units="g" />
     </CardContentNoPadding>
+    <CardContentNoPadding>
+    <Field value={servingSize - computeWeight()} label="Remaining" units="g" />
+    </CardContentNoPadding>
     </Box>
     </Collapse>
     </Card>
@@ -475,6 +479,8 @@ function Delete({recipeId, setError, setErrorOpen}) {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false)
   const [isDeleting, setIsDeleting] = React.useState(false)
 
+  const navigate = useNavigate();
+
   React.useEffect(() => {
     const deleteRecipe = async () => {
       if (isDeleting) {
@@ -580,7 +586,13 @@ export function RecipeDialog() {
         // Sort each type 
         for (const [key, value] of typeMap) {
           if (value) {
-            value.sort((a,b) => getNameForIngredient(a).localeCompare(getNameForIngredient(b)))
+            value.sort((a,b) => {
+              let x = getGroupForIngredient(a).localeCompare(getGroupForIngredient(b))
+              if (x == 0) {
+                return getNameForIngredient(a).localeCompare(getNameForIngredient(b))
+              }
+              return x
+            })
           }
         }
         setIngredientsByType(typeMap)
@@ -919,7 +931,7 @@ export function RecipeDialog() {
 
   const handleChange = (key, isValid) => {
     formValid.current[key] = isValid
-    //setUpdatedIngredient(updatedIngredient)
+    setUpdatedRecipe(updatedRecipe)
   }
 
   const handleEditClick = () => () => {
@@ -928,21 +940,28 @@ export function RecipeDialog() {
     setEditable(true)
   };
 
+  const handleCancelRecipe = () => {
+    setUpdatedRecipe(null)
+    setEditable(false)
+  }
+
   const handleSaveClick = () => () => {
-    const apiRefs = [rowModels.probiotics.apiRef,
-                     rowModels.prebiotics.apiRef,
-                     rowModels.postbiotics.apiRef]
-    for (let i = 0; i < apiRefs.length; i++) {
-      let apiRef = apiRefs[i]
-      let rowsInEditMode = apiRef.current?.state.editRows;
-      if (rowsInEditMode) {
-        Object.keys(rowsInEditMode).forEach((rowId) => {
-          apiRef.current?.stopRowEditMode({id: rowId})
-        })
+    if (Object.values(formValid.current).every(isValid => isValid)) {
+      const apiRefs = [rowModels.probiotics.apiRef,
+                       rowModels.prebiotics.apiRef,
+                       rowModels.postbiotics.apiRef]
+      for (let i = 0; i < apiRefs.length; i++) {
+        let apiRef = apiRefs[i]
+        let rowsInEditMode = apiRef.current?.state.editRows;
+        if (rowsInEditMode) {
+          Object.keys(rowsInEditMode).forEach((rowId) => {
+            apiRef.current?.stopRowEditMode({id: rowId})
+          })
+        }
       }
+      setIsSaving(true)
     }
 
-    setIsSaving(true)
   };
 
   React.useEffect(() => {
@@ -1028,10 +1047,10 @@ export function RecipeDialog() {
         <IconButton
           edge="end"
           color="inherit"
-          onClick={handleCreateRecipe}
-          aria-label={editable ? "save" : "edit"}
+          onClick={editable ? handleCancelRecipe : handleCreateRecipe}
+          aria-label={editable ? "cancel" : "mix"}
         >
-        <BlenderIcon />
+        {editable ? <CancelIcon /> : <BlenderIcon />}
         </IconButton>
         <IconButton
           edge="end"
