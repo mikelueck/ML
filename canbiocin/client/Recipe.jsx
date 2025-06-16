@@ -8,6 +8,7 @@ import { ConfirmDialog } from './Dialog';
 import { AlertDialog } from './Dialog';
 import { getNameForIngredient } from './utils.js';
 import { verifyIngredient } from './utils.js';
+import { emptyIngredientForType } from "./utils.js";
 
 import { getGrpcClient } from './grpc.js';
 
@@ -48,7 +49,10 @@ function getItemValue(row) {
 }
 
 function getRowId(row) {
-  return getItemValue(row).id
+  if (row.item && row.item.value) {
+    return getItemValue(row).id
+  }
+  return row.item
 }
 
 const validateNumber = (f) => (params) => {
@@ -71,8 +75,20 @@ const renderEditCell = (params) => {
   const { error } = params;
   return (
     <>
+    <Tooltip {...params} open={!!error} title={error} arrow placement='top-start' PopperProps={{
+         sx: {
+           '&[data-popper-reference-hidden]': {
+             display: 'none',
+             'pointerEvents': 'none'
+           },
+         }
+      }} 
+      sx={(theme) => (error ? {
+        backgroundColor: theme.palette.error.main,
+        color: theme.palette.error.contrastText,
+      }: {})}>
     <GridEditInputCell {...params}/>
-    <Tooltip open={!!error} title={error} arrow />
+    </Tooltip>
     </>
   )
 }
@@ -85,6 +101,7 @@ const probioticColumns = (editable, nameOptions) => {return [
     editable: editable, 
     sortable:true,
     valueGetter: (value, row) => {
+      if (!row.item.value) return ""
       return getItemValue(row).strain;
     },
     valueOptions: nameOptions,
@@ -128,6 +145,7 @@ const prebioticColumns = (editable, nameOptions) => {return [
     editable: editable, 
     sortable:true,
     valueGetter: (value, row) => {
+      if (!row.item.value) return ""
       return getItemValue(row).name;
     },
     valueOptions: nameOptions,
@@ -153,8 +171,40 @@ const prebioticColumns = (editable, nameOptions) => {return [
   },
 ]};
 
-function IngredientRows({title, columnDef, editable, ingredients, setIngredients, rowModesModel, setRowModesModel, onRowModesModelChange, onRowEditStop, processRowUpdate}) {
-  if (ingredients.length == 0) {
+const postbioticColumns = (editable, nameOptions) => {return [
+  { field: editNameField,
+    headerName: 'Name', 
+    editable: editable, 
+    sortable:true,
+    valueGetter: (value, row) => {
+      if (!row.item.value) return ""
+      return getItemValue(row).name;
+    },
+    valueOptions: nameOptions,
+    type: "singleSelect",
+    flex: 4,
+    renderHeader: () => (
+      <strong>{'Name'}</strong>
+    ),
+  },
+  { field: 'mgServing', 
+    headerName: 'mg / Serving', 
+    editable: editable,
+    preProcessEditCellProps: validateNumber('mgServing'),
+    renderEditCell: renderEditCell,
+    type: 'number',
+    valueGetter: (value, row) => {
+      return row.mgServing;
+    },
+    flex: 1,
+    renderHeader: () => (
+      <strong>{'mg / Serving'}</strong>
+    ),
+  },
+]};
+
+function IngredientRows({title, newRowFn, columnDef, editable, ingredients, setIngredients, rowModesModel, setRowModesModel, onRowModesModelChange, onRowEditStop, processRowUpdate}) {
+  if (!editable && ingredients.length == 0) {
     return "" 
   }
   const onProcessRowUpdateError = (e) => {
@@ -180,7 +230,7 @@ function IngredientRows({title, columnDef, editable, ingredients, setIngredients
         onProcessRowUpdateError={onProcessRowUpdateError}
         slots={{ toolbar: EditToolbar }}
         slotProps={{
-          toolbar: { setIngredients, setRowModesModel, editable },
+          toolbar: { newRowFn, setIngredients, setRowModesModel, editable },
         }}
         hideFooter
         showToolbar
@@ -201,7 +251,7 @@ export function Recipe({recipe, editable, ingredientsByType, actionColumns, rowM
         }
       }
     }
-    return names.sort()
+    return names
   }
 
   const MyNewFormItem = ({field, label, type, units, renderItem, extra_params = {}}) => {
@@ -209,9 +259,38 @@ export function Recipe({recipe, editable, ingredientsByType, actionColumns, rowM
       return NewFormItem({field, label, type, units, renderItem, props_provider, extra_params});
   }
 
-  const setIngredients = (ingredients) => (rows) => {
-    console.log("setIngredients")
-    // basically we are trying to add a new row here
+  const setIngredients = (recipe, field) => (rowsOrFn) => {
+    if (typeof rowsOrFn === 'function') {
+      let newIngredients = rowsOrFn(recipe[field])
+      recipe[field] = newIngredients
+    } else {
+      console.log("setIngredients")
+      alert("setIngredients called without a function")
+      recipe[field] = rowsOrFn
+    }
+  }
+
+  const newRowFn = (type, field) => () => {
+    let newIngredient = emptyIngredientForType(type);
+    newIngredient.isNew = true
+    
+    // Prefill the item with the first element in the list
+    for (let i = 0; i < ingredientsByType.get(type).length; i++) {
+      let alreadyUsed = false
+      for (let j = 0; j < recipe[field].length; j++) {  
+        if (getNameForIngredient(recipe[field][j]) == getNameForIngredient(ingredientsByType.get(type)[i])) {
+          alreadyUsed = true
+        }
+      }
+      if (!alreadyUsed) {
+        newIngredient.item = ingredientsByType.get(type)[i].item;
+        return newIngredient;
+      }
+    }
+
+    console.log("This recipe is already using all the ingredients so adding a new row doesn't make sense")
+    newIngredient.item = ingredientsByType.get(t)[0].item;
+    return newIngredient;
   }
 
   if (recipe == null) {
@@ -221,7 +300,6 @@ export function Recipe({recipe, editable, ingredientsByType, actionColumns, rowM
         </>
     )
   }
-
 
   return (
     <>
@@ -233,10 +311,11 @@ export function Recipe({recipe, editable, ingredientsByType, actionColumns, rowM
       </Grid>
       <IngredientRows 
           title="Probiotics" 
+          newRowFn={newRowFn("probiotic", "probiotics")}
           columnDef={probioticColumns(editable, getNamesForType('probiotic')).concat(actionColumns(editable, rowModels.probiotics.rowModesModel))} 
           editable={editable}
           ingredients={recipe.probiotics}
-          setIngredients={setIngredients(recipe.probiotics)}
+          setIngredients={setIngredients(recipe, "probiotics")}
           rowModesModel={rowModels.probiotics.rowModesModel}
           setRowModesModel={rowModels.probiotics.setRowModesModel}
           onRowModesModelChange={rowModels.probiotics.onModesModelChange}
@@ -245,10 +324,11 @@ export function Recipe({recipe, editable, ingredientsByType, actionColumns, rowM
       />
       <IngredientRows 
           title="Prebiotics" 
+          newRowFn={newRowFn("prebiotic", "prebiotics")}
           columnDef={prebioticColumns(editable, getNamesForType('prebiotic')).concat(actionColumns(editable, rowModels.prebiotics.rowModesModel))} 
           editable={editable}
           ingredients={recipe.prebiotics}
-          setIngredients={setIngredients(recipe.probiotics)}
+          setIngredients={setIngredients(recipe, "prebiotics")}
           rowModesModel={rowModels.prebiotics.rowModesModel}
           setRowModesModel={rowModels.prebiotics.setRowModesModel}
           onRowModesModelChange={rowModels.prebiotics.onModesModelChange}
@@ -257,10 +337,11 @@ export function Recipe({recipe, editable, ingredientsByType, actionColumns, rowM
       />
       <IngredientRows 
           title="Postbiotics" 
-          columnDef={prebioticColumns(editable, getNamesForType('postbiotic')).concat(actionColumns(editable, rowModels.prebiotics.rowModesModel))} 
+          newRowFn={newRowFn("postbiotic", "postbiotics")}
+          columnDef={postbioticColumns(editable, getNamesForType('postbiotic')).concat(actionColumns(editable, rowModels.postbiotics.rowModesModel))} 
           editable={editable}
           ingredients={recipe.postbiotics}
-          setIngredients={setIngredients(recipe.probiotics)}
+          setIngredients={setIngredients(recipe, "postbiotics")}
           rowModesModel={rowModels.postbiotics.rowModesModel}
           setRowModesModel={rowModels.postbiotics.setRowModesModel}
           onRowModesModelChange={rowModels.postbiotics.onModesModelChange}
@@ -366,6 +447,12 @@ export function RecipeDialog() {
           typeMap.get(type).push(value)
 
           nameMap.set(getNameForIngredient(response.ingredients[i]), value);
+        }
+        // Sort each type 
+        for (const [key, value] of typeMap) {
+          if (value) {
+            value.sort()
+          }
         }
         setIngredientsByType(typeMap)
         setIngredientsByName(nameMap)
@@ -544,14 +631,21 @@ export function RecipeDialog() {
       }
       ingredients.splice(index, 1, newRow)
       clone.id = "processRowUpdate"
-      if (!verifyRecipe(clone) && oldIngredient) {
+      let verify = verifyRecipe(clone)
+      if (!verify && oldIngredient) {
         // Datagrid behaves badly if two rows have the same id
         ingredients.splice(index, 1, oldIngredient)
+      }
+      if (!verify && newRow.isNew) {
+        // if the new row is an addition and the recipe can't verify properly then we just delete the ingredient
+        ingredients.splice(index, 1)
+        Promise.reject();
       }
       // We update the updatedRecipe even if it isn't valid so that it renders correctly
       setUpdatedRecipe(clone)
     } else {
       console.log(`Couldn't find ingredients to update for ${newRow}`)
+      Promise.reject();
     }
     
     const updatedRow = { ...newRow, isNew: false };

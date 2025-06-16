@@ -115,3 +115,28 @@ export const emptyIngredient = (type) => {
   }
   return i
 }
+
+export const emptyIngredientForType = (type) => {
+  if (type == "probiotic") {
+    return emptyProbioticIngredient()
+  } else if (type == "prebiotic") {
+    return emptyPrebioticIngredient()
+  } else if (type == "postbiotic") {
+    return emptyPostbioticIngredient()
+  } else {  
+    alert(`TODO emptyIngredient ${type}`)
+  }
+}
+
+export const emptyProbioticIngredient = () => {
+  return create(recipe_pb.ProbioticIngredientSchema, {})
+}
+
+export const emptyPrebioticIngredient = () => {
+  return create(recipe_pb.PrebioticIngredientSchema, {})
+}
+
+export const emptyPostbioticIngredient = () => {
+  return create(recipe_pb.PostbioticIngredientSchema, {})
+
+}
