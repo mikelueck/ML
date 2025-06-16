@@ -38,6 +38,7 @@ import { GridToolbarButton } from '@mui/x-data-grid';
 import { GridToolbar } from '@mui/x-data-grid';
 
 import { DataGrid,
+         useGridApiRef,
          GridRowModes,
          GridActionsCellItem,
          GridEditInputCell,
@@ -203,7 +204,7 @@ const postbioticColumns = (editable, nameOptions) => {return [
   },
 ]};
 
-function IngredientRows({title, newRowFn, columnDef, editable, ingredients, setIngredients, rowModesModel, setRowModesModel, onRowModesModelChange, onRowEditStop, processRowUpdate}) {
+function IngredientRows({title, newRowFn, columnDef, editable, ingredients, apiRef, setIngredients, rowModesModel, setRowModesModel, onRowModesModelChange, onRowEditStop, processRowUpdate}) {
   if (!editable && ingredients.length == 0) {
     return "" 
   }
@@ -219,6 +220,7 @@ function IngredientRows({title, newRowFn, columnDef, editable, ingredients, setI
       </Typography>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
       <DataGrid
+        apiRef={apiRef}
         rows={ingredients}
         getRowId={getRowId}
         columns={columnDef}
@@ -316,6 +318,7 @@ export function Recipe({recipe, editable, ingredientsByType, actionColumns, rowM
           editable={editable}
           ingredients={recipe.probiotics}
           setIngredients={setIngredients(recipe, "probiotics")}
+          apiRef={rowModels.probiotics.apiRef}
           rowModesModel={rowModels.probiotics.rowModesModel}
           setRowModesModel={rowModels.probiotics.setRowModesModel}
           onRowModesModelChange={rowModels.probiotics.onModesModelChange}
@@ -329,6 +332,7 @@ export function Recipe({recipe, editable, ingredientsByType, actionColumns, rowM
           editable={editable}
           ingredients={recipe.prebiotics}
           setIngredients={setIngredients(recipe, "prebiotics")}
+          apiRef={rowModels.prebiotics.apiRef}
           rowModesModel={rowModels.prebiotics.rowModesModel}
           setRowModesModel={rowModels.prebiotics.setRowModesModel}
           onRowModesModelChange={rowModels.prebiotics.onModesModelChange}
@@ -341,6 +345,7 @@ export function Recipe({recipe, editable, ingredientsByType, actionColumns, rowM
           columnDef={postbioticColumns(editable, getNamesForType('postbiotic')).concat(actionColumns(editable, rowModels.postbiotics.rowModesModel))} 
           editable={editable}
           ingredients={recipe.postbiotics}
+          apiRef={rowModels.postbiotics.apiRef}
           setIngredients={setIngredients(recipe, "postbiotics")}
           rowModesModel={rowModels.postbiotics.rowModesModel}
           setRowModesModel={rowModels.postbiotics.setRowModesModel}
@@ -419,6 +424,7 @@ export function RecipeDialog() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [isAdd, setIsAdd] = React.useState(searchParams.get('add'));
+  const [isSaving, setIsSaving] = React.useState(false)
 
   const [recipeId, setRecipeId] = React.useState(searchParams.get('recipeId'))
   const navigate = useNavigate();
@@ -451,7 +457,7 @@ export function RecipeDialog() {
         // Sort each type 
         for (const [key, value] of typeMap) {
           if (value) {
-            value.sort()
+            value.sort((a,b) => getNameForIngredient(a).localeCompare(getNameForIngredient(b)))
           }
         }
         setIngredientsByType(typeMap)
@@ -467,6 +473,10 @@ export function RecipeDialog() {
     fetchData();
   }, []);
 
+  const probioticApiRef = useGridApiRef();
+  const prebioticApiRef = useGridApiRef();
+  const postbioticApiRef = useGridApiRef();
+
   const[probioticRowModesModel, setProbioticRowModesModel] = React.useState({});
   const[prebioticRowModesModel, setPrebioticRowModesModel] = React.useState({});
   const[postbioticRowModesModel, setPostbioticRowModesModel] = React.useState({});
@@ -478,7 +488,6 @@ export function RecipeDialog() {
       if (getItemValue(r.probiotics[i]).id == id) {
         // Can probably do something better here than copying things around
         let clone = structuredClone(r)
-        clone.id = "handleRowDelete"
         clone.probiotics.splice(i, 1)
         setUpdatedRecipe(clone)
         return
@@ -487,7 +496,6 @@ export function RecipeDialog() {
     for (let i = 0; i < r.prebiotics.length; i++) {
       if (getItemValue(r.prebiotics[i]).id == id) {
         let clone = structuredClone(r)
-        clone.id = "handleRowDelete"
         clone.prebiotics.splice(i, 1)
         setUpdatedRecipe(clone)
         return
@@ -496,7 +504,6 @@ export function RecipeDialog() {
     for (let i = 0; i < r.postbiotics.length; i++) {
       if (getItemValue(r.postbiotics[i]).id == id) {
         let clone = structuredClone(r)
-        clone.id = "handleRowDelete"
         clone.postbiotics.splice(i, 1)
         setUpdatedRecipe(clone)
         return
@@ -630,7 +637,6 @@ export function RecipeDialog() {
         }
       }
       ingredients.splice(index, 1, newRow)
-      clone.id = "processRowUpdate"
       let verify = verifyRecipe(clone)
       if (!verify && oldIngredient) {
         // Datagrid behaves badly if two rows have the same id
@@ -654,16 +660,19 @@ export function RecipeDialog() {
 
   const rowModels = {
     prebiotics: {
+        apiRef: probioticApiRef,
         rowModesModel:prebioticRowModesModel, 
         setRowModesModel: setPrebioticRowModesModel, 
         onModesModelChange: handlePrebioticsRowModesModelChange
     },
     probiotics: {
+        apiRef: prebioticApiRef,
         rowModesModel:probioticRowModesModel, 
         setRowModesModel: setProbioticRowModesModel, 
         onModesModelChange: handleProbioticsRowModesModelChange
     },
     postbiotics: {
+        apiRef: postbioticApiRef,
         rowModesModel:postbioticRowModesModel, 
         setRowModesModel: setPostbioticRowModesModel, 
         onModesModelChange: handlePostbioticsRowModesModelChange
@@ -684,7 +693,7 @@ export function RecipeDialog() {
     width: 100,
     cellClassName: 'actions',
     getActions: ({ id }) => {
-      const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+      const isInEditMode = rowModesModel?.[id]?.mode === GridRowModes.Edit;
 
       if (isInEditMode) {
         return [
@@ -787,16 +796,78 @@ export function RecipeDialog() {
 
   const handleEditClick = () => () => {
     let clone = structuredClone(recipe)
-    // TODO
-    clone.id = "handleEditClick"
     setUpdatedRecipe(clone)
     setEditable(true)
   };
 
   const handleSaveClick = () => () => {
-    setEditable(false)
-    alert("implement me")
+    const apiRefs = [rowModels.probiotics.apiRef,
+                     rowModels.prebiotics.apiRef,
+                     rowModels.postbiotics.apiRef]
+    for (let i = 0; i < apiRefs.length; i++) {
+      let apiRef = apiRefs[i]
+      let rowsInEditMode = apiRef.current?.state.editRows;
+      if (rowsInEditMode) {
+        Object.keys(rowsInEditMode).forEach((rowId) => {
+          apiRef.current?.stopRowEditMode({id: rowId})
+        })
+      }
+    }
+
+    setIsSaving(true)
   };
+
+  React.useEffect(() => {
+    const updateRecipe = async () => {
+      if (isSaving) {
+        let isError = false
+        try {
+          let verify = verifyRecipe(updatedRecipe)
+
+          // The recipe has been altered to facilitate rendering so we need to take a clone of it
+          // and prepare it for saving
+          let clone = structuredClone(updatedRecipe)
+          for (let i = 0; i < clone.probiotics.length; i++) {
+            let id = getRowId(clone.probiotics[i])
+            clone.probiotics[i].item = id
+          }
+
+          for (let i = 0; i < clone.prebiotics.length; i++) {
+            let id = getRowId(clone.prebiotics[i])
+            clone.prebiotics[i].item = id
+          }
+
+          for (let i = 0; i < clone.postbiotics.length; i++) {
+            let id = getRowId(clone.postbiotics[i])
+            clone.postbiotics[i].item = id
+          }
+          
+          if (isAdd) {
+            const response = await getGrpcClient().createRecipe({recipe: clone});
+            setRecipeId(response.id)
+            navigate(`/recipe?&recipeId=${response.id}`, { replace: true });
+            setIsAdd(false)
+          } else {
+            const response = await getGrpcClient().updateRecipe({recipe: clone});
+          }
+        } catch (e) {
+          isError = true
+          setError(e.message);
+          console.log(e);
+        } finally {
+          setIsSaving(false);
+          if (!isError) {
+            setRecipe(updatedRecipe)
+            setEditable(false)
+          } else {
+            setErrorOpen(true);
+          }
+        }
+        setIsSaving(false)
+      }
+    };
+    updateRecipe();
+  }, [isSaving, updatedRecipe]);
 
   const handleClose = () => () => {
     navigate(-1);

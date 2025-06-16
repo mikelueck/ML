@@ -166,7 +166,7 @@ func (s *server) ListPrebioticCategory(ctx context.Context, req *pb.ListPrebioti
 func (s *server) CreateRecipe(ctx context.Context, req *pb.CreateRecipeRequest) (*pb.CreateRecipeResponse, error) {
 	id, err := db.GetRecipesCollection().Create(ctx, req.GetRecipe())
   if err != nil {
-    return nil, err
+    return nil, status.Error(codes.Unknown, err.Error())
   }
 	return &pb.CreateRecipeResponse{Id: id}, nil
 }
@@ -211,7 +211,10 @@ func (s *server) GetRecipe(ctx context.Context, req *pb.GetRecipeRequest) (*pb.G
 
 func (s *server) UpdateRecipe(ctx context.Context, req *pb.UpdateRecipeRequest) (*pb.UpdateRecipeResponse, error) {
 	err := db.GetRecipesCollection().Update(ctx, req.GetRecipe())
-	return nil, err
+  if err != nil {
+    return nil, status.Error(codes.Unknown, err.Error())
+  }
+  return nil, nil
 }
 
 func (s *server) ListRecipes(ctx context.Context, req *pb.ListRecipesRequest) (*pb.ListRecipesResponse, error) {
