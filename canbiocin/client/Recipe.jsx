@@ -9,6 +9,9 @@ import { AlertDialog } from './Dialog';
 import { getNameForIngredient } from './utils.js';
 import { verifyIngredient } from './utils.js';
 import { emptyIngredientForType } from "./utils.js";
+import { emptyRecipe } from "./utils.js";
+import { valueToPrecision } from './utils.js';
+import { styled } from '@mui/material/styles';
 
 import { getGrpcClient } from './grpc.js';
 
@@ -18,13 +21,19 @@ import Tooltip from '@mui/material/Tooltip';
 
 import { AppBar,
          Box, 
+         Card,
+         CardActions,
+         CardContent,
+         CardHeader,
+         Collapse,
          Dialog,
          DialogTitle,
          Grid,
-         IconButton,
          Toolbar,
          ToolbarButton,
          Typography } from '@mui/material';
+
+import IconButton from '@mui/material/IconButton';
 
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -33,6 +42,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import BlenderIcon from '@mui/icons-material/Blender';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { GridToolbarButton } from '@mui/x-data-grid';
 import { GridToolbar } from '@mui/x-data-grid';
@@ -242,6 +252,110 @@ function IngredientRows({title, newRowFn, columnDef, editable, ingredients, apiR
   )
 }
 
+const ExpandMore = styled((props) => {
+  const { expand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme }) => ({
+  marginLeft: 'auto',
+  transition: theme.transitions.create('transform', {
+    duration: theme.transitions.duration.shortest,
+  }),
+  variants: [
+    {
+      props: ({ expand }) => !expand,
+      style: {
+        transform: 'rotate(0deg)',
+      },
+    },
+    {
+      props: ({ expand }) => !!expand,
+      style: {
+        transform: 'rotate(180deg)',
+      },
+    },
+  ],
+}));
+
+export function RecipeHelper({recipe, editable}) {
+  const [expanded, setExpanded] = React.useState(false);
+  let servingSize = 1000.0; //(mg)
+
+  // Compute the weight of the current recipe
+  const computeWeight = (includeOverage) => {
+    let weight = 0.0;
+    let rows = recipe.probiotics;
+    let multiplier = includeOverage ? (1 + recipe.probioticOveragePercent / 100) : 1;
+    for (let i = 0; i < rows.length; i++) {
+      weight += (multiplier * rows[i].cfuG) / getItemValue(rows[i]).stockCfuG * servingSize;
+    }
+
+    rows = recipe.prebiotics;
+    for (let i = 0; i < rows.length; i++) {
+      weight += rows[i].mgServing;
+    }
+
+    rows = recipe.postbiotics;
+    for (let i = 0; i < rows.length; i++) {
+      weight += rows[i].mgServing;
+    }
+
+    return valueToPrecision(weight, 3)
+  }
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
+  if (!recipe || !editable) {
+    return null
+  }
+
+  const CardContentNoPadding = styled(CardContent)(`
+     padding: 4;
+     &:last-child {
+       padding-bottom: 4;
+    }
+  `);
+
+  return (
+    <Card size="sm"
+      sx={{
+          position: 'fixed',
+          top: 70,
+          right: 0,
+          float: 'right',
+          zIndex: 10,
+          maxWidth: 200,
+          padding: 3,
+          p: 0,
+         }}
+    >
+    <CardContentNoPadding>
+    Recipe Assistant
+    <ExpandMore
+      expand={expanded}
+      onClick={handleExpandClick}
+      aria-expanded={expanded}
+      aria-label="show more"
+    >
+      <ExpandMoreIcon />
+    </ExpandMore>
+    </CardContentNoPadding>
+
+    <Collapse in={expanded} timeout="auto" unmountOnExit>
+    <Box>
+    <CardContentNoPadding>
+    <Field value={computeWeight(false)} label="Weight" units="g" />
+    </CardContentNoPadding>
+    <CardContentNoPadding>
+    <Field value={computeWeight(true)} label="Weight (including Overage)" units="g" />
+    </CardContentNoPadding>
+    </Box>
+    </Collapse>
+    </Card>
+  )
+}
+
 export function Recipe({recipe, editable, ingredientsByType, actionColumns, rowModels, handleChange}) {
 
   const getNamesForType = (type) => {
@@ -307,7 +421,6 @@ export function Recipe({recipe, editable, ingredientsByType, actionColumns, rowM
     <>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }}spacing={2}>
       <Grid container spacing={4}>
-        <MyNewFormItem field='id' />
         <MyNewFormItem field='name' />
         <MyNewFormItem field="probioticOveragePercent" label="Probiotic Overage %" type="number" units="%" />
       </Grid>
@@ -435,6 +548,16 @@ export function RecipeDialog() {
 
   const [ingredientsByType, setIngredientsByType] = React.useState(new Map());
   const [ingredientsByName, setIngredientsByName] = React.useState(new Map());
+
+  React.useEffect(() => {
+    const triggerAddEdit = async () => {
+      if (isAdd && recipe) {
+        // Force us into edit mode
+        handleEditClick()()
+      }
+    };
+    triggerAddEdit()
+  }, [recipe]);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -727,6 +850,11 @@ export function RecipeDialog() {
 
   React.useEffect(() => {
     const fetchData = async () => {
+      if (!recipeId) {
+        // make empty recipe
+        setRecipe(emptyRecipe())
+        return
+      }
       setIsLoading(true);
       try {
         const response = await getGrpcClient().getRecipe({id: recipeId});
@@ -881,7 +1009,7 @@ export function RecipeDialog() {
   }
 
   const handleCreateRecipe = () => {
-    navigate(`/recipeMix?recipeId={recipeId}`);
+    navigate(`/recipeMix?recipeId=${recipeId}`);
   }
 
   return (
@@ -921,6 +1049,10 @@ export function RecipeDialog() {
           onClose={handleErrorClose} />
       </Toolbar>
     </AppBar>
+    <RecipeHelper
+        recipe={editable ? updatedRecipe : recipe} 
+        editable={editable} 
+    />
     <Recipe 
         recipe={editable ? updatedRecipe : recipe} 
         editable={editable} 

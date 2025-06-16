@@ -6,6 +6,7 @@ import { moneyToFloat } from './money.js';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { ConfirmDialog } from './Dialog';
 import { AlertDialog } from './Dialog';
+import { valueToPrecision } from './utils.js';
 
 import { getGrpcClient } from './grpc.js';
 
@@ -44,21 +45,6 @@ function getRowId(row) {
 
 const precision = 2;
 
-const valueToPrecision = (n, p, suffix, prefix) => {
-    if (n == null) {
-      return '';
-    }
-    let output = [];
-    if (prefix) {
-      output.push(prefix)
-    }
-    output.push(n.toFixed(p))
-    if (suffix) {
-      output.push(suffix)
-    }
-    return output.join('')
-}
-
 const commonColumns = [
   { field: 'percent', 
     headerName: '', 
@@ -93,7 +79,7 @@ const commonColumns = [
     },
     flex: 1.5,
     renderHeader: () => (
-      <strong>{'Amount'}<br/>{'Needed'}</strong>
+      <strong>{'Amount'}<br/>{'Needed (kg)'}</strong>
     ),
     valueFormatter: (value) => {
       return valueToPrecision(value, precision)

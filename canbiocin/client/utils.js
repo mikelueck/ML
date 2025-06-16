@@ -8,6 +8,21 @@ const money_pb = require('../proto/money_pb.js');
 import { timestampToDate } from './timestamp.js';
 import { dateToTimestamp } from './timestamp.js';
 
+export const valueToPrecision = (n, p, suffix, prefix) => {
+    if (n == null) {
+      return '';
+    }
+    let output = [];
+    if (prefix) {
+      output.push(prefix)
+    }
+    output.push(n.toFixed(p))
+    if (suffix) {
+      output.push(suffix)
+    }
+    return output.join('')
+}
+
 export const getNameForIngredient = (i) => {
   if (!i) {
     return null
@@ -138,5 +153,8 @@ export const emptyPrebioticIngredient = () => {
 
 export const emptyPostbioticIngredient = () => {
   return create(recipe_pb.PostbioticIngredientSchema, {})
+}
 
+export const emptyRecipe = () => {
+  return create(recipe_pb.RecipeSchema, {})
 }
