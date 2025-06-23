@@ -16,6 +16,7 @@ go_library(
     name = "utils_lib",
     srcs = [
         "money.go",
+        "env.go",
         "date.go",
     ],
     importpath = "github.com/ML/canbiocin/utils",

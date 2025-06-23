@@ -1,5 +1,5 @@
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
-load("@rules_oci//oci:defs.bzl", "oci_image", "oci_tarball")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_tarball", "oci_push")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 buildifier(
@@ -32,10 +32,9 @@ oci_tarball(
     repo_tags = ["envoy:v0.0.1"],
 )
 
-#TODO
-#oci_push(
-#    name = "push",
-#    image = ":image",
-#    remote_tags = ["v0.0.1"],
-#    repository = "envoy",
-#)
+oci_push(
+    name = "push",
+    image = ":image",
+    remote_tags = ["latest"],
+    repository = "us-central1-docker.pkg.dev/canbiocin/canbiocin-dev/envoy",
+)

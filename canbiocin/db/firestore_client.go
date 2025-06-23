@@ -15,6 +15,7 @@ type FireStoreClient struct {
 func (c *FireStoreClient) Create(ctx context.Context, folder string, doc Document) (string, error) {
 	_, err := c.client.Collection(folder).Doc(doc.GetID()).Create(ctx, doc)
   if err != nil {
+    fmt.Printf("Error: %v\n", err)
     return "", err
   }
 	return doc.GetID(), nil
@@ -85,7 +86,7 @@ func (i *FireStoreIterator) Stop() {
 
 func (c *FireStoreClient) NewDocument(i interface{}, doc Document) error {
 	switch reflect.TypeOf(i).String() {
-	case "firestore.DocumentSnapshot":
+	case "*firestore.DocumentSnapshot":
 		value := i.(*firestore.DocumentSnapshot)
 
 		if err := value.DataTo(doc); err != nil {

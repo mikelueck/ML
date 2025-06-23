@@ -3,6 +3,7 @@ package parseXLS
 import (
 	"context"
 	"fmt"
+	"flag"
 	"log"
 	"math"
 	"strconv"
@@ -11,9 +12,22 @@ import (
 	pb "github.com/ML/canbiocin/proto"
 	"github.com/ML/canbiocin/utils"
 	"github.com/thedatashed/xlsxreader"
+
+  "math/rand/v2"
 )
 
 type ParseType int
+
+var (
+	fake = flag.Bool("fake", true, "grpcport")
+)
+
+func getMultiplier() float64 {
+  if *fake {
+    return rand.Float64()
+  }
+  return 1.0
+}
 
 func getNonEmptyCellCount(row *xlsxreader.Row) int {
 	count := 0

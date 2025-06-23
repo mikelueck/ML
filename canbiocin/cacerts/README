@@ -1,0 +1,9 @@
+docker build . -t canbiocin/my-certs:latest
+
+docker tag my-certs:latest us-central1-docker.pkg.dev/canbiocin/canbiocin-dev/my-certs:latest
+
+// This is now in the WORKSPACE file
+docker push us-central1-docker.pkg.dev/canbiocin/canbiocin-dev/my-certs:latest
+
+crane pull us-central1-docker.pkg.dev/canbiocin/canbiocin-dev/my-certs:latest 1.tar --platform linux/arm64
+

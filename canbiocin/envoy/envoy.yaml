@@ -62,5 +62,8 @@ static_resources:
             - endpoint:
                 address:
                   socket_address:
-                    address: 192.168.86.54
+                    address: canbiocin-backend
+                    #address: 0.0.0.0
+                    #address: 127.0.0.1
+                    #address: 192.168.86.54
                     port_value: 8082

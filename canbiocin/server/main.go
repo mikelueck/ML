@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"log"
 	"net"
@@ -10,30 +9,10 @@ import (
 	pb "github.com/ML/canbiocin/proto"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/health"
+
+  "google.golang.org/grpc/health" 
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
-	"google.golang.org/grpc/status"
 )
-
-var (
-	hs *health.Server
-)
-
-type healthServer struct{}
-
-func (s *healthServer) Check(ctx context.Context, in *healthpb.HealthCheckRequest) (*healthpb.HealthCheckResponse, error) {
-	log.Printf("Handling grpc Check request: " + in.Service)
-	return &healthpb.HealthCheckResponse{Status: healthpb.HealthCheckResponse_SERVING}, nil
-}
-
-func (s *healthServer) List(ctx context.Context, in *healthpb.HealthListRequest) (*healthpb.HealthListResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "List is not implemented")
-}
-
-func (s *healthServer) Watch(in *healthpb.HealthCheckRequest, srv healthpb.Health_WatchServer) error {
-	return status.Error(codes.Unimplemented, "Watch is not implemented")
-}
 
 func main() {
 	_ = parseXLS.REFER_TO_LOAD_LIBRARY
@@ -49,15 +28,36 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
+  ip, err := getOutboundIP()
+  log.Printf("Current IP Address: %s, Error: %v\n", ip.String(), err)
+
 	sopts := []grpc.ServerOption{}
 
 	s := grpc.NewServer(sopts...)
 	pb.RegisterCanbiocinServiceServer(s, &server{})
 
-	healthpb.RegisterHealthServer(s, &healthServer{})
+  healthServer := health.NewServer()
+	healthpb.RegisterHealthServer(s, healthServer)
+
+  healthServer.SetServingStatus("", healthpb.HealthCheckResponse_SERVING)
+	healthServer.SetServingStatus("CanbiocinService", healthpb.HealthCheckResponse_SERVING)
 
 	log.Printf("Starting server...")
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+}
+
+// getOutboundIP gets the preferred outbound IP address of this machine.
+// It works by attempting to establish a UDP connection to a public DNS server
+// (without actually sending data) and then retrieving the local address of that connection.
+func getOutboundIP() (net.IP, error) {
+	conn, err := net.Dial("udp", "8.8.8.8:80") // Google's public DNS server
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+	return localAddr.IP, nil
 }

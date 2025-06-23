@@ -1,7 +1,7 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
-load("@rules_oci//oci:defs.bzl", "oci_image", "oci_image_index", "oci_tarball")
+load("@rules_oci//oci:defs.bzl", "oci_push", "oci_image", "oci_image_index", "oci_tarball")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 load("//rules:gofmt.bzl", "gofmt_test")
 
@@ -16,7 +16,8 @@ go_binary(
     embed = [":server_lib"],
     visibility = ["//visibility:public"],
     goos = "linux",
-    goarch = "amd64",
+    goarch = "arm64",
+    #goarch = "amd64",
 )
 
 # gazelle:prefix github.com/ML/canbiocin/server
@@ -60,7 +61,7 @@ pkg_tar(
 
 oci_image(
     name = "canbiocin_server_image",
-    base = "@ubuntu",
+    base = "@ca-certs",
     cmd = [],
     entrypoint = ["/server"],
     env = {},
@@ -70,13 +71,12 @@ oci_image(
     tars = [":app-tar"],
 )
 
-#oci_push(
-#    name = "push-image",
-#    image = ":canbiocin_server_image",
-#    repository = "localhost:4000/canbiocin_server",
-#repository = "us-central1-docker.pkg.dev/<something>/repo1/canbiocin_server",
-#    remote_tags = ["server"]
-#)
+oci_push(
+    name = "push",
+    image = ":canbiocin_server_image",
+    remote_tags = ["latest"],
+    repository = "us-central1-docker.pkg.dev/canbiocin/canbiocin-dev/backend",
+)
 
 oci_tarball(
     name = "tar-docker",

@@ -85,15 +85,25 @@ func (p *ProbioticParser) parseIngredient(ctx context.Context, row *xlsxreader.R
 			if err != nil {
 				return err
 			}
+      m := getMultiplier()
+      if m != 1 {
+        c1 = utils.Mult(c1, m)
+      }
+
 			c2, err := Money(row, p.columns["costShippingKg"])
 			if err != nil {
 				return err
 			}
+      m = getMultiplier()
+      if m != 1 {
+        c2 = utils.Mult(c2, m)
+      }
+
 			tmp, err := Float(row, p.columns["markupPercent"])
 			if err != nil {
 				return err
 			}
-			markupPercent := int32(tmp * 100)
+			markupPercent := int32(tmp * 100 * getMultiplier())
 
 			ingredient := &pb.Probiotic{
 				Spp:                 p.spp,

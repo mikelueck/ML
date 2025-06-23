@@ -109,6 +109,17 @@ oci_pull(
     ],
 )
 
+oci_pull(
+    name = "ca-certs",
+    platforms = [
+        "linux/amd64",
+        "linux/arm64",
+    ],
+    registry = "us-central1-docker.pkg.dev",
+    repository = "canbiocin/canbiocin-dev/my-certs",
+    tag = "latest"
+)
+
 _envoy_version = "v1.29.2"
 
 oci_pull(

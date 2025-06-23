@@ -2,19 +2,23 @@ package db
 
 import (
 	"context"
+	"flag"
 	"fmt"
 
 	"cloud.google.com/go/firestore"
-	"google.golang.org/api/option"
+	"github.com/ML/canbiocin/utils"
+  "google.golang.org/api/option"
 )
 
-const projectid = "1234"
+var (
+	projectid = flag.String("projectid", "canbiocin", "projectid")
+)
 
 var client *DbClient
 
 var _ ClientInterface = (*DbClient)(nil)
 
-const useMock = true
+const useMock = false
 
 type DocIterator interface {
 	Next(Document) error
@@ -81,7 +85,7 @@ func (c *DbClient) NewDocument(i interface{}, doc Document) error {
 func init() {
 	if !useMock {
 		var err error
-		client, err = newClient(context.Background(), projectid, "")
+		client, err = newClient(context.Background(), *projectid)
 		if err != nil {
 			fmt.Printf("Error creating firestore client: %v\n", err)
 		}
@@ -91,11 +95,13 @@ func init() {
 }
 
 // NewClient creates a new Firestore client
-func newClient(ctx context.Context, projectID string, credentialsFile string) (*DbClient, error) {
-
-	opt := option.WithCredentialsFile(credentialsFile)
-	client, err := firestore.NewClient(ctx, projectID, opt)
+func newClient(ctx context.Context, projectID string) (*DbClient, error) {
+  fmt.Printf("Initializing with :%s\n", utils.GetCredentialsFile())
+  
+  opt := option.WithCredentialsFile(utils.GetCredentialsFile())
+  client, err := firestore.NewClient(ctx, projectID, opt)
 	if err != nil {
+    fmt.Printf("Can't create client: %v\n", err)
 		return nil, err
 	}
 

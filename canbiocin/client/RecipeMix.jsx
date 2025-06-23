@@ -360,21 +360,21 @@ function RecipeMix({recipeId, servingSizeGrams, totalGrams }) {
       <Field
           id='id'
           label='ID' 
-          defaultValue={recipeMix.recipe.id}
+          value={recipeMix.recipe.id}
           size="small"
           variant="standard"
       />
       <Field
           id='name'
           label='Name' 
-          defaultValue={recipeMix.recipe.name}
+          value={recipeMix.recipe.name}
           size="small"
           variant="standard"
       />
       <Field
           id='overage'
           label='Probiotic Overage %' 
-          defaultValue={recipeMix.recipe.probioticOveragePercent}
+          value={recipeMix.recipe.probioticOveragePercent}
           size="small"
           variant="standard"
           type="number"
@@ -431,7 +431,7 @@ export function RecipeMixDialog() {
       <Field
           id='serving_size_grams'
           label='Serving size grams' 
-          defaultValue={servingGrams}
+          value={servingGrams}
           size="small"
           type="number"
           variant="standard"
@@ -441,7 +441,7 @@ export function RecipeMixDialog() {
       <Field
           id='total_grams'
           label='Total grams' 
-          defaultValue={totalGrams}
+          value={totalGrams}
           size="small"
           type="number"
           variant="standard"
