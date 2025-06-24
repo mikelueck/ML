@@ -15,9 +15,6 @@ resource "google_compute_instance_template" "canbiocin_template" {
   # Network interface
   network_interface {
     subnetwork = google_compute_subnetwork.canbiocin_subnets[0].id
-    access_config {
-      // Ephemeral public IP for outbound internet access
-    }
   }
 
   # Metadata for startup script
