@@ -1,0 +1,19 @@
+name: "canbiocin"
+services:
+  envoy-proxy:
+    image: envoy:v0.0.1
+    container_name: envoy-proxy
+    pull_policy: if_not_present
+    ports:
+      - "8080:8080"
+      - "10000:10000"
+  canbiocin-backend:
+    image: localhost:4000/canbiocin_server:latest
+    container_name: canbiocin-backend
+    pull_policy: if_not_present
+    volumes:
+      - /Users/mikelueck/.gcp/dev.json:/app/credentials.json
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /app/credentials.json
+    ports:
+      - "8082:8082"

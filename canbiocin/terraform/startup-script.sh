@@ -12,12 +12,15 @@ if ! command -v docker &> /dev/null; then
     systemctl enable docker
 fi
 
-
 HOME=/tmp docker-credential-gcr configure-docker --registries ${region}-docker.pkg.dev
 
 # Pull and start the canbiocin backend container
 docker --config /tmp/.docker pull ${region}-docker.pkg.dev/${project_id}/${artifact_registry_repo}/${canbiocin_image}:${canbiocin_version}
 
+
+# Ideally this is done with docker compose but it doesn't seem to be available
+# on GCP COS images.  I would need to install it here and I just don't want 
+# to take the time
 docker network create my-envoy-network
 
 echo "Running ${region}-docker.pkg.dev/${project_id}/${artifact_registry_repo}/${canbiocin_image}:${canbiocin_version}"
