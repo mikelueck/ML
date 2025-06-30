@@ -16,11 +16,11 @@ resource "google_compute_subnetwork" "canbiocin_subnets" {
   project       = var.project_id
 
   # Enable flow logs for network monitoring
-  log_config {
-    aggregation_interval = "INTERVAL_5_SEC"
-    flow_sampling       = 0.5
-    metadata            = "INCLUDE_ALL_METADATA"
-  }
+  #log_config {
+  #  aggregation_interval = "INTERVAL_5_SEC"
+  #  flow_sampling       = 0.5
+  #  metadata            = "INCLUDE_ALL_METADATA"
+  #}
 
   # Private Google access for services to reach Google APIs
   private_ip_google_access = true

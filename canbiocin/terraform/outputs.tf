@@ -36,14 +36,24 @@ output "artifact_registry_repository_id" {
 }
 
 # Load Balancer outputs
-output "load_balancer_ip" {
+output "load_balancer_ip_http" {
   description = "IP address of the load balancer"
-  value       = google_compute_global_forwarding_rule.canbiocin_lb.ip_address
+  value       = google_compute_global_forwarding_rule.canbiocin_lb_http.ip_address
 }
 
-output "load_balancer_name" {
+output "load_balancer_ip_https" {
+  description = "IP address of the load balancer"
+  value       = google_compute_global_forwarding_rule.canbiocin_lb_https.ip_address
+}
+
+output "load_balancer_name_http" {
   description = "Name of the load balancer"
-  value       = google_compute_global_forwarding_rule.canbiocin_lb.name
+  value       = google_compute_global_forwarding_rule.canbiocin_lb_http.name
+}
+
+output "load_balancer_name_https" {
+  description = "Name of the load balancer"
+  value       = google_compute_global_forwarding_rule.canbiocin_lb_https.name
 }
 
 # Firestore outputs

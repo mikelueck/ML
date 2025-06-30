@@ -16,7 +16,7 @@ resource "google_artifact_registry_repository" "canbiocin_repo" {
     id     = "keep-minimum-versions"
     action = "KEEP"
     most_recent_versions {
-      keep_count = 10
+      keep_count = 2
     }
   }
 
@@ -24,7 +24,7 @@ resource "google_artifact_registry_repository" "canbiocin_repo" {
     id     = "delete-old-versions"
     action = "DELETE"
     condition {
-      older_than = "30d"
+      older_than = "1d"
     }
   }
 }
