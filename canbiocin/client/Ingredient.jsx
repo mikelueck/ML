@@ -48,7 +48,7 @@ const fieldsByType = {
   "postbiotic": {...commonFields, "name": true, "bagSizeKg": true, "function": true, "notes": true},
 }
 
-export function Ingredient({ingredientType, ingredient, editable, handleChange}) {
+function Ingredient({ingredientType, ingredient, editable, handleChange}) {
   if (ingredient == null) {
     return (
         <>
@@ -218,7 +218,7 @@ function Delete({ingredientId, ingredientType}) {
    )
 }
 
-export function IngredientDialog() {
+export default function () {
   const [editable, setEditable] = React.useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();

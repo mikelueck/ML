@@ -1,4 +1,4 @@
-const React = require('React');
+import React, { lazy } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -8,8 +8,8 @@ import { Box,
          Tooltip,
 } from '@mui/material';
 
-import { Ingredients } from './Ingredients';
-import { Recipes } from './Recipes';
+const Ingredients = lazy(() => import('./Ingredients'));
+const Recipes = lazy(() => import('./Recipes'));
 
 function CustomTabPanel(props) {
   const { children, value, index, ... other } = props
@@ -53,7 +53,7 @@ function getTabFromHash(hash) {
   return 0;
 }
 
-export function TabLayout() {
+export default function () {
   const [value, setValue] = React.useState(getTabFromHash(window.location.hash));
 
   const handleChange = (event, newValue) => {

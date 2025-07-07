@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router';
 
-import { RecipeDialog } from './Recipe';
-import { RecipeMixDialog } from './RecipeMix';
-import { IngredientDialog } from './Ingredient';
-import { TabLayout } from './Tabs';
+const RecipeDialog = lazy(() =>  import('./Recipe'));
+const RecipeMixDialog = lazy(() =>  import('./RecipeMix'));
+const IngredientDialog = lazy(() =>  import('./Ingredient'));
+const TabLayout = lazy(() =>  import('./Tabs'));
 
 export function App() {
   return (
     <Router>
+      <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route name="ingredient" path="/ingredient" element={<IngredientDialog />} />
           <Route name="recipeMix" path="/recipeMix" element={<RecipeMixDialog />} />
           <Route name="recipe" path="/recipe" element={<RecipeDialog />} />
           <Route name="main" path="*" element={<TabLayout />} />
         </Routes>
+      </Suspense>
     </Router>
   );
 }

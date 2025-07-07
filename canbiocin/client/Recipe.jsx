@@ -277,7 +277,7 @@ const ExpandMore = styled((props) => {
   ],
 }));
 
-export function RecipeHelper({recipe, editable}) {
+function RecipeHelper({recipe, editable}) {
   const [expanded, setExpanded] = React.useState(false);
   let servingSize = 1000.0; //(mg)
 
@@ -360,7 +360,7 @@ export function RecipeHelper({recipe, editable}) {
   )
 }
 
-export function Recipe({recipe, editable, ingredientsByType, actionColumns, rowModels, handleChange}) {
+function Recipe({recipe, editable, ingredientsByType, actionColumns, rowModels, handleChange}) {
 
   const getNamesForType = (type) => {
     let names = [];
@@ -538,7 +538,7 @@ function Delete({recipeId, setError, setErrorOpen}) {
   )
 }
 
-export function RecipeDialog() {
+export default function () {
   const [editable, setEditable] = React.useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();

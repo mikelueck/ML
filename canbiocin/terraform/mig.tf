@@ -131,7 +131,7 @@ resource "google_compute_url_map" "canbiocin_url_map" {
     default_service = google_compute_backend_service.canbiocin_backend.id
 
     path_rule {
-      paths   = ["/index.html", "/bundle.js", "/favicon.ico"]
+      paths   = ["/*"]
       service = google_compute_backend_bucket.static_site.id
     }
 

@@ -11,7 +11,7 @@ docker compose up -d
 #  -d \
 #  --name canbiocin-backend \
 #  --network my-envoy-network \
-#  -v /Users/mikelueck/.gcp/canbiocin-backend.json:/app/credentials.json \
+#  -v /Users/mikelueck/.gcp/dev.json:/app/credentials.json \
 #  -e GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json \
 #  -p 8082:8082 \
 #  localhost:4000/canbiocin_server:latest

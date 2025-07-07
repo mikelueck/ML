@@ -393,7 +393,7 @@ function RecipeMix({recipeId, servingSizeGrams, totalGrams }) {
   )
 }
 
-export function RecipeMixDialog() {
+export default function () {
   const [servingGrams, setServingGrams] = React.useState(1)
   const [totalGrams, setTotalGrams] = React.useState(10000)
   const [searchParams, setSearchParams] = useSearchParams();

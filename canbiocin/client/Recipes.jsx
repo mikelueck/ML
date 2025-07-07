@@ -35,7 +35,7 @@ function getIngredientName(ingredient) {
   return ""
 }
 
-export function IngredientFilterSelect({changeFilterValue, ingredientFilter}) {
+function IngredientFilterSelect({changeFilterValue, ingredientFilter}) {
   const [isLoading, setIsLoading] = React.useState(false)
   const [ingredients, setIngredients] = React.useState([]);
   const [value, setValue] = React.useState(ingredientFilter);
@@ -127,7 +127,7 @@ export function IngredientFilterSelect({changeFilterValue, ingredientFilter}) {
   )
 }
 
-export function Recipes() {
+export default function () {
   const [isLoading, setIsLoading] = React.useState(true)
   const [rows, setRows] = React.useState([]);
   const [ingredientFilter, setIngredientFilter] = React.useState("");

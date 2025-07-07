@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   entry: "./canbiocin/client/index.js",
   output: {
-    filename: "bundle.js",
+    filename: "[name].[contenthash].bundle.js",
     path: path.resolve(__dirname, "dist"),
   },
   plugins: [
@@ -45,6 +45,11 @@ module.exports = {
         use: ['@svgr/webpack'],
       },
     ],
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
   },
   // pass all js files through Babel
   resolve: {

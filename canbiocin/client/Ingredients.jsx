@@ -38,7 +38,7 @@ function getRowId(row) {
   return getItemValue(row).id
 }
 
-export function Ingredients() {
+export default function () {
   const [isLoading, setIsLoading] = React.useState(true)
   const [rows, setRows] = React.useState([]);
 
