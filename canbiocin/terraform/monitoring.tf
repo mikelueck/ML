@@ -36,7 +36,7 @@ resource "google_storage_bucket_iam_binding" "canbiocin_logs_writer" {
 }
 
 resource "google_monitoring_monitored_project" "primary" {
-  metrics_scope = "canbiocin"
+  metrics_scope = var.project_id
   name          = var.project_id
 }
 

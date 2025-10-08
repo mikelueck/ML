@@ -7,11 +7,11 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"github.com/ML/canbiocin/utils"
-  "google.golang.org/api/option"
+	"google.golang.org/api/option"
 )
 
 var (
-	projectid = flag.String("projectid", "canbiocin", "projectid")
+	projectid = flag.String("projectid", "canbiocin-474014", "projectid")
 )
 
 var client *DbClient
@@ -96,12 +96,12 @@ func init() {
 
 // NewClient creates a new Firestore client
 func newClient(ctx context.Context, projectID string) (*DbClient, error) {
-  fmt.Printf("Initializing with :%s\n", utils.GetCredentialsFile())
-  
-  opt := option.WithCredentialsFile(utils.GetCredentialsFile())
-  client, err := firestore.NewClient(ctx, projectID, opt)
+	fmt.Printf("Initializing with :%s\n", utils.GetCredentialsFile())
+
+	opt := option.WithCredentialsFile(utils.GetCredentialsFile())
+	client, err := firestore.NewClient(ctx, projectID, opt)
 	if err != nil {
-    fmt.Printf("Can't create client: %v\n", err)
+		fmt.Printf("Can't create client: %v\n", err)
 		return nil, err
 	}
 

@@ -83,19 +83,19 @@ func (p *PostbioticParser) parseIngredient(ctx context.Context, row *xlsxreader.
 			if err != nil {
 				return err
 			}
-      m := getMultiplier()
-      if m != 1 {
-        c1 = utils.Mult(c1, m)
-      }
+			m := getMultiplier()
+			if m != 1 {
+				c1 = utils.Mult(c1, m)
+			}
 
 			c2, err := Money(row, p.columns["costShippingKg"])
 			if err != nil {
 				return err
 			}
-      m = getMultiplier()
-      if m != 1 {
-        c2 = utils.Mult(c2, m)
-      }
+			m = getMultiplier()
+			if m != 1 {
+				c2 = utils.Mult(c2, m)
+			}
 
 			tmp, err := Float(row, p.columns["markupPercent"])
 			if err != nil {

@@ -1,7 +1,7 @@
 package utils
 
 import (
-  "os"
+	"os"
 )
 
 func GetCredentialsFile() string {

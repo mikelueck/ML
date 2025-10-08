@@ -40,6 +40,10 @@ resource "google_firestore_index" "canbiocin_recipes_index" {
     field_path = "__name__"
     order      = "ASCENDING"
   }
+
+  depends_on = [
+    google_firestore_database.canbiocin_firestore
+  ]
 }
 
 resource "google_firestore_index" "canbiocin_prebiotics_index" {
@@ -60,6 +64,10 @@ resource "google_firestore_index" "canbiocin_prebiotics_index" {
     field_path = "name"
     order      = "ASCENDING"
   }
+
+  depends_on = [
+    google_firestore_database.canbiocin_firestore
+  ]
 }
 
 resource "google_firestore_index" "canbiocin_probiotics_index" {
@@ -75,6 +83,10 @@ resource "google_firestore_index" "canbiocin_probiotics_index" {
     field_path = "name"
     order      = "ASCENDING"
   }
+
+  depends_on = [
+    google_firestore_database.canbiocin_firestore
+  ]
 }
 
 resource "google_firestore_index" "canbiocin_postbiotics_index" {
@@ -90,6 +102,10 @@ resource "google_firestore_index" "canbiocin_postbiotics_index" {
     field_path = "name"
     order      = "ASCENDING"
   }
+
+  depends_on = [
+    google_firestore_database.canbiocin_firestore
+  ]
 }
 
 

@@ -14,10 +14,10 @@ type FireStoreClient struct {
 
 func (c *FireStoreClient) Create(ctx context.Context, folder string, doc Document) (string, error) {
 	_, err := c.client.Collection(folder).Doc(doc.GetID()).Create(ctx, doc)
-  if err != nil {
-    fmt.Printf("Error: %v\n", err)
-    return "", err
-  }
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return "", err
+	}
 	return doc.GetID(), nil
 }
 

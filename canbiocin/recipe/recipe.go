@@ -43,7 +43,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 
 		row := &pb.IngredientDetails{
 			Ingredient:         &pb.Ingredient{Item: &pb.Ingredient_Probiotic{Probiotic: probiotic}},
-      DesiredCfuG:        i.GetCfuG(),
+			DesiredCfuG:        i.GetCfuG(),
 			Percent:            percent,
 			PerservingMg:       perserving * 1000.0,
 			TotalGrams:         total,

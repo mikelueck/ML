@@ -5,12 +5,12 @@ import (
 	"fmt"
 
 	"github.com/ML/canbiocin/db"
+	"github.com/ML/canbiocin/parseXLS"
 	"github.com/ML/canbiocin/recipe"
-  "github.com/ML/canbiocin/parseXLS"
 )
 
 func main() {
-  _ = parseXLS.REFER_TO_LOAD_LIBRARY
+	_ = parseXLS.REFER_TO_LOAD_LIBRARY
 
 	ctx := context.Background()
 

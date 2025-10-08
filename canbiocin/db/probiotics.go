@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-  "maps"
+	"maps"
 	"slices"
 	"sync"
 
@@ -19,10 +19,10 @@ func init() {
 			BaseCollection: BaseCollection[pb.Probiotic, *ProbioticDoc]{
 				collectionName: probioticsCollection,
 			},
-      probioticSpp: []string{},
+			probioticSpp: []string{},
 		}
 		c.setAdapt(c.adapt)
-    c.SetSppList(context.Background())
+		c.SetSppList(context.Background())
 		return c
 	}
 
@@ -33,32 +33,32 @@ func init() {
 type ProbioticsCollection struct {
 	BaseCollection[pb.Probiotic, *ProbioticDoc]
 
-  // We keep a list of all the Spp associated with the Probiotics so we can
-  // quickly populate dropdowns on the client
-  lock sync.RWMutex
-  probioticSpp []string
+	// We keep a list of all the Spp associated with the Probiotics so we can
+	// quickly populate dropdowns on the client
+	lock         sync.RWMutex
+	probioticSpp []string
 }
 
 func (b *ProbioticsCollection) SetSppList(ctx context.Context) {
-  b.lock.Lock()
-  defer b.lock.Unlock()
+	b.lock.Lock()
+	defer b.lock.Unlock()
 
-  docs, _ := b.List(ctx)
+	docs, _ := b.List(ctx)
 
-  spp := make(map[string]bool)
+	spp := make(map[string]bool)
 
-  for _, p := range docs {
-    spp[p.GetSpp()] = true
-  }
+	for _, p := range docs {
+		spp[p.GetSpp()] = true
+	}
 
-  b.probioticSpp = slices.Sorted(maps.Keys(spp))
+	b.probioticSpp = slices.Sorted(maps.Keys(spp))
 }
 
 func (b *ProbioticsCollection) GetSppList(ctx context.Context) ([]string, error) {
-  b.lock.RLock()
-  defer b.lock.RUnlock()
+	b.lock.RLock()
+	defer b.lock.RUnlock()
 
-  return b.probioticSpp, nil
+	return b.probioticSpp, nil
 }
 
 func (p *ProbioticsCollection) adapt(pb *pb.Probiotic) (*ProbioticDoc, error) {

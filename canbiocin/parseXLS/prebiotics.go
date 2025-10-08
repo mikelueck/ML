@@ -71,15 +71,15 @@ func (p *PrebioticParser) parseHeader(row *xlsxreader.Row) {
 			p.columns["notes"] = c.Column
 		}
 	}
-  _, ok := p.columns["notes"] 
-  if !ok {
-    // In the spreadsheet I have the "notes" column isn't labeled so we just assume it's after "markup"
+	_, ok := p.columns["notes"]
+	if !ok {
+		// In the spreadsheet I have the "notes" column isn't labeled so we just assume it's after "markup"
 		col := p.columns["markupPercent"]
-    runes := []rune(col)
-    r := runes[0]
-    r++
-    p.columns["notes"] = string(r)
-  }
+		runes := []rune(col)
+		r := runes[0]
+		r++
+		p.columns["notes"] = string(r)
+	}
 }
 
 func (p *PrebioticParser) parseIngredient(ctx context.Context, row *xlsxreader.Row) error {
@@ -94,19 +94,19 @@ func (p *PrebioticParser) parseIngredient(ctx context.Context, row *xlsxreader.R
 			if err != nil {
 				return err
 			}
-      m := getMultiplier()
-      if m != 1 {
-        c1 = utils.Mult(c1, m)
-      }
+			m := getMultiplier()
+			if m != 1 {
+				c1 = utils.Mult(c1, m)
+			}
 
 			c2, err := Money(row, p.columns["costShippingKg"])
 			if err != nil {
 				return err
 			}
-      m = getMultiplier()
-      if m != 1 {
-        c2 = utils.Mult(c2, m)
-      }
+			m = getMultiplier()
+			if m != 1 {
+				c2 = utils.Mult(c2, m)
+			}
 
 			tmp, err := Float(row, p.columns["markupPercent"])
 			if err != nil {

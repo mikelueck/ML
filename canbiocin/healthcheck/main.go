@@ -39,8 +39,6 @@ func main() {
 	// Scenario 4: Check a non-existent service
 	checkServiceHealth(healthClient, "non.existent.Service")
 
-
-
 	// Keep the main goroutine alive to allow the watch goroutine to receive updates.
 	// In a real application, this might be handled by application lifecycle management.
 	fmt.Printf("Client will run for 30 seconds to observe Watch updates for '%s'...\n", "test.TestService")
@@ -128,5 +126,3 @@ func handleHealthError(message string, err error) {
 		log.Printf("%s: Non-gRPC error: %v\n", message, err)
 	}
 }
-
-

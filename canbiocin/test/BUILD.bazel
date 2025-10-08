@@ -33,6 +33,7 @@ go_library(
         "//canbiocin/db:db_lib",
         "//canbiocin/recipe:recipe_lib",
         "//canbiocin/utils:utils_lib",
+        "//canbiocin/parseXLS:parseXLS_lib",
         "@com_github_golang_protobuf//ptypes:go_default_library",
         "@com_github_golang_protobuf//ptypes/timestamp:go_default_library",
     ],

@@ -113,23 +113,23 @@ func (pc *RecipesCollection) QueryByIngredient(ctx context.Context, ingredientId
 		if err != nil {
 			return nil, err
 		}
-    recipe := docWrapper.GetProto().(*pb.Recipe)
-    // Look through all the recipes to find ingredient
-    for _, ingredient := range recipe.GetProbiotics() {
-      if ingredient.GetItem() == ingredientId {
-        docs = append(docs, docWrapper)
-      }
-    }
-    for _, ingredient := range recipe.GetPrebiotics() {
-      if ingredient.GetItem() == ingredientId {
-        docs = append(docs, docWrapper)
-      }
-    }
-    for _, ingredient := range recipe.GetPostbiotics() {
-      if ingredient.GetItem() == ingredientId {
-        docs = append(docs, docWrapper)
-      }
-    }
+		recipe := docWrapper.GetProto().(*pb.Recipe)
+		// Look through all the recipes to find ingredient
+		for _, ingredient := range recipe.GetProbiotics() {
+			if ingredient.GetItem() == ingredientId {
+				docs = append(docs, docWrapper)
+			}
+		}
+		for _, ingredient := range recipe.GetPrebiotics() {
+			if ingredient.GetItem() == ingredientId {
+				docs = append(docs, docWrapper)
+			}
+		}
+		for _, ingredient := range recipe.GetPostbiotics() {
+			if ingredient.GetItem() == ingredientId {
+				docs = append(docs, docWrapper)
+			}
+		}
 	}
 	return docs, nil
 }

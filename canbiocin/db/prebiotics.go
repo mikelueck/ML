@@ -2,9 +2,9 @@ package db
 
 import (
 	"context"
-  "maps"
-  "slices"
-  "sync"
+	"maps"
+	"slices"
+	"sync"
 
 	pb "github.com/ML/canbiocin/proto"
 	"github.com/google/uuid"
@@ -19,10 +19,10 @@ func init() {
 			BaseCollection: BaseCollection[pb.Prebiotic, *PrebioticDoc]{
 				collectionName: prebioticsCollection,
 			},
-      prebioticCategory: []string{},
+			prebioticCategory: []string{},
 		}
 		c.setAdapt(c.adapt)
-    c.SetCategoryList(context.Background());
+		c.SetCategoryList(context.Background())
 		return c
 	}
 
@@ -33,32 +33,32 @@ func init() {
 type PrebioticsCollection struct {
 	BaseCollection[pb.Prebiotic, *PrebioticDoc]
 
-  // We keep a list of all the Categories associated with the Prebiotics so we can
-  // quickly populate dropdowns on the client
-  lock sync.RWMutex
-  prebioticCategory []string
+	// We keep a list of all the Categories associated with the Prebiotics so we can
+	// quickly populate dropdowns on the client
+	lock              sync.RWMutex
+	prebioticCategory []string
 }
 
 func (b *PrebioticsCollection) SetCategoryList(ctx context.Context) {
-  b.lock.Lock()
-  defer b.lock.Unlock()
+	b.lock.Lock()
+	defer b.lock.Unlock()
 
-  docs, _ := b.List(ctx)
+	docs, _ := b.List(ctx)
 
-  category := make(map[string]bool)
+	category := make(map[string]bool)
 
-  for _, p := range docs {
-    category[p.GetCategory()] = true
-  }
+	for _, p := range docs {
+		category[p.GetCategory()] = true
+	}
 
-  b.prebioticCategory = slices.Sorted(maps.Keys(category))
+	b.prebioticCategory = slices.Sorted(maps.Keys(category))
 }
 
 func (b *PrebioticsCollection) GetCategoryList(ctx context.Context) ([]string, error) {
-  b.lock.RLock()
-  defer b.lock.RUnlock()
+	b.lock.RLock()
+	defer b.lock.RUnlock()
 
-  return b.prebioticCategory, nil
+	return b.prebioticCategory, nil
 }
 
 func (p *PrebioticsCollection) adapt(pb *pb.Prebiotic) (*PrebioticDoc, error) {

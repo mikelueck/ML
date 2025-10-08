@@ -36,5 +36,5 @@ oci_push(
     name = "push",
     image = ":image",
     remote_tags = ["latest"],
-    repository = "us-central1-docker.pkg.dev/canbiocin/canbiocin-dev/envoy",
+    repository = "us-central1-docker.pkg.dev/canbiocin-474014/canbiocin-dev/envoy",
 )

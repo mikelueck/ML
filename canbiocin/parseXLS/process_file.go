@@ -2,8 +2,8 @@ package parseXLS
 
 import (
 	"context"
-	"fmt"
 	"flag"
+	"fmt"
 	"log"
 	"math"
 	"strconv"
@@ -13,7 +13,7 @@ import (
 	"github.com/ML/canbiocin/utils"
 	"github.com/thedatashed/xlsxreader"
 
-  "math/rand/v2"
+	"math/rand/v2"
 )
 
 type ParseType int
@@ -23,10 +23,10 @@ var (
 )
 
 func getMultiplier() float64 {
-  if *fake {
-    return rand.Float64()
-  }
-  return 1.0
+	if *fake {
+		return rand.Float64()
+	}
+	return 1.0
 }
 
 func getNonEmptyCellCount(row *xlsxreader.Row) int {
@@ -59,38 +59,38 @@ func Float(row *xlsxreader.Row, col string) (float64, error) {
 }
 
 func Money(row *xlsxreader.Row, col string) (*pb.Money, error) {
-  val := String(row, col)
-  parts := strings.Split(val, ".")
-  var units int64
-  var cents int64
-  var err error
+	val := String(row, col)
+	parts := strings.Split(val, ".")
+	var units int64
+	var cents int64
+	var err error
 
-  if len(parts) > 0 && len(parts[0]) > 0 {
-    units, err = strconv.ParseInt(parts[0], 10, 64)
-    if err != nil {
-      return nil, err
-    }
-  }
-  if len(parts) == 2 && len(parts[1]) > 0 {
-    // In cases where we have $34.30 this will look like 34.3 so it will get parsed as 3 instead of 30
-    // we pad parts[1] to have it be 30 instead
-    for len(parts[1]) < 2 {
-      parts[1] = fmt.Sprintf("%s0", parts[1])
-    }
-    cents, err = strconv.ParseInt(parts[1], 10, 64)
-    // for some reason some of these values in the spreadsheet are very large probably due to float issues
-    // try to compensate here and just convert this to cents
-    if len(parts[1]) > 2 {
-      len := len(parts[1]);
-      if len > 2 {
-        tmp := float64(cents) / math.Pow(10, float64(len - 2))
-        cents = int64(math.Round(tmp))
-      }
-    }
-    if err != nil {
-      return nil, err
-    }
-  }
+	if len(parts) > 0 && len(parts[0]) > 0 {
+		units, err = strconv.ParseInt(parts[0], 10, 64)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if len(parts) == 2 && len(parts[1]) > 0 {
+		// In cases where we have $34.30 this will look like 34.3 so it will get parsed as 3 instead of 30
+		// we pad parts[1] to have it be 30 instead
+		for len(parts[1]) < 2 {
+			parts[1] = fmt.Sprintf("%s0", parts[1])
+		}
+		cents, err = strconv.ParseInt(parts[1], 10, 64)
+		// for some reason some of these values in the spreadsheet are very large probably due to float issues
+		// try to compensate here and just convert this to cents
+		if len(parts[1]) > 2 {
+			len := len(parts[1])
+			if len > 2 {
+				tmp := float64(cents) / math.Pow(10, float64(len-2))
+				cents = int64(math.Round(tmp))
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	return utils.NewMoney(int32(units), int32(cents)), nil
 }

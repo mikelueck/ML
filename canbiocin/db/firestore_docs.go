@@ -153,7 +153,7 @@ func NewProbioticDoc(msg *pb.Probiotic) (*ProbioticDoc, error) {
 	}
 	return &ProbioticDoc{
 		ID:         msg.GetId(),
-    Spp:        msg.GetSpp(),
+		Spp:        msg.GetSpp(),
 		Name:       msg.GetStrain(),
 		ProtoBytes: bytes,
 	}, nil

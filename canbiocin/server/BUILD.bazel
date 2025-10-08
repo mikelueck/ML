@@ -75,7 +75,7 @@ oci_push(
     name = "push",
     image = ":canbiocin_server_image",
     remote_tags = ["latest"],
-    repository = "us-central1-docker.pkg.dev/canbiocin/canbiocin-dev/backend",
+    repository = "us-central1-docker.pkg.dev/canbiocin-474014/canbiocin-dev/backend",
 )
 
 oci_tarball(

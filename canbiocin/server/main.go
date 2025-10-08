@@ -10,7 +10,7 @@ import (
 
 	"google.golang.org/grpc"
 
-  "google.golang.org/grpc/health" 
+	"google.golang.org/grpc/health"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
 
@@ -28,18 +28,18 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-  ip, err := getOutboundIP()
-  log.Printf("Current IP Address: %s, Error: %v\n", ip.String(), err)
+	ip, err := getOutboundIP()
+	log.Printf("Current IP Address: %s, Error: %v\n", ip.String(), err)
 
 	sopts := []grpc.ServerOption{}
 
 	s := grpc.NewServer(sopts...)
 	pb.RegisterCanbiocinServiceServer(s, &server{})
 
-  healthServer := health.NewServer()
+	healthServer := health.NewServer()
 	healthpb.RegisterHealthServer(s, healthServer)
 
-  healthServer.SetServingStatus("", healthpb.HealthCheckResponse_SERVING)
+	healthServer.SetServingStatus("", healthpb.HealthCheckResponse_SERVING)
 	healthServer.SetServingStatus("CanbiocinService", healthpb.HealthCheckResponse_SERVING)
 
 	log.Printf("Starting server...")
