@@ -42,31 +42,6 @@ func GetRecipesCollection() *RecipesCollection {
 	return c.(*RecipesCollection)
 }
 
-const packagingAndMillingCollection = "packaging_and_milling"
-
-// PackagingAndMillingCollection handles operations for the packaging and milling collection
-type PackagingAndMillingCollection struct {
-	BaseCollection[pb.Recipe, *RecipeDoc]
-}
-
-func (p *PackagingAndMillingCollection) adapt(pb *pb.Recipe) (*RecipeDoc, error) {
-	if pb.GetId() == "" {
-		pb.Id = uuid.New().String()
-	}
-	return NewRecipeDoc(pb)
-}
-
-// NewPackagingAndMillingCollection creates a new packaging and milling collection handler
-func NewPackagingAndMillingCollection() *PackagingAndMillingCollection {
-	c := &PackagingAndMillingCollection{
-		BaseCollection: BaseCollection[pb.Recipe, *RecipeDoc]{
-			collectionName: packagingAndMillingCollection,
-		},
-	}
-	c.setAdapt(c.adapt)
-	return c
-}
-
 func (pc *RecipesCollection) QueryByCompanyAndName(ctx context.Context, company string, name string) ([]*RecipeDoc, error) {
 	iter, err := client.Query(ctx, pc.collectionName,
 		[]*QueryCriteria{&QueryCriteria{

@@ -71,6 +71,8 @@ type CreateIngredientResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
 func (x *CreateIngredientResponse) Reset() {
@@ -105,6 +107,115 @@ func (*CreateIngredientResponse) Descriptor() ([]byte, []int) {
 	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{1}
 }
 
+func (x *CreateIngredientResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type GetIngredientRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id   string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Type string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+}
+
+func (x *GetIngredientRequest) Reset() {
+	*x = GetIngredientRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetIngredientRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetIngredientRequest) ProtoMessage() {}
+
+func (x *GetIngredientRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetIngredientRequest.ProtoReflect.Descriptor instead.
+func (*GetIngredientRequest) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetIngredientRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *GetIngredientRequest) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+type GetIngredientResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ingredient *Ingredient `protobuf:"bytes,1,opt,name=ingredient,proto3" json:"ingredient,omitempty"`
+}
+
+func (x *GetIngredientResponse) Reset() {
+	*x = GetIngredientResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetIngredientResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetIngredientResponse) ProtoMessage() {}
+
+func (x *GetIngredientResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetIngredientResponse.ProtoReflect.Descriptor instead.
+func (*GetIngredientResponse) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetIngredientResponse) GetIngredient() *Ingredient {
+	if x != nil {
+		return x.Ingredient
+	}
+	return nil
+}
+
 type UpdateIngredientRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -116,7 +227,7 @@ type UpdateIngredientRequest struct {
 func (x *UpdateIngredientRequest) Reset() {
 	*x = UpdateIngredientRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_canbiocin_proto_service_proto_msgTypes[2]
+		mi := &file_canbiocin_proto_service_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -129,7 +240,7 @@ func (x *UpdateIngredientRequest) String() string {
 func (*UpdateIngredientRequest) ProtoMessage() {}
 
 func (x *UpdateIngredientRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_canbiocin_proto_service_proto_msgTypes[2]
+	mi := &file_canbiocin_proto_service_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -142,7 +253,7 @@ func (x *UpdateIngredientRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateIngredientRequest.ProtoReflect.Descriptor instead.
 func (*UpdateIngredientRequest) Descriptor() ([]byte, []int) {
-	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{2}
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *UpdateIngredientRequest) GetIngredient() *Ingredient {
@@ -161,7 +272,7 @@ type UpdateIngredientResponse struct {
 func (x *UpdateIngredientResponse) Reset() {
 	*x = UpdateIngredientResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_canbiocin_proto_service_proto_msgTypes[3]
+		mi := &file_canbiocin_proto_service_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -174,7 +285,7 @@ func (x *UpdateIngredientResponse) String() string {
 func (*UpdateIngredientResponse) ProtoMessage() {}
 
 func (x *UpdateIngredientResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_canbiocin_proto_service_proto_msgTypes[3]
+	mi := &file_canbiocin_proto_service_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -187,7 +298,100 @@ func (x *UpdateIngredientResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateIngredientResponse.ProtoReflect.Descriptor instead.
 func (*UpdateIngredientResponse) Descriptor() ([]byte, []int) {
-	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{3}
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{5}
+}
+
+type DeleteIngredientRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id   string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Type string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+}
+
+func (x *DeleteIngredientRequest) Reset() {
+	*x = DeleteIngredientRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteIngredientRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteIngredientRequest) ProtoMessage() {}
+
+func (x *DeleteIngredientRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteIngredientRequest.ProtoReflect.Descriptor instead.
+func (*DeleteIngredientRequest) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *DeleteIngredientRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *DeleteIngredientRequest) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+type DeleteIngredientResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeleteIngredientResponse) Reset() {
+	*x = DeleteIngredientResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteIngredientResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteIngredientResponse) ProtoMessage() {}
+
+func (x *DeleteIngredientResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteIngredientResponse.ProtoReflect.Descriptor instead.
+func (*DeleteIngredientResponse) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{7}
 }
 
 type ListIngredientsRequest struct {
@@ -199,7 +403,7 @@ type ListIngredientsRequest struct {
 func (x *ListIngredientsRequest) Reset() {
 	*x = ListIngredientsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_canbiocin_proto_service_proto_msgTypes[4]
+		mi := &file_canbiocin_proto_service_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -212,7 +416,7 @@ func (x *ListIngredientsRequest) String() string {
 func (*ListIngredientsRequest) ProtoMessage() {}
 
 func (x *ListIngredientsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_canbiocin_proto_service_proto_msgTypes[4]
+	mi := &file_canbiocin_proto_service_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -225,7 +429,7 @@ func (x *ListIngredientsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListIngredientsRequest.ProtoReflect.Descriptor instead.
 func (*ListIngredientsRequest) Descriptor() ([]byte, []int) {
-	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{4}
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{8}
 }
 
 type ListIngredientsResponse struct {
@@ -233,13 +437,13 @@ type ListIngredientsResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Ingredient []*Ingredient `protobuf:"bytes,1,rep,name=ingredient,proto3" json:"ingredient,omitempty"`
+	Ingredients []*Ingredient `protobuf:"bytes,1,rep,name=ingredients,proto3" json:"ingredients,omitempty"`
 }
 
 func (x *ListIngredientsResponse) Reset() {
 	*x = ListIngredientsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_canbiocin_proto_service_proto_msgTypes[5]
+		mi := &file_canbiocin_proto_service_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -252,7 +456,7 @@ func (x *ListIngredientsResponse) String() string {
 func (*ListIngredientsResponse) ProtoMessage() {}
 
 func (x *ListIngredientsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_canbiocin_proto_service_proto_msgTypes[5]
+	mi := &file_canbiocin_proto_service_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -265,12 +469,182 @@ func (x *ListIngredientsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListIngredientsResponse.ProtoReflect.Descriptor instead.
 func (*ListIngredientsResponse) Descriptor() ([]byte, []int) {
-	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{5}
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *ListIngredientsResponse) GetIngredient() []*Ingredient {
+func (x *ListIngredientsResponse) GetIngredients() []*Ingredient {
 	if x != nil {
-		return x.Ingredient
+		return x.Ingredients
+	}
+	return nil
+}
+
+type ListProbioticSppRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ListProbioticSppRequest) Reset() {
+	*x = ListProbioticSppRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListProbioticSppRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListProbioticSppRequest) ProtoMessage() {}
+
+func (x *ListProbioticSppRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListProbioticSppRequest.ProtoReflect.Descriptor instead.
+func (*ListProbioticSppRequest) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{10}
+}
+
+type ListProbioticSppResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Spps []string `protobuf:"bytes,1,rep,name=spps,proto3" json:"spps,omitempty"`
+}
+
+func (x *ListProbioticSppResponse) Reset() {
+	*x = ListProbioticSppResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListProbioticSppResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListProbioticSppResponse) ProtoMessage() {}
+
+func (x *ListProbioticSppResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListProbioticSppResponse.ProtoReflect.Descriptor instead.
+func (*ListProbioticSppResponse) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *ListProbioticSppResponse) GetSpps() []string {
+	if x != nil {
+		return x.Spps
+	}
+	return nil
+}
+
+type ListPrebioticCategoryRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ListPrebioticCategoryRequest) Reset() {
+	*x = ListPrebioticCategoryRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListPrebioticCategoryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListPrebioticCategoryRequest) ProtoMessage() {}
+
+func (x *ListPrebioticCategoryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListPrebioticCategoryRequest.ProtoReflect.Descriptor instead.
+func (*ListPrebioticCategoryRequest) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{12}
+}
+
+type ListPrebioticCategoryResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Categories []string `protobuf:"bytes,1,rep,name=categories,proto3" json:"categories,omitempty"`
+}
+
+func (x *ListPrebioticCategoryResponse) Reset() {
+	*x = ListPrebioticCategoryResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListPrebioticCategoryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListPrebioticCategoryResponse) ProtoMessage() {}
+
+func (x *ListPrebioticCategoryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListPrebioticCategoryResponse.ProtoReflect.Descriptor instead.
+func (*ListPrebioticCategoryResponse) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *ListPrebioticCategoryResponse) GetCategories() []string {
+	if x != nil {
+		return x.Categories
 	}
 	return nil
 }
@@ -279,12 +653,14 @@ type CreateRecipeRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Recipe *Recipe `protobuf:"bytes,1,opt,name=recipe,proto3" json:"recipe,omitempty"`
 }
 
 func (x *CreateRecipeRequest) Reset() {
 	*x = CreateRecipeRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_canbiocin_proto_service_proto_msgTypes[6]
+		mi := &file_canbiocin_proto_service_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -297,7 +673,7 @@ func (x *CreateRecipeRequest) String() string {
 func (*CreateRecipeRequest) ProtoMessage() {}
 
 func (x *CreateRecipeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_canbiocin_proto_service_proto_msgTypes[6]
+	mi := &file_canbiocin_proto_service_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -310,19 +686,28 @@ func (x *CreateRecipeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateRecipeRequest.ProtoReflect.Descriptor instead.
 func (*CreateRecipeRequest) Descriptor() ([]byte, []int) {
-	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{6}
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *CreateRecipeRequest) GetRecipe() *Recipe {
+	if x != nil {
+		return x.Recipe
+	}
+	return nil
 }
 
 type CreateRecipeResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
 func (x *CreateRecipeResponse) Reset() {
 	*x = CreateRecipeResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_canbiocin_proto_service_proto_msgTypes[7]
+		mi := &file_canbiocin_proto_service_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -335,7 +720,7 @@ func (x *CreateRecipeResponse) String() string {
 func (*CreateRecipeResponse) ProtoMessage() {}
 
 func (x *CreateRecipeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_canbiocin_proto_service_proto_msgTypes[7]
+	mi := &file_canbiocin_proto_service_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -348,19 +733,146 @@ func (x *CreateRecipeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateRecipeResponse.ProtoReflect.Descriptor instead.
 func (*CreateRecipeResponse) Descriptor() ([]byte, []int) {
-	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{7}
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *CreateRecipeResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type GetRecipeRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *GetRecipeRequest) Reset() {
+	*x = GetRecipeRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRecipeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRecipeRequest) ProtoMessage() {}
+
+func (x *GetRecipeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRecipeRequest.ProtoReflect.Descriptor instead.
+func (*GetRecipeRequest) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *GetRecipeRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type GetRecipeResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Recipe      *Recipe       `protobuf:"bytes,1,opt,name=recipe,proto3" json:"recipe,omitempty"`
+	Probiotics  []*Probiotic  `protobuf:"bytes,2,rep,name=probiotics,proto3" json:"probiotics,omitempty"`
+	Prebiotics  []*Prebiotic  `protobuf:"bytes,3,rep,name=prebiotics,proto3" json:"prebiotics,omitempty"`
+	Postbiotics []*Postbiotic `protobuf:"bytes,4,rep,name=postbiotics,proto3" json:"postbiotics,omitempty"`
+}
+
+func (x *GetRecipeResponse) Reset() {
+	*x = GetRecipeResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRecipeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRecipeResponse) ProtoMessage() {}
+
+func (x *GetRecipeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRecipeResponse.ProtoReflect.Descriptor instead.
+func (*GetRecipeResponse) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GetRecipeResponse) GetRecipe() *Recipe {
+	if x != nil {
+		return x.Recipe
+	}
+	return nil
+}
+
+func (x *GetRecipeResponse) GetProbiotics() []*Probiotic {
+	if x != nil {
+		return x.Probiotics
+	}
+	return nil
+}
+
+func (x *GetRecipeResponse) GetPrebiotics() []*Prebiotic {
+	if x != nil {
+		return x.Prebiotics
+	}
+	return nil
+}
+
+func (x *GetRecipeResponse) GetPostbiotics() []*Postbiotic {
+	if x != nil {
+		return x.Postbiotics
+	}
+	return nil
 }
 
 type UpdateRecipeRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Recipe *Recipe `protobuf:"bytes,1,opt,name=recipe,proto3" json:"recipe,omitempty"`
 }
 
 func (x *UpdateRecipeRequest) Reset() {
 	*x = UpdateRecipeRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_canbiocin_proto_service_proto_msgTypes[8]
+		mi := &file_canbiocin_proto_service_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -373,7 +885,7 @@ func (x *UpdateRecipeRequest) String() string {
 func (*UpdateRecipeRequest) ProtoMessage() {}
 
 func (x *UpdateRecipeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_canbiocin_proto_service_proto_msgTypes[8]
+	mi := &file_canbiocin_proto_service_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -386,7 +898,14 @@ func (x *UpdateRecipeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateRecipeRequest.ProtoReflect.Descriptor instead.
 func (*UpdateRecipeRequest) Descriptor() ([]byte, []int) {
-	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{8}
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *UpdateRecipeRequest) GetRecipe() *Recipe {
+	if x != nil {
+		return x.Recipe
+	}
+	return nil
 }
 
 type UpdateRecipeResponse struct {
@@ -398,7 +917,7 @@ type UpdateRecipeResponse struct {
 func (x *UpdateRecipeResponse) Reset() {
 	*x = UpdateRecipeResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_canbiocin_proto_service_proto_msgTypes[9]
+		mi := &file_canbiocin_proto_service_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -411,7 +930,7 @@ func (x *UpdateRecipeResponse) String() string {
 func (*UpdateRecipeResponse) ProtoMessage() {}
 
 func (x *UpdateRecipeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_canbiocin_proto_service_proto_msgTypes[9]
+	mi := &file_canbiocin_proto_service_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -424,19 +943,106 @@ func (x *UpdateRecipeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateRecipeResponse.ProtoReflect.Descriptor instead.
 func (*UpdateRecipeResponse) Descriptor() ([]byte, []int) {
-	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{9}
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{19}
+}
+
+type DeleteRecipeRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *DeleteRecipeRequest) Reset() {
+	*x = DeleteRecipeRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[20]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteRecipeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteRecipeRequest) ProtoMessage() {}
+
+func (x *DeleteRecipeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[20]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteRecipeRequest.ProtoReflect.Descriptor instead.
+func (*DeleteRecipeRequest) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *DeleteRecipeRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeleteRecipeResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeleteRecipeResponse) Reset() {
+	*x = DeleteRecipeResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteRecipeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteRecipeResponse) ProtoMessage() {}
+
+func (x *DeleteRecipeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteRecipeResponse.ProtoReflect.Descriptor instead.
+func (*DeleteRecipeResponse) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{21}
 }
 
 type ListRecipesRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	IngredientId string `protobuf:"bytes,1,opt,name=ingredientId,proto3" json:"ingredientId,omitempty"`
 }
 
 func (x *ListRecipesRequest) Reset() {
 	*x = ListRecipesRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_canbiocin_proto_service_proto_msgTypes[10]
+		mi := &file_canbiocin_proto_service_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -449,7 +1055,7 @@ func (x *ListRecipesRequest) String() string {
 func (*ListRecipesRequest) ProtoMessage() {}
 
 func (x *ListRecipesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_canbiocin_proto_service_proto_msgTypes[10]
+	mi := &file_canbiocin_proto_service_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -462,19 +1068,28 @@ func (x *ListRecipesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRecipesRequest.ProtoReflect.Descriptor instead.
 func (*ListRecipesRequest) Descriptor() ([]byte, []int) {
-	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{10}
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *ListRecipesRequest) GetIngredientId() string {
+	if x != nil {
+		return x.IngredientId
+	}
+	return ""
 }
 
 type ListRecipesResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Recipes []*Recipe `protobuf:"bytes,1,rep,name=recipes,proto3" json:"recipes,omitempty"`
 }
 
 func (x *ListRecipesResponse) Reset() {
 	*x = ListRecipesResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_canbiocin_proto_service_proto_msgTypes[11]
+		mi := &file_canbiocin_proto_service_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -487,7 +1102,7 @@ func (x *ListRecipesResponse) String() string {
 func (*ListRecipesResponse) ProtoMessage() {}
 
 func (x *ListRecipesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_canbiocin_proto_service_proto_msgTypes[11]
+	mi := &file_canbiocin_proto_service_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -500,19 +1115,30 @@ func (x *ListRecipesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRecipesResponse.ProtoReflect.Descriptor instead.
 func (*ListRecipesResponse) Descriptor() ([]byte, []int) {
-	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{11}
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *ListRecipesResponse) GetRecipes() []*Recipe {
+	if x != nil {
+		return x.Recipes
+	}
+	return nil
 }
 
 type CalculateRecipeRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	RecipeId         string `protobuf:"bytes,1,opt,name=recipe_id,json=recipeId,proto3" json:"recipe_id,omitempty"`
+	ServingSizeGrams int32  `protobuf:"varint,2,opt,name=serving_size_grams,json=servingSizeGrams,proto3" json:"serving_size_grams,omitempty"`
+	TotalGrams       int32  `protobuf:"varint,3,opt,name=total_grams,json=totalGrams,proto3" json:"total_grams,omitempty"`
 }
 
 func (x *CalculateRecipeRequest) Reset() {
 	*x = CalculateRecipeRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_canbiocin_proto_service_proto_msgTypes[12]
+		mi := &file_canbiocin_proto_service_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -525,7 +1151,7 @@ func (x *CalculateRecipeRequest) String() string {
 func (*CalculateRecipeRequest) ProtoMessage() {}
 
 func (x *CalculateRecipeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_canbiocin_proto_service_proto_msgTypes[12]
+	mi := &file_canbiocin_proto_service_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -538,19 +1164,42 @@ func (x *CalculateRecipeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CalculateRecipeRequest.ProtoReflect.Descriptor instead.
 func (*CalculateRecipeRequest) Descriptor() ([]byte, []int) {
-	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{12}
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *CalculateRecipeRequest) GetRecipeId() string {
+	if x != nil {
+		return x.RecipeId
+	}
+	return ""
+}
+
+func (x *CalculateRecipeRequest) GetServingSizeGrams() int32 {
+	if x != nil {
+		return x.ServingSizeGrams
+	}
+	return 0
+}
+
+func (x *CalculateRecipeRequest) GetTotalGrams() int32 {
+	if x != nil {
+		return x.TotalGrams
+	}
+	return 0
 }
 
 type CalculateRecipeResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	RecipeDetails *RecipeDetails `protobuf:"bytes,1,opt,name=recipe_details,json=recipeDetails,proto3" json:"recipe_details,omitempty"`
 }
 
 func (x *CalculateRecipeResponse) Reset() {
 	*x = CalculateRecipeResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_canbiocin_proto_service_proto_msgTypes[13]
+		mi := &file_canbiocin_proto_service_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -563,7 +1212,7 @@ func (x *CalculateRecipeResponse) String() string {
 func (*CalculateRecipeResponse) ProtoMessage() {}
 
 func (x *CalculateRecipeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_canbiocin_proto_service_proto_msgTypes[13]
+	mi := &file_canbiocin_proto_service_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -576,7 +1225,354 @@ func (x *CalculateRecipeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CalculateRecipeResponse.ProtoReflect.Descriptor instead.
 func (*CalculateRecipeResponse) Descriptor() ([]byte, []int) {
-	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{13}
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *CalculateRecipeResponse) GetRecipeDetails() *RecipeDetails {
+	if x != nil {
+		return x.RecipeDetails
+	}
+	return nil
+}
+
+type CreateContainerRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Container *Container `protobuf:"bytes,1,opt,name=container,proto3" json:"container,omitempty"`
+}
+
+func (x *CreateContainerRequest) Reset() {
+	*x = CreateContainerRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[26]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateContainerRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateContainerRequest) ProtoMessage() {}
+
+func (x *CreateContainerRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[26]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateContainerRequest.ProtoReflect.Descriptor instead.
+func (*CreateContainerRequest) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *CreateContainerRequest) GetContainer() *Container {
+	if x != nil {
+		return x.Container
+	}
+	return nil
+}
+
+type CreateContainerResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *CreateContainerResponse) Reset() {
+	*x = CreateContainerResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[27]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateContainerResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateContainerResponse) ProtoMessage() {}
+
+func (x *CreateContainerResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[27]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateContainerResponse.ProtoReflect.Descriptor instead.
+func (*CreateContainerResponse) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{27}
+}
+
+type DeleteContainerRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *DeleteContainerRequest) Reset() {
+	*x = DeleteContainerRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[28]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteContainerRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteContainerRequest) ProtoMessage() {}
+
+func (x *DeleteContainerRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[28]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteContainerRequest.ProtoReflect.Descriptor instead.
+func (*DeleteContainerRequest) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *DeleteContainerRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeleteContainerResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeleteContainerResponse) Reset() {
+	*x = DeleteContainerResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[29]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteContainerResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteContainerResponse) ProtoMessage() {}
+
+func (x *DeleteContainerResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[29]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteContainerResponse.ProtoReflect.Descriptor instead.
+func (*DeleteContainerResponse) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{29}
+}
+
+type UpdateContainerRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Container *Container `protobuf:"bytes,1,opt,name=container,proto3" json:"container,omitempty"`
+}
+
+func (x *UpdateContainerRequest) Reset() {
+	*x = UpdateContainerRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[30]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateContainerRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateContainerRequest) ProtoMessage() {}
+
+func (x *UpdateContainerRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[30]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateContainerRequest.ProtoReflect.Descriptor instead.
+func (*UpdateContainerRequest) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *UpdateContainerRequest) GetContainer() *Container {
+	if x != nil {
+		return x.Container
+	}
+	return nil
+}
+
+type UpdateContainerResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *UpdateContainerResponse) Reset() {
+	*x = UpdateContainerResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[31]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateContainerResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateContainerResponse) ProtoMessage() {}
+
+func (x *UpdateContainerResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[31]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateContainerResponse.ProtoReflect.Descriptor instead.
+func (*UpdateContainerResponse) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{31}
+}
+
+type ListContainersRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ListContainersRequest) Reset() {
+	*x = ListContainersRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[32]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListContainersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListContainersRequest) ProtoMessage() {}
+
+func (x *ListContainersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[32]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListContainersRequest.ProtoReflect.Descriptor instead.
+func (*ListContainersRequest) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{32}
+}
+
+type ListContainersResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Containers []*Container `protobuf:"bytes,1,rep,name=containers,proto3" json:"containers,omitempty"`
+}
+
+func (x *ListContainersResponse) Reset() {
+	*x = ListContainersResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_service_proto_msgTypes[33]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListContainersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListContainersResponse) ProtoMessage() {}
+
+func (x *ListContainersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_service_proto_msgTypes[33]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListContainersResponse.ProtoReflect.Descriptor instead.
+func (*ListContainersResponse) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_service_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *ListContainersResponse) GetContainers() []*Container {
+	if x != nil {
+		return x.Containers
+	}
+	return nil
 }
 
 var File_canbiocin_proto_service_proto protoreflect.FileDescriptor
@@ -584,79 +1580,211 @@ var File_canbiocin_proto_service_proto protoreflect.FileDescriptor
 var file_canbiocin_proto_service_proto_rawDesc = []byte{
 	0x0a, 0x1d, 0x63, 0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63, 0x69, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a,
-	0x20, 0x63, 0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63, 0x69, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x2f, 0x70, 0x72, 0x65, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x1a, 0x20, 0x63, 0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63, 0x69, 0x6e, 0x2f, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x2f, 0x70, 0x72, 0x6f, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x73, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x1a, 0x21, 0x63, 0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63, 0x69, 0x6e, 0x2f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x70, 0x6f, 0x73, 0x74, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x73,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1c, 0x63, 0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63, 0x69,
-	0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x72, 0x65, 0x63, 0x69, 0x70, 0x65, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x22, 0x46, 0x0a, 0x17, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e,
-	0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x2b, 0x0a, 0x0a, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74,
-	0x52, 0x0a, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x22, 0x1a, 0x0a, 0x18,
+	0x1f, 0x63, 0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63, 0x69, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2f, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x1a, 0x1c, 0x63, 0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63, 0x69, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x2f, 0x72, 0x65, 0x63, 0x69, 0x70, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x20,
+	0x63, 0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63, 0x69, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
+	0x70, 0x72, 0x6f, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x1a, 0x20, 0x63, 0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63, 0x69, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x2f, 0x70, 0x72, 0x65, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x73, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x1a, 0x21, 0x63, 0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63, 0x69, 0x6e, 0x2f, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2f, 0x70, 0x6f, 0x73, 0x74, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x73, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x46, 0x0a, 0x17, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49,
+	0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x2b, 0x0a, 0x0a, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e,
+	0x74, 0x52, 0x0a, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x22, 0x2a, 0x0a,
+	0x18, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x3a, 0x0a, 0x14, 0x47, 0x65, 0x74,
+	0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
+	0x64, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x74, 0x79, 0x70, 0x65, 0x22, 0x44, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x49, 0x6e, 0x67, 0x72,
+	0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2b,
+	0x0a, 0x0a, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52,
+	0x0a, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x22, 0x46, 0x0a, 0x17, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x2b, 0x0a, 0x0a, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64,
+	0x69, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x49, 0x6e, 0x67,
+	0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x0a, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69,
+	0x65, 0x6e, 0x74, 0x22, 0x1a, 0x0a, 0x18, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x67,
+	0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x3d, 0x0a, 0x17, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69,
+	0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79,
+	0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x22, 0x1a,
+	0x0a, 0x18, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65,
+	0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x18, 0x0a, 0x16, 0x4c, 0x69,
+	0x73, 0x74, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x22, 0x48, 0x0a, 0x17, 0x4c, 0x69, 0x73, 0x74, 0x49, 0x6e, 0x67, 0x72,
+	0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x2d, 0x0a, 0x0b, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x01,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e,
+	0x74, 0x52, 0x0b, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x73, 0x22, 0x19,
+	0x0a, 0x17, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x72, 0x6f, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x53,
+	0x70, 0x70, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x2e, 0x0a, 0x18, 0x4c, 0x69, 0x73,
+	0x74, 0x50, 0x72, 0x6f, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x53, 0x70, 0x70, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x70, 0x70, 0x73, 0x18, 0x01, 0x20,
+	0x03, 0x28, 0x09, 0x52, 0x04, 0x73, 0x70, 0x70, 0x73, 0x22, 0x1e, 0x0a, 0x1c, 0x4c, 0x69, 0x73,
+	0x74, 0x50, 0x72, 0x65, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f,
+	0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x3f, 0x0a, 0x1d, 0x4c, 0x69, 0x73,
+	0x74, 0x50, 0x72, 0x65, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f,
+	0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x61,
+	0x74, 0x65, 0x67, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0a,
+	0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x22, 0x36, 0x0a, 0x13, 0x43, 0x72,
+	0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x1f, 0x0a, 0x06, 0x72, 0x65, 0x63, 0x69, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x07, 0x2e, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x06, 0x72, 0x65, 0x63, 0x69,
+	0x70, 0x65, 0x22, 0x26, 0x0a, 0x14, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69,
+	0x70, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x22, 0x0a, 0x10, 0x47, 0x65,
+	0x74, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0xbb,
+	0x01, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1f, 0x0a, 0x06, 0x72, 0x65, 0x63, 0x69, 0x70, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x07, 0x2e, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x06, 0x72,
+	0x65, 0x63, 0x69, 0x70, 0x65, 0x12, 0x2a, 0x0a, 0x0a, 0x70, 0x72, 0x6f, 0x62, 0x69, 0x6f, 0x74,
+	0x69, 0x63, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x50, 0x72, 0x6f, 0x62,
+	0x69, 0x6f, 0x74, 0x69, 0x63, 0x52, 0x0a, 0x70, 0x72, 0x6f, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63,
+	0x73, 0x12, 0x2a, 0x0a, 0x0a, 0x70, 0x72, 0x65, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x73, 0x18,
+	0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x50, 0x72, 0x65, 0x62, 0x69, 0x6f, 0x74, 0x69,
+	0x63, 0x52, 0x0a, 0x70, 0x72, 0x65, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x73, 0x12, 0x2d, 0x0a,
+	0x0b, 0x70, 0x6f, 0x73, 0x74, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x73, 0x18, 0x04, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x52,
+	0x0b, 0x70, 0x6f, 0x73, 0x74, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x73, 0x22, 0x36, 0x0a, 0x13,
+	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x06, 0x72, 0x65, 0x63, 0x69, 0x70, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x07, 0x2e, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x06, 0x72, 0x65,
+	0x63, 0x69, 0x70, 0x65, 0x22, 0x16, 0x0a, 0x14, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65,
+	0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x25, 0x0a, 0x13,
+	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x02, 0x69, 0x64, 0x22, 0x16, 0x0a, 0x14, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x63,
+	0x69, 0x70, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x38, 0x0a, 0x12, 0x4c,
+	0x69, 0x73, 0x74, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x22, 0x0a, 0x0c, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x49,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69,
+	0x65, 0x6e, 0x74, 0x49, 0x64, 0x22, 0x38, 0x0a, 0x13, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x63,
+	0x69, 0x70, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x21, 0x0a, 0x07,
+	0x72, 0x65, 0x63, 0x69, 0x70, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x07, 0x2e,
+	0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x07, 0x72, 0x65, 0x63, 0x69, 0x70, 0x65, 0x73, 0x22,
+	0x84, 0x01, 0x0a, 0x16, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63,
+	0x69, 0x70, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x72, 0x65,
+	0x63, 0x69, 0x70, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x72,
+	0x65, 0x63, 0x69, 0x70, 0x65, 0x49, 0x64, 0x12, 0x2c, 0x0a, 0x12, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x6e, 0x67, 0x5f, 0x73, 0x69, 0x7a, 0x65, 0x5f, 0x67, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x05, 0x52, 0x10, 0x73, 0x65, 0x72, 0x76, 0x69, 0x6e, 0x67, 0x53, 0x69, 0x7a, 0x65,
+	0x47, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x1f, 0x0a, 0x0b, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x67,
+	0x72, 0x61, 0x6d, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0a, 0x74, 0x6f, 0x74, 0x61,
+	0x6c, 0x47, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x50, 0x0a, 0x17, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c,
+	0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x35, 0x0a, 0x0e, 0x72, 0x65, 0x63, 0x69, 0x70, 0x65, 0x5f, 0x64, 0x65, 0x74, 0x61,
+	0x69, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x52, 0x65, 0x63, 0x69,
+	0x70, 0x65, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x73, 0x52, 0x0d, 0x72, 0x65, 0x63, 0x69, 0x70,
+	0x65, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x73, 0x22, 0x42, 0x0a, 0x16, 0x43, 0x72, 0x65, 0x61,
+	0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x28, 0x0a, 0x09, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65,
+	0x72, 0x52, 0x09, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x22, 0x19, 0x0a, 0x17,
+	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x28, 0x0a, 0x16, 0x44, 0x65, 0x6c, 0x65, 0x74,
+	0x65, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
+	0x64, 0x22, 0x19, 0x0a, 0x17, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x61,
+	0x69, 0x6e, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x42, 0x0a, 0x16,
+	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x28, 0x0a, 0x09, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69,
+	0x6e, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x43, 0x6f, 0x6e, 0x74,
+	0x61, 0x69, 0x6e, 0x65, 0x72, 0x52, 0x09, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72,
+	0x22, 0x19, 0x0a, 0x17, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69,
+	0x6e, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x17, 0x0a, 0x15, 0x4c,
+	0x69, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x73, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x22, 0x44, 0x0a, 0x16, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x74,
+	0x61, 0x69, 0x6e, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2a,
+	0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x52, 0x0a,
+	0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x73, 0x32, 0xb6, 0x09, 0x0a, 0x10, 0x43,
+	0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63, 0x69, 0x6e, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
+	0x49, 0x0a, 0x10, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69,
+	0x65, 0x6e, 0x74, 0x12, 0x18, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72,
+	0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e,
 	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x46, 0x0a, 0x17, 0x55, 0x70, 0x64, 0x61,
-	0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x12, 0x2b, 0x0a, 0x0a, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e,
-	0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64,
-	0x69, 0x65, 0x6e, 0x74, 0x52, 0x0a, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74,
-	0x22, 0x1a, 0x0a, 0x18, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64,
-	0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x18, 0x0a, 0x16,
-	0x4c, 0x69, 0x73, 0x74, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x73, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x46, 0x0a, 0x17, 0x4c, 0x69, 0x73, 0x74, 0x49, 0x6e,
-	0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x2b, 0x0a, 0x0a, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x18,
-	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65,
-	0x6e, 0x74, 0x52, 0x0a, 0x69, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x22, 0x15,
-	0x0a, 0x13, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x16, 0x0a, 0x14, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52,
-	0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x15, 0x0a,
-	0x13, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x22, 0x16, 0x0a, 0x14, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65,
-	0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x14, 0x0a, 0x12,
-	0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x22, 0x15, 0x0a, 0x13, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65,
-	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x18, 0x0a, 0x16, 0x43, 0x61, 0x6c,
-	0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x22, 0x19, 0x0a, 0x17, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65,
-	0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xeb,
-	0x03, 0x0a, 0x09, 0x43, 0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63, 0x69, 0x6e, 0x12, 0x49, 0x0a, 0x10,
-	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74,
-	0x12, 0x18, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69,
-	0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x43, 0x72, 0x65,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x40, 0x0a, 0x0d, 0x47, 0x65,
+	0x74, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x12, 0x15, 0x2e, 0x47, 0x65,
+	0x74, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x16, 0x2e, 0x47, 0x65, 0x74, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65,
+	0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x49, 0x0a, 0x10,
+	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74,
+	0x12, 0x18, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69,
+	0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x55, 0x70, 0x64,
 	0x61, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x49, 0x0a, 0x10, 0x55, 0x70, 0x64, 0x61, 0x74,
-	0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x12, 0x18, 0x2e, 0x55, 0x70,
-	0x64, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x49, 0x6e,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x49, 0x0a, 0x10, 0x44, 0x65, 0x6c, 0x65, 0x74,
+	0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x12, 0x18, 0x2e, 0x44, 0x65,
+	0x6c, 0x65, 0x74, 0x65, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x49, 0x6e,
 	0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
 	0x22, 0x00, 0x12, 0x46, 0x0a, 0x0f, 0x4c, 0x69, 0x73, 0x74, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64,
 	0x69, 0x65, 0x6e, 0x74, 0x73, 0x12, 0x17, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x49, 0x6e, 0x67, 0x72,
 	0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18,
 	0x2e, 0x4c, 0x69, 0x73, 0x74, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x64, 0x69, 0x65, 0x6e, 0x74, 0x73,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3d, 0x0a, 0x0c, 0x43, 0x72,
-	0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x12, 0x14, 0x2e, 0x43, 0x72, 0x65,
-	0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x15, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3d, 0x0a, 0x0c, 0x55, 0x70, 0x64,
-	0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x12, 0x14, 0x2e, 0x55, 0x70, 0x64, 0x61,
-	0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x15, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3a, 0x0a, 0x0b, 0x4c, 0x69, 0x73, 0x74,
-	0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x73, 0x12, 0x13, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65,
-	0x63, 0x69, 0x70, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x4c,
-	0x69, 0x73, 0x74, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x00, 0x12, 0x46, 0x0a, 0x0f, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74,
-	0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x12, 0x17, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c,
-	0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x18, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69,
-	0x70, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x1c, 0x5a, 0x1a,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x61, 0x6e, 0x62, 0x69,
-	0x6f, 0x63, 0x69, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x49, 0x0a, 0x10, 0x4c, 0x69,
+	0x73, 0x74, 0x50, 0x72, 0x6f, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x53, 0x70, 0x70, 0x12, 0x18,
+	0x2e, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x72, 0x6f, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x53, 0x70,
+	0x70, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x50,
+	0x72, 0x6f, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x53, 0x70, 0x70, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x58, 0x0a, 0x15, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x72, 0x65,
+	0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x12, 0x1d,
+	0x2e, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x72, 0x65, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x43, 0x61,
+	0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e,
+	0x4c, 0x69, 0x73, 0x74, 0x50, 0x72, 0x65, 0x62, 0x69, 0x6f, 0x74, 0x69, 0x63, 0x43, 0x61, 0x74,
+	0x65, 0x67, 0x6f, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12,
+	0x3d, 0x0a, 0x0c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x12,
+	0x14, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65,
+	0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x34,
+	0x0a, 0x09, 0x47, 0x65, 0x74, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x12, 0x11, 0x2e, 0x47, 0x65,
+	0x74, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12,
+	0x2e, 0x47, 0x65, 0x74, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x00, 0x12, 0x3d, 0x0a, 0x0c, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65,
+	0x63, 0x69, 0x70, 0x65, 0x12, 0x14, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63,
+	0x69, 0x70, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x55, 0x70, 0x64,
+	0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x00, 0x12, 0x3d, 0x0a, 0x0c, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x63,
+	0x69, 0x70, 0x65, 0x12, 0x14, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69,
+	0x70, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x44, 0x65, 0x6c, 0x65,
+	0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x12, 0x3a, 0x0a, 0x0b, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65,
+	0x73, 0x12, 0x13, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x73, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x63,
+	0x69, 0x70, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x46,
+	0x0a, 0x0f, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70,
+	0x65, 0x12, 0x17, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63,
+	0x69, 0x70, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x43, 0x61, 0x6c,
+	0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x63, 0x69, 0x70, 0x65, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x46, 0x0a, 0x0f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x12, 0x17, 0x2e, 0x43, 0x72, 0x65, 0x61,
+	0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x18, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x61,
+	0x69, 0x6e, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x46,
+	0x0a, 0x0f, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65,
+	0x72, 0x12, 0x17, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69,
+	0x6e, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x44, 0x65, 0x6c,
+	0x65, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x46, 0x0a, 0x0f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x12, 0x17, 0x2e, 0x55, 0x70, 0x64, 0x61,
+	0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x18, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x61,
+	0x69, 0x6e, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x43,
+	0x0a, 0x0e, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x73,
+	0x12, 0x16, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x43,
+	0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x00, 0x42, 0x1c, 0x5a, 0x1a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
+	0x6d, 0x2f, 0x63, 0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63, 0x69, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -671,47 +1799,105 @@ func file_canbiocin_proto_service_proto_rawDescGZIP() []byte {
 	return file_canbiocin_proto_service_proto_rawDescData
 }
 
-var file_canbiocin_proto_service_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_canbiocin_proto_service_proto_msgTypes = make([]protoimpl.MessageInfo, 34)
 var file_canbiocin_proto_service_proto_goTypes = []interface{}{
-	(*CreateIngredientRequest)(nil),  // 0: CreateIngredientRequest
-	(*CreateIngredientResponse)(nil), // 1: CreateIngredientResponse
-	(*UpdateIngredientRequest)(nil),  // 2: UpdateIngredientRequest
-	(*UpdateIngredientResponse)(nil), // 3: UpdateIngredientResponse
-	(*ListIngredientsRequest)(nil),   // 4: ListIngredientsRequest
-	(*ListIngredientsResponse)(nil),  // 5: ListIngredientsResponse
-	(*CreateRecipeRequest)(nil),      // 6: CreateRecipeRequest
-	(*CreateRecipeResponse)(nil),     // 7: CreateRecipeResponse
-	(*UpdateRecipeRequest)(nil),      // 8: UpdateRecipeRequest
-	(*UpdateRecipeResponse)(nil),     // 9: UpdateRecipeResponse
-	(*ListRecipesRequest)(nil),       // 10: ListRecipesRequest
-	(*ListRecipesResponse)(nil),      // 11: ListRecipesResponse
-	(*CalculateRecipeRequest)(nil),   // 12: CalculateRecipeRequest
-	(*CalculateRecipeResponse)(nil),  // 13: CalculateRecipeResponse
-	(*Ingredient)(nil),               // 14: Ingredient
+	(*CreateIngredientRequest)(nil),       // 0: CreateIngredientRequest
+	(*CreateIngredientResponse)(nil),      // 1: CreateIngredientResponse
+	(*GetIngredientRequest)(nil),          // 2: GetIngredientRequest
+	(*GetIngredientResponse)(nil),         // 3: GetIngredientResponse
+	(*UpdateIngredientRequest)(nil),       // 4: UpdateIngredientRequest
+	(*UpdateIngredientResponse)(nil),      // 5: UpdateIngredientResponse
+	(*DeleteIngredientRequest)(nil),       // 6: DeleteIngredientRequest
+	(*DeleteIngredientResponse)(nil),      // 7: DeleteIngredientResponse
+	(*ListIngredientsRequest)(nil),        // 8: ListIngredientsRequest
+	(*ListIngredientsResponse)(nil),       // 9: ListIngredientsResponse
+	(*ListProbioticSppRequest)(nil),       // 10: ListProbioticSppRequest
+	(*ListProbioticSppResponse)(nil),      // 11: ListProbioticSppResponse
+	(*ListPrebioticCategoryRequest)(nil),  // 12: ListPrebioticCategoryRequest
+	(*ListPrebioticCategoryResponse)(nil), // 13: ListPrebioticCategoryResponse
+	(*CreateRecipeRequest)(nil),           // 14: CreateRecipeRequest
+	(*CreateRecipeResponse)(nil),          // 15: CreateRecipeResponse
+	(*GetRecipeRequest)(nil),              // 16: GetRecipeRequest
+	(*GetRecipeResponse)(nil),             // 17: GetRecipeResponse
+	(*UpdateRecipeRequest)(nil),           // 18: UpdateRecipeRequest
+	(*UpdateRecipeResponse)(nil),          // 19: UpdateRecipeResponse
+	(*DeleteRecipeRequest)(nil),           // 20: DeleteRecipeRequest
+	(*DeleteRecipeResponse)(nil),          // 21: DeleteRecipeResponse
+	(*ListRecipesRequest)(nil),            // 22: ListRecipesRequest
+	(*ListRecipesResponse)(nil),           // 23: ListRecipesResponse
+	(*CalculateRecipeRequest)(nil),        // 24: CalculateRecipeRequest
+	(*CalculateRecipeResponse)(nil),       // 25: CalculateRecipeResponse
+	(*CreateContainerRequest)(nil),        // 26: CreateContainerRequest
+	(*CreateContainerResponse)(nil),       // 27: CreateContainerResponse
+	(*DeleteContainerRequest)(nil),        // 28: DeleteContainerRequest
+	(*DeleteContainerResponse)(nil),       // 29: DeleteContainerResponse
+	(*UpdateContainerRequest)(nil),        // 30: UpdateContainerRequest
+	(*UpdateContainerResponse)(nil),       // 31: UpdateContainerResponse
+	(*ListContainersRequest)(nil),         // 32: ListContainersRequest
+	(*ListContainersResponse)(nil),        // 33: ListContainersResponse
+	(*Ingredient)(nil),                    // 34: Ingredient
+	(*Recipe)(nil),                        // 35: Recipe
+	(*Probiotic)(nil),                     // 36: Probiotic
+	(*Prebiotic)(nil),                     // 37: Prebiotic
+	(*Postbiotic)(nil),                    // 38: Postbiotic
+	(*RecipeDetails)(nil),                 // 39: RecipeDetails
+	(*Container)(nil),                     // 40: Container
 }
 var file_canbiocin_proto_service_proto_depIdxs = []int32{
-	14, // 0: CreateIngredientRequest.ingredient:type_name -> Ingredient
-	14, // 1: UpdateIngredientRequest.ingredient:type_name -> Ingredient
-	14, // 2: ListIngredientsResponse.ingredient:type_name -> Ingredient
-	0,  // 3: Canbiocin.CreateIngredient:input_type -> CreateIngredientRequest
-	2,  // 4: Canbiocin.UpdateIngredient:input_type -> UpdateIngredientRequest
-	4,  // 5: Canbiocin.ListIngredients:input_type -> ListIngredientsRequest
-	6,  // 6: Canbiocin.CreateRecipe:input_type -> CreateRecipeRequest
-	8,  // 7: Canbiocin.UpdateRecipe:input_type -> UpdateRecipeRequest
-	10, // 8: Canbiocin.ListRecipes:input_type -> ListRecipesRequest
-	12, // 9: Canbiocin.CalculateRecipe:input_type -> CalculateRecipeRequest
-	1,  // 10: Canbiocin.CreateIngredient:output_type -> CreateIngredientResponse
-	3,  // 11: Canbiocin.UpdateIngredient:output_type -> UpdateIngredientResponse
-	5,  // 12: Canbiocin.ListIngredients:output_type -> ListIngredientsResponse
-	7,  // 13: Canbiocin.CreateRecipe:output_type -> CreateRecipeResponse
-	9,  // 14: Canbiocin.UpdateRecipe:output_type -> UpdateRecipeResponse
-	11, // 15: Canbiocin.ListRecipes:output_type -> ListRecipesResponse
-	13, // 16: Canbiocin.CalculateRecipe:output_type -> CalculateRecipeResponse
-	10, // [10:17] is the sub-list for method output_type
-	3,  // [3:10] is the sub-list for method input_type
-	3,  // [3:3] is the sub-list for extension type_name
-	3,  // [3:3] is the sub-list for extension extendee
-	0,  // [0:3] is the sub-list for field type_name
+	34, // 0: CreateIngredientRequest.ingredient:type_name -> Ingredient
+	34, // 1: GetIngredientResponse.ingredient:type_name -> Ingredient
+	34, // 2: UpdateIngredientRequest.ingredient:type_name -> Ingredient
+	34, // 3: ListIngredientsResponse.ingredients:type_name -> Ingredient
+	35, // 4: CreateRecipeRequest.recipe:type_name -> Recipe
+	35, // 5: GetRecipeResponse.recipe:type_name -> Recipe
+	36, // 6: GetRecipeResponse.probiotics:type_name -> Probiotic
+	37, // 7: GetRecipeResponse.prebiotics:type_name -> Prebiotic
+	38, // 8: GetRecipeResponse.postbiotics:type_name -> Postbiotic
+	35, // 9: UpdateRecipeRequest.recipe:type_name -> Recipe
+	35, // 10: ListRecipesResponse.recipes:type_name -> Recipe
+	39, // 11: CalculateRecipeResponse.recipe_details:type_name -> RecipeDetails
+	40, // 12: CreateContainerRequest.container:type_name -> Container
+	40, // 13: UpdateContainerRequest.container:type_name -> Container
+	40, // 14: ListContainersResponse.containers:type_name -> Container
+	0,  // 15: CanbiocinService.CreateIngredient:input_type -> CreateIngredientRequest
+	2,  // 16: CanbiocinService.GetIngredient:input_type -> GetIngredientRequest
+	4,  // 17: CanbiocinService.UpdateIngredient:input_type -> UpdateIngredientRequest
+	6,  // 18: CanbiocinService.DeleteIngredient:input_type -> DeleteIngredientRequest
+	8,  // 19: CanbiocinService.ListIngredients:input_type -> ListIngredientsRequest
+	10, // 20: CanbiocinService.ListProbioticSpp:input_type -> ListProbioticSppRequest
+	12, // 21: CanbiocinService.ListPrebioticCategory:input_type -> ListPrebioticCategoryRequest
+	14, // 22: CanbiocinService.CreateRecipe:input_type -> CreateRecipeRequest
+	16, // 23: CanbiocinService.GetRecipe:input_type -> GetRecipeRequest
+	18, // 24: CanbiocinService.UpdateRecipe:input_type -> UpdateRecipeRequest
+	20, // 25: CanbiocinService.DeleteRecipe:input_type -> DeleteRecipeRequest
+	22, // 26: CanbiocinService.ListRecipes:input_type -> ListRecipesRequest
+	24, // 27: CanbiocinService.CalculateRecipe:input_type -> CalculateRecipeRequest
+	26, // 28: CanbiocinService.CreateContainer:input_type -> CreateContainerRequest
+	28, // 29: CanbiocinService.DeleteContainer:input_type -> DeleteContainerRequest
+	30, // 30: CanbiocinService.UpdateContainer:input_type -> UpdateContainerRequest
+	32, // 31: CanbiocinService.ListContainers:input_type -> ListContainersRequest
+	1,  // 32: CanbiocinService.CreateIngredient:output_type -> CreateIngredientResponse
+	3,  // 33: CanbiocinService.GetIngredient:output_type -> GetIngredientResponse
+	5,  // 34: CanbiocinService.UpdateIngredient:output_type -> UpdateIngredientResponse
+	7,  // 35: CanbiocinService.DeleteIngredient:output_type -> DeleteIngredientResponse
+	9,  // 36: CanbiocinService.ListIngredients:output_type -> ListIngredientsResponse
+	11, // 37: CanbiocinService.ListProbioticSpp:output_type -> ListProbioticSppResponse
+	13, // 38: CanbiocinService.ListPrebioticCategory:output_type -> ListPrebioticCategoryResponse
+	15, // 39: CanbiocinService.CreateRecipe:output_type -> CreateRecipeResponse
+	17, // 40: CanbiocinService.GetRecipe:output_type -> GetRecipeResponse
+	19, // 41: CanbiocinService.UpdateRecipe:output_type -> UpdateRecipeResponse
+	21, // 42: CanbiocinService.DeleteRecipe:output_type -> DeleteRecipeResponse
+	23, // 43: CanbiocinService.ListRecipes:output_type -> ListRecipesResponse
+	25, // 44: CanbiocinService.CalculateRecipe:output_type -> CalculateRecipeResponse
+	27, // 45: CanbiocinService.CreateContainer:output_type -> CreateContainerResponse
+	29, // 46: CanbiocinService.DeleteContainer:output_type -> DeleteContainerResponse
+	31, // 47: CanbiocinService.UpdateContainer:output_type -> UpdateContainerResponse
+	33, // 48: CanbiocinService.ListContainers:output_type -> ListContainersResponse
+	32, // [32:49] is the sub-list for method output_type
+	15, // [15:32] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_canbiocin_proto_service_proto_init() }
@@ -719,10 +1905,11 @@ func file_canbiocin_proto_service_proto_init() {
 	if File_canbiocin_proto_service_proto != nil {
 		return
 	}
-	file_canbiocin_proto_prebiotics_proto_init()
-	file_canbiocin_proto_probiotics_proto_init()
-	file_canbiocin_proto_postbiotics_proto_init()
+	file_canbiocin_proto_container_proto_init()
 	file_canbiocin_proto_recipe_proto_init()
+	file_canbiocin_proto_probiotics_proto_init()
+	file_canbiocin_proto_prebiotics_proto_init()
+	file_canbiocin_proto_postbiotics_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_canbiocin_proto_service_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CreateIngredientRequest); i {
@@ -749,7 +1936,7 @@ func file_canbiocin_proto_service_proto_init() {
 			}
 		}
 		file_canbiocin_proto_service_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateIngredientRequest); i {
+			switch v := v.(*GetIngredientRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -761,7 +1948,7 @@ func file_canbiocin_proto_service_proto_init() {
 			}
 		}
 		file_canbiocin_proto_service_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateIngredientResponse); i {
+			switch v := v.(*GetIngredientResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -773,7 +1960,7 @@ func file_canbiocin_proto_service_proto_init() {
 			}
 		}
 		file_canbiocin_proto_service_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListIngredientsRequest); i {
+			switch v := v.(*UpdateIngredientRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -785,7 +1972,7 @@ func file_canbiocin_proto_service_proto_init() {
 			}
 		}
 		file_canbiocin_proto_service_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListIngredientsResponse); i {
+			switch v := v.(*UpdateIngredientResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -797,7 +1984,7 @@ func file_canbiocin_proto_service_proto_init() {
 			}
 		}
 		file_canbiocin_proto_service_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateRecipeRequest); i {
+			switch v := v.(*DeleteIngredientRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -809,7 +1996,7 @@ func file_canbiocin_proto_service_proto_init() {
 			}
 		}
 		file_canbiocin_proto_service_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateRecipeResponse); i {
+			switch v := v.(*DeleteIngredientResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -821,7 +2008,7 @@ func file_canbiocin_proto_service_proto_init() {
 			}
 		}
 		file_canbiocin_proto_service_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateRecipeRequest); i {
+			switch v := v.(*ListIngredientsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -833,7 +2020,7 @@ func file_canbiocin_proto_service_proto_init() {
 			}
 		}
 		file_canbiocin_proto_service_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateRecipeResponse); i {
+			switch v := v.(*ListIngredientsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -845,7 +2032,7 @@ func file_canbiocin_proto_service_proto_init() {
 			}
 		}
 		file_canbiocin_proto_service_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListRecipesRequest); i {
+			switch v := v.(*ListProbioticSppRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -857,7 +2044,7 @@ func file_canbiocin_proto_service_proto_init() {
 			}
 		}
 		file_canbiocin_proto_service_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListRecipesResponse); i {
+			switch v := v.(*ListProbioticSppResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -869,7 +2056,7 @@ func file_canbiocin_proto_service_proto_init() {
 			}
 		}
 		file_canbiocin_proto_service_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CalculateRecipeRequest); i {
+			switch v := v.(*ListPrebioticCategoryRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -881,7 +2068,247 @@ func file_canbiocin_proto_service_proto_init() {
 			}
 		}
 		file_canbiocin_proto_service_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListPrebioticCategoryResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateRecipeRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateRecipeResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRecipeRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRecipeResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateRecipeRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateRecipeResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteRecipeRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteRecipeResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListRecipesRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListRecipesResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CalculateRecipeRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CalculateRecipeResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateContainerRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateContainerResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteContainerRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteContainerResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateContainerRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateContainerResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListContainersRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_service_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListContainersResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -899,7 +2326,7 @@ func file_canbiocin_proto_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_canbiocin_proto_service_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   34,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

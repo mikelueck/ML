@@ -260,3 +260,50 @@ func (s *server) CalculateRecipe(ctx context.Context, req *pb.CalculateRecipeReq
 	}
 	return &pb.CalculateRecipeResponse{RecipeDetails: details}, nil
 }
+
+func (s *server) CreateContainer(ctx context.Context, req *pb.CreateContainerRequest) (*pb.CreateContainerResponse, error) {
+	var err error
+	var id string
+	id, err = db.GetContainersCollection().Create(ctx, req.GetContainer())
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	return &pb.CreateContainerResponse{Id: id}, nil
+}
+
+func (s *server) DeleteContainer(ctx context.Context, req *pb.DeleteContainerRequest) (*pb.DeleteContainerResponse, error) {
+	err := db.GetContainersCollection().Delete(ctx, req.GetId())
+
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+
+	return &pb.DeleteContainerResponse{}, nil
+}
+
+func (s *server) UpdateContainer(ctx context.Context, req *pb.UpdateContainerRequest) (*pb.UpdateContainerResponse, error) {
+	err := db.GetContainersCollection().Update(ctx, req.GetContainer())
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	return nil, nil
+}
+
+func (s *server) ListContainers(ctx context.Context, req *pb.ListContainersRequest) (*pb.ListContainersResponse, error) {
+	var containerList []*db.ContainerDoc
+	var err error
+	containerList, err = db.GetContainersCollection().List(ctx)
+	containers := []*pb.Container{}
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	for _, item := range containerList {
+		proto := item.GetProto()
+		if proto == nil {
+			continue
+		}
+		c := proto.(*pb.Container)
+		containers = append(containers, c)
+	}
+	return &pb.ListContainersResponse{Containers: containers}, nil
+}

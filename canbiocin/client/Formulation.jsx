@@ -277,7 +277,7 @@ const ExpandMore = styled((props) => {
   ],
 }));
 
-function RecipeHelper({recipe, editable}) {
+function FormulationHelper({recipe, editable}) {
   const [expanded, setExpanded] = React.useState(false);
   let servingSize = 1000.0; //(mg)
 
@@ -332,7 +332,7 @@ function RecipeHelper({recipe, editable}) {
          }}
     >
     <CardContentNoPadding>
-    Recipe Assistant
+    Formulation Assistant
     <ExpandMore
       expand={expanded}
       onClick={handleExpandClick}
@@ -360,7 +360,7 @@ function RecipeHelper({recipe, editable}) {
   )
 }
 
-function Recipe({recipe, editable, ingredientsByType, actionColumns, rowModels, handleChange}) {
+function Formulation({recipe, editable, ingredientsByType, actionColumns, rowModels, handleChange}) {
 
   const getNamesForType = (type) => {
     let names = [];
@@ -529,7 +529,7 @@ function Delete({recipeId, setError, setErrorOpen}) {
           <DeleteIcon />
         </IconButton>
         <ConfirmDialog
-          title="Delete Recipe"
+          title="Delete Formulation"
           content="Are you sure you want to delete this recipe?"
           open={deleteConfirmOpen}
           onClose={handleDeleteConfirmClose}
@@ -1068,11 +1068,11 @@ export default function () {
           onClose={handleErrorClose} />
       </Toolbar>
     </AppBar>
-    <RecipeHelper
+    <FormulationHelper
         recipe={editable ? updatedRecipe : recipe} 
         editable={editable} 
     />
-    <Recipe 
+    <Formulation 
         recipe={editable ? updatedRecipe : recipe} 
         editable={editable} 
         ingredientsByType={ingredientsByType}

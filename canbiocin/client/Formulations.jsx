@@ -17,7 +17,7 @@ import CancelIcon from '@mui/icons-material/Close';
 
 import { Link } from 'react-router';
 
-import { RecipeDialog } from './Recipe';
+import { FormulationDialog } from './Formulation';
 
 import { getGrpcClient } from './grpc.js';
 

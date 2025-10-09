@@ -211,26 +211,26 @@ func NewRecipeDoc(msg *pb.Recipe) (*RecipeDoc, error) {
 	}, nil
 }
 
-// PackagingAndMillingDoc wraps a packaging and milling document for Firestore storage
-type PackagingAndMillingDoc struct {
+// ContainerDoc wraps a container document for Firestore storage
+type ContainerDoc struct {
 	ID         string `firestore:"id"`
 	Name       string `firestore:"name"` // Derived from ID
 	ProtoBytes []byte `firestore:"proto_bytes"`
 }
 
 // GetID returns the document ID
-func (d *PackagingAndMillingDoc) GetID() string {
+func (d *ContainerDoc) GetID() string {
 	return d.ID
 }
 
 // GetProtoBytes returns the raw proto bytes
-func (d *PackagingAndMillingDoc) GetProtoBytes() []byte {
+func (d *ContainerDoc) GetProtoBytes() []byte {
 	return d.ProtoBytes
 }
 
 // GetProto unmarshals and returns the proto message
-func (d *PackagingAndMillingDoc) GetProto() proto.Message {
-	msg := &pb.PackagingAndMilling{}
+func (d *ContainerDoc) GetProto() proto.Message {
+	msg := &pb.Container{}
 	if err := proto.Unmarshal(d.ProtoBytes, msg); err != nil {
 		return nil
 	}
@@ -238,20 +238,20 @@ func (d *PackagingAndMillingDoc) GetProto() proto.Message {
 }
 
 // GetName returns the document name
-func (d *PackagingAndMillingDoc) GetName() string {
+func (d *ContainerDoc) GetName() string {
 	return d.Name
 }
 
-// NewPackagingAndMillingDoc creates a new PackagingAndMillingDoc from a proto message
-func NewPackagingAndMillingDoc(msg *pb.PackagingAndMilling) (*PackagingAndMillingDoc, error) {
+// NewContainerDoc creates a new ContainerDoc from a proto message
+func NewContainerDoc(msg *pb.Container) (*ContainerDoc, error) {
 	bytes, err := proto.Marshal(msg)
 	if err != nil {
 		return nil, err
 	}
-	// Use ID as name since PackagingAndMilling has no name field
-	return &PackagingAndMillingDoc{
+	// Use ID as name since Container has no name field
+	return &ContainerDoc{
 		ID:         msg.GetId(),
-		Name:       "Packaging/Milling " + msg.GetId(),
+		Name:       msg.GetName(),
 		ProtoBytes: bytes,
 	}, nil
 }

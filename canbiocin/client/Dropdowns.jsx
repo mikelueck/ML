@@ -163,3 +163,61 @@ export function CategoryDropdown({value, onChange}) {
     />
   )
 }
+
+export function ContainerDropdown({value, onChange}) {
+  const [options, setOptions] = React.useState([]);
+  const [v, setV] = React.useState(value);
+
+  let id_prefix = "container"
+  let label = "Container"
+
+  const [inputWidth, setInputWidth] = React.useState(computeWidth(value))
+
+  const updateWidth = (v) => {
+    let w = computeWidth(v.name)
+    if (w < DEFAULT_WIDTH) {
+      w = DEFAULT_WIDTH
+    }
+    setInputWidth(w)
+  }
+
+  React.useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const response = await getGrpcClient().listContainers({});
+        setOptions(response.containers)
+      } catch (error) {
+        console.log(error);
+      } finally {
+      }
+    };
+    fetchOptions();
+  }, []);
+
+  const handleChange = (event, newValue) => {
+    if (onChange) {
+       onChange(newValue);
+    }
+    setV(newValue)
+    updateWidth(newValue)
+  }
+
+  return (
+    <Autocomplete
+      componentsProps={{ popper: { style: { width: 'fit-content' } } }}
+      sx={{ width: `${inputWidth}px` }}
+      options={options}
+      filterOptions={(options, state) => options}
+      value={value}
+      renderInput={(params) => <TextField {...params} label={label} variant="outlined" />}
+      onChange={handleChange}
+      getOptionLabel={(option) => option ? `${option.name} - ${option.sizeG} g` : ""}
+      isOptionEqualToValue={(option, selectedValue) => {
+        return option.id == selectedValue.id
+      }}
+      disableClearable
+      blurOnSelect
+      size='small'
+    />
+  )
+}

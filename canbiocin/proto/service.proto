@@ -1,6 +1,7 @@
 syntax = "proto3";
 option go_package = "github.com/canbiocin/proto";
 
+import "canbiocin/proto/container.proto";
 import "canbiocin/proto/recipe.proto";
 import "canbiocin/proto/probiotics.proto";
 import "canbiocin/proto/prebiotics.proto";
@@ -110,6 +111,37 @@ message CalculateRecipeResponse {
   RecipeDetails recipe_details = 1;
 }
 
+message CreateContainerRequest {
+    Container container = 1;
+}
+
+message CreateContainerResponse {
+  string id = 1;
+}
+
+message DeleteContainerRequest {
+  string id = 1;
+}
+
+message DeleteContainerResponse {
+}
+
+message UpdateContainerRequest {
+    Container container = 1;
+}
+
+message UpdateContainerResponse {
+}
+
+message ListContainersRequest {
+}
+
+message ListContainersResponse {
+    repeated Container containers = 1;
+}
+
+
+
 service CanbiocinService {
   rpc CreateIngredient(CreateIngredientRequest) returns (CreateIngredientResponse) {}
   rpc GetIngredient(GetIngredientRequest) returns (GetIngredientResponse) {}
@@ -123,5 +155,10 @@ service CanbiocinService {
   rpc UpdateRecipe(UpdateRecipeRequest) returns (UpdateRecipeResponse) {}
   rpc DeleteRecipe(DeleteRecipeRequest) returns (DeleteRecipeResponse) {}
   rpc ListRecipes(ListRecipesRequest) returns (ListRecipesResponse) {}
-  rpc CalculateRecipe(CalculateRecipeRequest) returns (CalculateRecipeResponse) {}
+  rpc CalculateRecipe(CalculateRecipeRequest) returns (CalculateRecipeResponse) {} 
+  rpc CreateContainer(CreateContainerRequest) returns (CreateContainerResponse) {}
+  rpc DeleteContainer(DeleteContainerRequest) returns (DeleteContainerResponse) {}
+  rpc UpdateContainer(UpdateContainerRequest) returns (UpdateContainerResponse) {}
+  rpc ListContainers(ListContainersRequest) returns (ListContainersResponse) {}
+
 }

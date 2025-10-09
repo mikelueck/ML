@@ -21,16 +21,6 @@ message PostbioticIngredient {
   float mg_serving = 2;
 }
 
-message PackagingIngredient {
-  string item = 1;
-  int32 count_per_kg = 2;
-}
-
-message MillingIngredient {
-  string item = 1;
-  int32 count_per_kg = 2;
-}
-
 message Company {
   string name = 1;
 }
@@ -43,13 +33,6 @@ message Recipe {
   repeated PrebioticIngredient prebiotics = 4;
   repeated PostbioticIngredient postbiotics = 5;
   int32 probiotic_overage_percent = 6;
-}
-
-message PackagingAndMilling {
-  string id = 1;
-  Recipe recipe = 2;
-  repeated PackagingIngredient packaging = 3;
-  repeated MillingIngredient milling = 4;
 }
 
 message RecipeDetails {

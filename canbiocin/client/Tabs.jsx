@@ -9,7 +9,7 @@ import { Box,
 } from '@mui/material';
 
 const Ingredients = lazy(() => import('./Ingredients'));
-const Recipes = lazy(() => import('./Recipes'));
+const Formulations = lazy(() => import('./Formulations'));
 
 function CustomTabPanel(props) {
   const { children, value, index, ... other } = props
@@ -65,13 +65,13 @@ export default function () {
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Recipies" {...a11yProps(0)} />
+          <Tab label="Formulations" {...a11yProps(0)} />
           <Tab label="Ingredients" {...a11yProps(1)} />
           <Tab label="Suppliers" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <Recipes />
+        <Formulations />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <Ingredients />

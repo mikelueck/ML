@@ -7,6 +7,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router';
 import { ConfirmDialog } from './Dialog';
 import { AlertDialog } from './Dialog';
 import { valueToPrecision } from './utils.js';
+import { ContainerDropdown } from './Dropdowns';
 
 import { getGrpcClient } from './grpc.js';
 
@@ -394,9 +395,13 @@ function RecipeMix({recipeId, servingSizeGrams, totalGrams }) {
 }
 
 export default function () {
+  let initSize = 10000
   const [servingGrams, setServingGrams] = React.useState(1)
-  const [totalGrams, setTotalGrams] = React.useState(10000)
+  const [totalGrams, setTotalGrams] = React.useState(initSize)
   const [searchParams, setSearchParams] = useSearchParams();
+  const [servingsPerContainer, setServingsPerContainer] = React.useState(initSize)
+  const [numContainers, setNumContainers] = React.useState(1)
+  const [gramsPerContainer, setGramsPerContainer] = React.useState(initSize)
 
   const recipeId = searchParams.get('recipeId')
   const navigate = useNavigate();
@@ -407,10 +412,26 @@ export default function () {
 
   const handleTotalGramsChange = (event) => {
     setTotalGrams(event.target.value)
+    updateNumContainers(event.target.value, servingGrams, gramsPerContainer)
   }
+
+  const handleContainerChange = (event) => {
+    setGramsPerContainer(event.sizeG)
+    setServingsPerContainer(Math.floor(event.sizeG / servingGrams))
+    updateNumContainers(totalGrams, servingGrams, event.sizeG)
+  }
+
+  const updateNumContainers = (total, servingSize, g_cont) => {
+    let num_servings_cont = Math.floor(g_cont / servingSize)
+
+    setNumContainers(Math.ceil(total / (num_servings_cont * servingSize)))
+  }
+
 
   const handleServingGramsChange = (event) => {
     setServingGrams(event.target.value)
+    setServingsPerContainer(Math.floor(gramsPerContainer / event.target.value))
+    updateNumContainers(totalGrams, event.target.value, gramsPerContainer)
   }
 
   return (
@@ -447,6 +468,29 @@ export default function () {
           variant="standard"
           onChange={handleTotalGramsChange}
           editable={true}
+      />
+    </Grid>
+    <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
+      <ContainerDropdown
+        onChange={handleContainerChange}
+      />
+      <Field
+          id='servings_per_container'
+          label='Servings per container' 
+          value={servingsPerContainer}
+          size="small"
+          type="number"
+          variant="standard"
+          editable={false}
+      />
+      <Field
+          id='num_containers'
+          label='# containers' 
+          value={numContainers}
+          size="small"
+          type="number"
+          variant="standard"
+          editable={false}
       />
     </Grid>
     <RecipeMix recipeId={recipeId} servingSizeGrams={servingGrams} totalGrams={totalGrams} />

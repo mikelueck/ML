@@ -16,6 +16,7 @@ go_library(
     name = "db_lib",
     srcs = ["base_collection.go",
             "client.go",
+            "containers.go",
             "firestore_docs.go",
             "firestore_client.go",
             "mock_client.go",

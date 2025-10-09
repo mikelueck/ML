@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router';
 
-const RecipeDialog = lazy(() =>  import('./Recipe'));
+const FormulationDialog = lazy(() =>  import('./Formulation'));
 const RecipeMixDialog = lazy(() =>  import('./RecipeMix'));
 const IngredientDialog = lazy(() =>  import('./Ingredient'));
 const TabLayout = lazy(() =>  import('./Tabs'));
@@ -13,7 +13,7 @@ export function App() {
         <Routes>
           <Route name="ingredient" path="/ingredient" element={<IngredientDialog />} />
           <Route name="recipeMix" path="/recipeMix" element={<RecipeMixDialog />} />
-          <Route name="recipe" path="/recipe" element={<RecipeDialog />} />
+          <Route name="recipe" path="/recipe" element={<FormulationDialog />} />
           <Route name="main" path="*" element={<TabLayout />} />
         </Routes>
       </Suspense>
