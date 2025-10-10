@@ -11,7 +11,7 @@ import (
 )
 
 // Given a recipe and number of grams required outputs number of milligrams for each ingredient
-func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams int32, grams int32, containerSizeGrams int32, discountPercent int32) (*pb.RecipeDetails, error) {
+func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams int32, grams int32, container *pb.Container, discountPercent int32) (*pb.RecipeDetails, error) {
 	recipe := doc.GetProto().(*pb.Recipe)
 	if recipe == nil {
 		return nil, fmt.Errorf("Error bad recipe: %v\n", doc)
@@ -19,9 +19,15 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 	retval := &pb.RecipeDetails{Recipe: recipe,
 		ServingSizeGrams: servingSizeGrams,
 		TotalGrams:       grams,
+		Container:        container,
 		DiscountPercent:  discountPercent}
 
 	rows := []*pb.IngredientDetails{}
+
+	var containerSizeGrams int32 = 10000 // default to 10kg
+	if container != nil {
+		containerSizeGrams = container.GetSizeG()
+	}
 
 	numServingsPerContainer := math.Floor(float64(containerSizeGrams) / float64(servingSizeGrams))
 	for _, i := range recipe.GetProbiotics() {

@@ -4,6 +4,7 @@
 
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import type { Message } from "@bufbuild/protobuf";
+import type { Container } from "./container_pb.js";
 import type { Probiotic } from "./probiotics_pb.js";
 import type { Prebiotic } from "./prebiotics_pb.js";
 import type { Postbiotic } from "./postbiotics_pb.js";
@@ -164,9 +165,9 @@ export declare type RecipeDetails = Message<"RecipeDetails"> & {
   ingredients: IngredientDetails[];
 
   /**
-   * @generated from field: int32 container_size_grams = 5;
+   * @generated from field: Container container = 5;
    */
-  containerSizeGrams: number;
+  container?: Container;
 
   /**
    * @generated from field: int32 discount_percent = 6;

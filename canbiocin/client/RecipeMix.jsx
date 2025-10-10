@@ -326,7 +326,7 @@ function TotalRow({title, columnDef, ingredients}) {
   )
 }
 
-function RecipeMix({recipeId, servingSizeGrams, totalGrams, containerSizeGrams, discountPercent }) {
+function RecipeMix({recipeId, servingSizeGrams, totalGrams, container, discountPercent }) {
   const [isLoading, setIsLoading] = React.useState(true)
   const [recipeMix, setRecipeMix] = React.useState(null);
 
@@ -338,7 +338,7 @@ function RecipeMix({recipeId, servingSizeGrams, totalGrams, containerSizeGrams, 
             {recipeId: recipeId, 
              servingSizeGrams: servingSizeGrams, 
              totalGrams: totalGrams,
-             containerSizeGrams: containerSizeGrams,
+             container: container,
              discountPercent: discountPercent });
         
         setRecipeMix(response.recipeDetails);
@@ -350,7 +350,7 @@ function RecipeMix({recipeId, servingSizeGrams, totalGrams, containerSizeGrams, 
       }
     };
     fetchData();
-  }, [recipeId, servingSizeGrams, totalGrams, containerSizeGrams, discountPercent]);
+  }, [recipeId, servingSizeGrams, totalGrams, container, discountPercent]);
 
   if (recipeMix == null) {
     return (
@@ -404,7 +404,7 @@ export default function () {
   const [servingGrams, setServingGrams] = React.useState(1)
   const [totalGrams, setTotalGrams] = React.useState(initSize)
   const [searchParams, setSearchParams] = useSearchParams();
-  const [servingsPerContainer, setServingsPerContainer] = React.useState(initSize)
+  const [container, setContainer] = React.useState(null);
   const [numContainers, setNumContainers] = React.useState(1)
   const [gramsPerContainer, setGramsPerContainer] = React.useState(initSize)
   const [discountPercent, setDiscountPercent] = React.useState(0)
@@ -423,11 +423,13 @@ export default function () {
 
   const handleContainerChange = (event) => {
     setGramsPerContainer(event.sizeG)
-    setServingsPerContainer(Math.floor(event.sizeG / servingGrams))
-    updateNumContainers(totalGrams, servingGrams, event.sizeG)
+    setContainer(event)
+    updateNumContainers(totalGrams, servingGrams, event)
   }
 
-  const updateNumContainers = (total, servingSize, g_cont) => {
+  const updateNumContainers = (total, servingSize, container) => {
+    let g_cont = container ? container.sizeG : initSize
+
     let num_servings_cont = Math.floor(g_cont / servingSize)
 
     setNumContainers(Math.ceil(total / (num_servings_cont * servingSize)))
@@ -437,7 +439,7 @@ export default function () {
   const handleServingGramsChange = (event) => {
     setServingGrams(event.target.value)
     setServingsPerContainer(Math.floor(gramsPerContainer / event.target.value))
-    updateNumContainers(totalGrams, event.target.value, gramsPerContainer)
+    updateNumContainers(totalGrams, event.target.value, container)
   }
 
   const handleDiscountPercentChange = (event) => {
@@ -487,7 +489,7 @@ export default function () {
       <Field
           id='servings_per_container'
           label='Servings per container' 
-          value={servingsPerContainer}
+          value={container ? Math.floor(container.sizeG / servingGrams) : Math.floor(initSize / servingGrams) }
           size="small"
           type="number"
           variant="standard"
@@ -516,7 +518,7 @@ export default function () {
           units="%"
       />
     </Grid>
-    <RecipeMix recipeId={recipeId} servingSizeGrams={servingGrams} totalGrams={totalGrams} containerSizeGrams={gramsPerContainer} discountPercent={discountPercent} />
+    <RecipeMix recipeId={recipeId} servingSizeGrams={servingGrams} totalGrams={totalGrams} container={container} discountPercent={discountPercent} />
     </>
   )
 }

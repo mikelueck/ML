@@ -1,6 +1,7 @@
 syntax = "proto3";
 option go_package = "github.com/canbiocin/proto";
 
+import "canbiocin/proto/container.proto";
 import "canbiocin/proto/money.proto";
 import "canbiocin/proto/prebiotics.proto";
 import "canbiocin/proto/probiotics.proto";
@@ -40,7 +41,7 @@ message RecipeDetails {
   int32 serving_size_grams = 2;
   int32 total_grams = 3;
   repeated IngredientDetails ingredients = 4;
-  int32 container_size_grams = 5;
+  Container container = 5;
   int32 discount_percent = 6;
 }
 
@@ -64,3 +65,4 @@ message IngredientDetails {
     Money cb_total = 7;
     Money client_total = 8;
 }
+
