@@ -105,6 +105,8 @@ message CalculateRecipeRequest {
   string recipe_id = 1;
   int32 serving_size_grams = 2;
   int32 total_grams = 3;
+  int32 container_size_grams = 4;
+  int32 discount_percent = 5;
 }
 
 message CalculateRecipeResponse {

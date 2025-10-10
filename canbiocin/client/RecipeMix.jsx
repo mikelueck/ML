@@ -140,11 +140,11 @@ const commonColumns = [
   { field: 'markup', 
     headerName: 'Markup', 
     valueGetter: (value, row) => {
-      return getItemValue(row).markupPercent ? getItemValue(row).markupPercent : ""
+      return row.markupPercent ?  row.markupPercent : ""
     },
     renderCell: (params) => (
       <>
-      {getItemValue(params.row).markupPercent ? getItemValue(params.row).markupPercent + '%' : ""}
+      {params.row.markupPercent ? params.row.markupPercent + '%' : ""}
       </>
     ),
     renderHeader: () => (
@@ -240,6 +240,8 @@ const computeTotals = (ingredients, rows) => {
     clientTotal += moneyToFloat(i.clientTotal)
   })
 
+  let markupPercent = Math.floor(((clientTotal / cbTotal) - 1)*100)
+
   rows.push(
   {
   // This is mimicing the shape of a pb.IngredientDetails
@@ -250,6 +252,7 @@ const computeTotals = (ingredients, rows) => {
   totalGrams: totalGrams,
   cbCostPerContainer: floatToMoney(cbCostPerContainer),
   cbTotal: floatToMoney(cbTotal),
+  markupPercent: markupPercent,
   clientTotal: floatToMoney(clientTotal),
   })
 }
@@ -323,7 +326,7 @@ function TotalRow({title, columnDef, ingredients}) {
   )
 }
 
-function RecipeMix({recipeId, servingSizeGrams, totalGrams }) {
+function RecipeMix({recipeId, servingSizeGrams, totalGrams, containerSizeGrams, discountPercent }) {
   const [isLoading, setIsLoading] = React.useState(true)
   const [recipeMix, setRecipeMix] = React.useState(null);
 
@@ -334,7 +337,9 @@ function RecipeMix({recipeId, servingSizeGrams, totalGrams }) {
         const response = await getGrpcClient().calculateRecipe(
             {recipeId: recipeId, 
              servingSizeGrams: servingSizeGrams, 
-             totalGrams: totalGrams });
+             totalGrams: totalGrams,
+             containerSizeGrams: containerSizeGrams,
+             discountPercent: discountPercent });
         
         setRecipeMix(response.recipeDetails);
       } catch (error) {
@@ -345,7 +350,7 @@ function RecipeMix({recipeId, servingSizeGrams, totalGrams }) {
       }
     };
     fetchData();
-  }, [recipeId, servingSizeGrams, totalGrams]);
+  }, [recipeId, servingSizeGrams, totalGrams, containerSizeGrams, discountPercent]);
 
   if (recipeMix == null) {
     return (
@@ -402,6 +407,7 @@ export default function () {
   const [servingsPerContainer, setServingsPerContainer] = React.useState(initSize)
   const [numContainers, setNumContainers] = React.useState(1)
   const [gramsPerContainer, setGramsPerContainer] = React.useState(initSize)
+  const [discountPercent, setDiscountPercent] = React.useState(0)
 
   const recipeId = searchParams.get('recipeId')
   const navigate = useNavigate();
@@ -432,6 +438,10 @@ export default function () {
     setServingGrams(event.target.value)
     setServingsPerContainer(Math.floor(gramsPerContainer / event.target.value))
     updateNumContainers(totalGrams, event.target.value, gramsPerContainer)
+  }
+
+  const handleDiscountPercentChange = (event) => {
+    setDiscountPercent(event.target.value)
   }
 
   return (
@@ -493,7 +503,20 @@ export default function () {
           editable={false}
       />
     </Grid>
-    <RecipeMix recipeId={recipeId} servingSizeGrams={servingGrams} totalGrams={totalGrams} />
+    <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
+      <Field
+          id='discount'
+          label='Discount Percent' 
+          value={discountPercent}
+          size="small"
+          type="number"
+          variant="standard"
+          onChange={handleDiscountPercentChange}
+          editable={true}
+          units="%"
+      />
+    </Grid>
+    <RecipeMix recipeId={recipeId} servingSizeGrams={servingGrams} totalGrams={totalGrams} containerSizeGrams={gramsPerContainer} discountPercent={discountPercent} />
     </>
   )
 }

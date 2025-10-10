@@ -254,7 +254,13 @@ func (s *server) CalculateRecipe(ctx context.Context, req *pb.CalculateRecipeReq
 	if err != nil {
 		return nil, status.Error(codes.NotFound, err.Error())
 	}
-	details, err := recipeTools.ComputeQuantities(ctx, recipe, req.GetServingSizeGrams(), req.GetTotalGrams())
+	details, err := recipeTools.ComputeQuantities(
+		ctx,
+		recipe,
+		req.GetServingSizeGrams(),
+		req.GetTotalGrams(),
+		req.GetContainerSizeGrams(),
+		req.GetDiscountPercent())
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
 	}

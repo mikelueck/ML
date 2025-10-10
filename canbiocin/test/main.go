@@ -21,7 +21,7 @@ func main() {
 	}
 	if len(recipes) > 0 {
 		r := recipes[0]
-		rows, err := recipe.ComputeQuantities(ctx, r, 1, 10000)
+		rows, err := recipe.ComputeQuantities(ctx, r, 1, 10000, 250, 0)
 		if err != nil {
 			fmt.Printf("Bad Compute: %v\n", err)
 		}

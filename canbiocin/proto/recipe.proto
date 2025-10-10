@@ -40,6 +40,8 @@ message RecipeDetails {
   int32 serving_size_grams = 2;
   int32 total_grams = 3;
   repeated IngredientDetails ingredients = 4;
+  int32 container_size_grams = 5;
+  int32 discount_percent = 6;
 }
 
 message Ingredient {
@@ -58,6 +60,7 @@ message IngredientDetails {
     double total_grams = 4;
     Money cb_cost_kg = 5;
     Money cb_cost_per_container = 6;
+    int32 markup_percent = 10;
     Money cb_total = 7;
     Money client_total = 8;
 }

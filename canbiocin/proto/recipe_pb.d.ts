@@ -78,46 +78,20 @@ export declare type PostbioticIngredient = Message<"PostbioticIngredient"> & {
 export declare const PostbioticIngredientSchema: GenMessage<PostbioticIngredient>;
 
 /**
- * @generated from message PackagingIngredient
+ * @generated from message Company
  */
-export declare type PackagingIngredient = Message<"PackagingIngredient"> & {
+export declare type Company = Message<"Company"> & {
   /**
-   * @generated from field: string item = 1;
+   * @generated from field: string name = 1;
    */
-  item: string;
-
-  /**
-   * @generated from field: int32 count_per_kg = 2;
-   */
-  countPerKg: number;
+  name: string;
 };
 
 /**
- * Describes the message PackagingIngredient.
- * Use `create(PackagingIngredientSchema)` to create a new message.
+ * Describes the message Company.
+ * Use `create(CompanySchema)` to create a new message.
  */
-export declare const PackagingIngredientSchema: GenMessage<PackagingIngredient>;
-
-/**
- * @generated from message MillingIngredient
- */
-export declare type MillingIngredient = Message<"MillingIngredient"> & {
-  /**
-   * @generated from field: string item = 1;
-   */
-  item: string;
-
-  /**
-   * @generated from field: int32 count_per_kg = 2;
-   */
-  countPerKg: number;
-};
-
-/**
- * Describes the message MillingIngredient.
- * Use `create(MillingIngredientSchema)` to create a new message.
- */
-export declare const MillingIngredientSchema: GenMessage<MillingIngredient>;
+export declare const CompanySchema: GenMessage<Company>;
 
 /**
  * @generated from message Recipe
@@ -132,6 +106,11 @@ export declare type Recipe = Message<"Recipe"> & {
    * @generated from field: string name = 2;
    */
   name: string;
+
+  /**
+   * @generated from field: Company company = 7;
+   */
+  company?: Company;
 
   /**
    * @generated from field: repeated ProbioticIngredient probiotics = 3;
@@ -161,37 +140,6 @@ export declare type Recipe = Message<"Recipe"> & {
 export declare const RecipeSchema: GenMessage<Recipe>;
 
 /**
- * @generated from message PackagingAndMilling
- */
-export declare type PackagingAndMilling = Message<"PackagingAndMilling"> & {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id: string;
-
-  /**
-   * @generated from field: Recipe recipe = 2;
-   */
-  recipe?: Recipe;
-
-  /**
-   * @generated from field: repeated PackagingIngredient packaging = 3;
-   */
-  packaging: PackagingIngredient[];
-
-  /**
-   * @generated from field: repeated MillingIngredient milling = 4;
-   */
-  milling: MillingIngredient[];
-};
-
-/**
- * Describes the message PackagingAndMilling.
- * Use `create(PackagingAndMillingSchema)` to create a new message.
- */
-export declare const PackagingAndMillingSchema: GenMessage<PackagingAndMilling>;
-
-/**
  * @generated from message RecipeDetails
  */
 export declare type RecipeDetails = Message<"RecipeDetails"> & {
@@ -214,6 +162,16 @@ export declare type RecipeDetails = Message<"RecipeDetails"> & {
    * @generated from field: repeated IngredientDetails ingredients = 4;
    */
   ingredients: IngredientDetails[];
+
+  /**
+   * @generated from field: int32 container_size_grams = 5;
+   */
+  containerSizeGrams: number;
+
+  /**
+   * @generated from field: int32 discount_percent = 6;
+   */
+  discountPercent: number;
 };
 
 /**
@@ -266,6 +224,11 @@ export declare type IngredientDetails = Message<"IngredientDetails"> & {
   ingredient?: Ingredient;
 
   /**
+   * @generated from field: int32 desired_cfu_g = 9;
+   */
+  desiredCfuG: number;
+
+  /**
    * @generated from field: double percent = 2;
    */
   percent: number;
@@ -289,6 +252,11 @@ export declare type IngredientDetails = Message<"IngredientDetails"> & {
    * @generated from field: Money cb_cost_per_container = 6;
    */
   cbCostPerContainer?: Money;
+
+  /**
+   * @generated from field: int32 markup_percent = 10;
+   */
+  markupPercent: number;
 
   /**
    * @generated from field: Money cb_total = 7;

@@ -3,17 +3,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CalculateRecipeRequest, CalculateRecipeResponse, CreateIngredientRequest, CreateIngredientResponse, CreateRecipeRequest, CreateRecipeResponse, ListIngredientsRequest, ListIngredientsResponse, ListRecipesRequest, ListRecipesResponse, UpdateIngredientRequest, UpdateIngredientResponse, UpdateRecipeRequest, UpdateRecipeResponse } from "./service_pbjs";
+import { CalculateRecipeRequest, CalculateRecipeResponse, CreateContainerRequest, CreateContainerResponse, CreateIngredientRequest, CreateIngredientResponse, CreateRecipeRequest, CreateRecipeResponse, DeleteContainerRequest, DeleteContainerResponse, DeleteIngredientRequest, DeleteIngredientResponse, DeleteRecipeRequest, DeleteRecipeResponse, GetIngredientRequest, GetIngredientResponse, GetRecipeRequest, GetRecipeResponse, ListContainersRequest, ListContainersResponse, ListIngredientsRequest, ListIngredientsResponse, ListPrebioticCategoryRequest, ListPrebioticCategoryResponse, ListProbioticSppRequest, ListProbioticSppResponse, ListRecipesRequest, ListRecipesResponse, UpdateContainerRequest, UpdateContainerResponse, UpdateIngredientRequest, UpdateIngredientResponse, UpdateRecipeRequest, UpdateRecipeResponse } from "./service_pbjs";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
- * @generated from service Canbiocin
+ * @generated from service CanbiocinService
  */
-export declare const Canbiocin: {
-  readonly typeName: "Canbiocin",
+export declare const CanbiocinService: {
+  readonly typeName: "CanbiocinService",
   readonly methods: {
     /**
-     * @generated from rpc Canbiocin.CreateIngredient
+     * @generated from rpc CanbiocinService.CreateIngredient
      */
     readonly createIngredient: {
       readonly name: "CreateIngredient",
@@ -22,7 +22,16 @@ export declare const Canbiocin: {
       readonly kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc Canbiocin.UpdateIngredient
+     * @generated from rpc CanbiocinService.GetIngredient
+     */
+    readonly getIngredient: {
+      readonly name: "GetIngredient",
+      readonly I: typeof GetIngredientRequest,
+      readonly O: typeof GetIngredientResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.UpdateIngredient
      */
     readonly updateIngredient: {
       readonly name: "UpdateIngredient",
@@ -31,7 +40,16 @@ export declare const Canbiocin: {
       readonly kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc Canbiocin.ListIngredients
+     * @generated from rpc CanbiocinService.DeleteIngredient
+     */
+    readonly deleteIngredient: {
+      readonly name: "DeleteIngredient",
+      readonly I: typeof DeleteIngredientRequest,
+      readonly O: typeof DeleteIngredientResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.ListIngredients
      */
     readonly listIngredients: {
       readonly name: "ListIngredients",
@@ -40,7 +58,25 @@ export declare const Canbiocin: {
       readonly kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc Canbiocin.CreateRecipe
+     * @generated from rpc CanbiocinService.ListProbioticSpp
+     */
+    readonly listProbioticSpp: {
+      readonly name: "ListProbioticSpp",
+      readonly I: typeof ListProbioticSppRequest,
+      readonly O: typeof ListProbioticSppResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.ListPrebioticCategory
+     */
+    readonly listPrebioticCategory: {
+      readonly name: "ListPrebioticCategory",
+      readonly I: typeof ListPrebioticCategoryRequest,
+      readonly O: typeof ListPrebioticCategoryResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.CreateRecipe
      */
     readonly createRecipe: {
       readonly name: "CreateRecipe",
@@ -49,7 +85,16 @@ export declare const Canbiocin: {
       readonly kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc Canbiocin.UpdateRecipe
+     * @generated from rpc CanbiocinService.GetRecipe
+     */
+    readonly getRecipe: {
+      readonly name: "GetRecipe",
+      readonly I: typeof GetRecipeRequest,
+      readonly O: typeof GetRecipeResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.UpdateRecipe
      */
     readonly updateRecipe: {
       readonly name: "UpdateRecipe",
@@ -58,7 +103,16 @@ export declare const Canbiocin: {
       readonly kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc Canbiocin.ListRecipes
+     * @generated from rpc CanbiocinService.DeleteRecipe
+     */
+    readonly deleteRecipe: {
+      readonly name: "DeleteRecipe",
+      readonly I: typeof DeleteRecipeRequest,
+      readonly O: typeof DeleteRecipeResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.ListRecipes
      */
     readonly listRecipes: {
       readonly name: "ListRecipes",
@@ -67,12 +121,48 @@ export declare const Canbiocin: {
       readonly kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc Canbiocin.CalculateRecipe
+     * @generated from rpc CanbiocinService.CalculateRecipe
      */
     readonly calculateRecipe: {
       readonly name: "CalculateRecipe",
       readonly I: typeof CalculateRecipeRequest,
       readonly O: typeof CalculateRecipeResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.CreateContainer
+     */
+    readonly createContainer: {
+      readonly name: "CreateContainer",
+      readonly I: typeof CreateContainerRequest,
+      readonly O: typeof CreateContainerResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.DeleteContainer
+     */
+    readonly deleteContainer: {
+      readonly name: "DeleteContainer",
+      readonly I: typeof DeleteContainerRequest,
+      readonly O: typeof DeleteContainerResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.UpdateContainer
+     */
+    readonly updateContainer: {
+      readonly name: "UpdateContainer",
+      readonly I: typeof UpdateContainerRequest,
+      readonly O: typeof UpdateContainerResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.ListContainers
+     */
+    readonly listContainers: {
+      readonly name: "ListContainers",
+      readonly I: typeof ListContainersRequest,
+      readonly O: typeof ListContainersResponse,
       readonly kind: MethodKind.Unary,
     },
   }

@@ -116,7 +116,7 @@ oci_pull(
         "linux/arm64",
     ],
     registry = "us-central1-docker.pkg.dev",
-    repository = "canbiocin/canbiocin-dev/my-certs",
+    repository = "canbiocin-474014/canbiocin-dev/my-certs",
     tag = "latest"
 )
 

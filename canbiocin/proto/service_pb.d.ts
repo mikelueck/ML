@@ -4,7 +4,11 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
 import type { Message } from "@bufbuild/protobuf";
-import type { Ingredient } from "./recipe_pb.js";
+import type { Ingredient, Recipe, RecipeDetails } from "./recipe_pb.js";
+import type { Probiotic } from "./probiotics_pb.js";
+import type { Prebiotic } from "./prebiotics_pb.js";
+import type { Postbiotic } from "./postbiotics_pb.js";
+import type { Container } from "./container_pb.js";
 
 /**
  * Describes the file canbiocin/proto/service.proto.
@@ -31,6 +35,10 @@ export declare const CreateIngredientRequestSchema: GenMessage<CreateIngredientR
  * @generated from message CreateIngredientResponse
  */
 export declare type CreateIngredientResponse = Message<"CreateIngredientResponse"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
 };
 
 /**
@@ -38,6 +46,43 @@ export declare type CreateIngredientResponse = Message<"CreateIngredientResponse
  * Use `create(CreateIngredientResponseSchema)` to create a new message.
  */
 export declare const CreateIngredientResponseSchema: GenMessage<CreateIngredientResponse>;
+
+/**
+ * @generated from message GetIngredientRequest
+ */
+export declare type GetIngredientRequest = Message<"GetIngredientRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string type = 2;
+   */
+  type: string;
+};
+
+/**
+ * Describes the message GetIngredientRequest.
+ * Use `create(GetIngredientRequestSchema)` to create a new message.
+ */
+export declare const GetIngredientRequestSchema: GenMessage<GetIngredientRequest>;
+
+/**
+ * @generated from message GetIngredientResponse
+ */
+export declare type GetIngredientResponse = Message<"GetIngredientResponse"> & {
+  /**
+   * @generated from field: Ingredient ingredient = 1;
+   */
+  ingredient?: Ingredient;
+};
+
+/**
+ * Describes the message GetIngredientResponse.
+ * Use `create(GetIngredientResponseSchema)` to create a new message.
+ */
+export declare const GetIngredientResponseSchema: GenMessage<GetIngredientResponse>;
 
 /**
  * @generated from message UpdateIngredientRequest
@@ -68,6 +113,39 @@ export declare type UpdateIngredientResponse = Message<"UpdateIngredientResponse
 export declare const UpdateIngredientResponseSchema: GenMessage<UpdateIngredientResponse>;
 
 /**
+ * @generated from message DeleteIngredientRequest
+ */
+export declare type DeleteIngredientRequest = Message<"DeleteIngredientRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string type = 2;
+   */
+  type: string;
+};
+
+/**
+ * Describes the message DeleteIngredientRequest.
+ * Use `create(DeleteIngredientRequestSchema)` to create a new message.
+ */
+export declare const DeleteIngredientRequestSchema: GenMessage<DeleteIngredientRequest>;
+
+/**
+ * @generated from message DeleteIngredientResponse
+ */
+export declare type DeleteIngredientResponse = Message<"DeleteIngredientResponse"> & {
+};
+
+/**
+ * Describes the message DeleteIngredientResponse.
+ * Use `create(DeleteIngredientResponseSchema)` to create a new message.
+ */
+export declare const DeleteIngredientResponseSchema: GenMessage<DeleteIngredientResponse>;
+
+/**
  * @generated from message ListIngredientsRequest
  */
 export declare type ListIngredientsRequest = Message<"ListIngredientsRequest"> & {
@@ -84,9 +162,9 @@ export declare const ListIngredientsRequestSchema: GenMessage<ListIngredientsReq
  */
 export declare type ListIngredientsResponse = Message<"ListIngredientsResponse"> & {
   /**
-   * @generated from field: repeated Ingredient ingredient = 1;
+   * @generated from field: repeated Ingredient ingredients = 1;
    */
-  ingredient: Ingredient[];
+  ingredients: Ingredient[];
 };
 
 /**
@@ -96,9 +174,69 @@ export declare type ListIngredientsResponse = Message<"ListIngredientsResponse">
 export declare const ListIngredientsResponseSchema: GenMessage<ListIngredientsResponse>;
 
 /**
+ * @generated from message ListProbioticSppRequest
+ */
+export declare type ListProbioticSppRequest = Message<"ListProbioticSppRequest"> & {
+};
+
+/**
+ * Describes the message ListProbioticSppRequest.
+ * Use `create(ListProbioticSppRequestSchema)` to create a new message.
+ */
+export declare const ListProbioticSppRequestSchema: GenMessage<ListProbioticSppRequest>;
+
+/**
+ * @generated from message ListProbioticSppResponse
+ */
+export declare type ListProbioticSppResponse = Message<"ListProbioticSppResponse"> & {
+  /**
+   * @generated from field: repeated string spps = 1;
+   */
+  spps: string[];
+};
+
+/**
+ * Describes the message ListProbioticSppResponse.
+ * Use `create(ListProbioticSppResponseSchema)` to create a new message.
+ */
+export declare const ListProbioticSppResponseSchema: GenMessage<ListProbioticSppResponse>;
+
+/**
+ * @generated from message ListPrebioticCategoryRequest
+ */
+export declare type ListPrebioticCategoryRequest = Message<"ListPrebioticCategoryRequest"> & {
+};
+
+/**
+ * Describes the message ListPrebioticCategoryRequest.
+ * Use `create(ListPrebioticCategoryRequestSchema)` to create a new message.
+ */
+export declare const ListPrebioticCategoryRequestSchema: GenMessage<ListPrebioticCategoryRequest>;
+
+/**
+ * @generated from message ListPrebioticCategoryResponse
+ */
+export declare type ListPrebioticCategoryResponse = Message<"ListPrebioticCategoryResponse"> & {
+  /**
+   * @generated from field: repeated string categories = 1;
+   */
+  categories: string[];
+};
+
+/**
+ * Describes the message ListPrebioticCategoryResponse.
+ * Use `create(ListPrebioticCategoryResponseSchema)` to create a new message.
+ */
+export declare const ListPrebioticCategoryResponseSchema: GenMessage<ListPrebioticCategoryResponse>;
+
+/**
  * @generated from message CreateRecipeRequest
  */
 export declare type CreateRecipeRequest = Message<"CreateRecipeRequest"> & {
+  /**
+   * @generated from field: Recipe recipe = 1;
+   */
+  recipe?: Recipe;
 };
 
 /**
@@ -111,6 +249,10 @@ export declare const CreateRecipeRequestSchema: GenMessage<CreateRecipeRequest>;
  * @generated from message CreateRecipeResponse
  */
 export declare type CreateRecipeResponse = Message<"CreateRecipeResponse"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
 };
 
 /**
@@ -120,9 +262,60 @@ export declare type CreateRecipeResponse = Message<"CreateRecipeResponse"> & {
 export declare const CreateRecipeResponseSchema: GenMessage<CreateRecipeResponse>;
 
 /**
+ * @generated from message GetRecipeRequest
+ */
+export declare type GetRecipeRequest = Message<"GetRecipeRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message GetRecipeRequest.
+ * Use `create(GetRecipeRequestSchema)` to create a new message.
+ */
+export declare const GetRecipeRequestSchema: GenMessage<GetRecipeRequest>;
+
+/**
+ * @generated from message GetRecipeResponse
+ */
+export declare type GetRecipeResponse = Message<"GetRecipeResponse"> & {
+  /**
+   * @generated from field: Recipe recipe = 1;
+   */
+  recipe?: Recipe;
+
+  /**
+   * @generated from field: repeated Probiotic probiotics = 2;
+   */
+  probiotics: Probiotic[];
+
+  /**
+   * @generated from field: repeated Prebiotic prebiotics = 3;
+   */
+  prebiotics: Prebiotic[];
+
+  /**
+   * @generated from field: repeated Postbiotic postbiotics = 4;
+   */
+  postbiotics: Postbiotic[];
+};
+
+/**
+ * Describes the message GetRecipeResponse.
+ * Use `create(GetRecipeResponseSchema)` to create a new message.
+ */
+export declare const GetRecipeResponseSchema: GenMessage<GetRecipeResponse>;
+
+/**
  * @generated from message UpdateRecipeRequest
  */
 export declare type UpdateRecipeRequest = Message<"UpdateRecipeRequest"> & {
+  /**
+   * @generated from field: Recipe recipe = 1;
+   */
+  recipe?: Recipe;
 };
 
 /**
@@ -144,9 +337,41 @@ export declare type UpdateRecipeResponse = Message<"UpdateRecipeResponse"> & {
 export declare const UpdateRecipeResponseSchema: GenMessage<UpdateRecipeResponse>;
 
 /**
+ * @generated from message DeleteRecipeRequest
+ */
+export declare type DeleteRecipeRequest = Message<"DeleteRecipeRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message DeleteRecipeRequest.
+ * Use `create(DeleteRecipeRequestSchema)` to create a new message.
+ */
+export declare const DeleteRecipeRequestSchema: GenMessage<DeleteRecipeRequest>;
+
+/**
+ * @generated from message DeleteRecipeResponse
+ */
+export declare type DeleteRecipeResponse = Message<"DeleteRecipeResponse"> & {
+};
+
+/**
+ * Describes the message DeleteRecipeResponse.
+ * Use `create(DeleteRecipeResponseSchema)` to create a new message.
+ */
+export declare const DeleteRecipeResponseSchema: GenMessage<DeleteRecipeResponse>;
+
+/**
  * @generated from message ListRecipesRequest
  */
 export declare type ListRecipesRequest = Message<"ListRecipesRequest"> & {
+  /**
+   * @generated from field: string ingredientId = 1;
+   */
+  ingredientId: string;
 };
 
 /**
@@ -159,6 +384,10 @@ export declare const ListRecipesRequestSchema: GenMessage<ListRecipesRequest>;
  * @generated from message ListRecipesResponse
  */
 export declare type ListRecipesResponse = Message<"ListRecipesResponse"> & {
+  /**
+   * @generated from field: repeated Recipe recipes = 1;
+   */
+  recipes: Recipe[];
 };
 
 /**
@@ -171,6 +400,30 @@ export declare const ListRecipesResponseSchema: GenMessage<ListRecipesResponse>;
  * @generated from message CalculateRecipeRequest
  */
 export declare type CalculateRecipeRequest = Message<"CalculateRecipeRequest"> & {
+  /**
+   * @generated from field: string recipe_id = 1;
+   */
+  recipeId: string;
+
+  /**
+   * @generated from field: int32 serving_size_grams = 2;
+   */
+  servingSizeGrams: number;
+
+  /**
+   * @generated from field: int32 total_grams = 3;
+   */
+  totalGrams: number;
+
+  /**
+   * @generated from field: int32 container_size_grams = 4;
+   */
+  containerSizeGrams: number;
+
+  /**
+   * @generated from field: int32 discount_percent = 5;
+   */
+  discountPercent: number;
 };
 
 /**
@@ -183,6 +436,10 @@ export declare const CalculateRecipeRequestSchema: GenMessage<CalculateRecipeReq
  * @generated from message CalculateRecipeResponse
  */
 export declare type CalculateRecipeResponse = Message<"CalculateRecipeResponse"> & {
+  /**
+   * @generated from field: RecipeDetails recipe_details = 1;
+   */
+  recipeDetails?: RecipeDetails;
 };
 
 /**
@@ -192,11 +449,127 @@ export declare type CalculateRecipeResponse = Message<"CalculateRecipeResponse">
 export declare const CalculateRecipeResponseSchema: GenMessage<CalculateRecipeResponse>;
 
 /**
- * @generated from service Canbiocin
+ * @generated from message CreateContainerRequest
  */
-export declare const Canbiocin: GenService<{
+export declare type CreateContainerRequest = Message<"CreateContainerRequest"> & {
   /**
-   * @generated from rpc Canbiocin.CreateIngredient
+   * @generated from field: Container container = 1;
+   */
+  container?: Container;
+};
+
+/**
+ * Describes the message CreateContainerRequest.
+ * Use `create(CreateContainerRequestSchema)` to create a new message.
+ */
+export declare const CreateContainerRequestSchema: GenMessage<CreateContainerRequest>;
+
+/**
+ * @generated from message CreateContainerResponse
+ */
+export declare type CreateContainerResponse = Message<"CreateContainerResponse"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message CreateContainerResponse.
+ * Use `create(CreateContainerResponseSchema)` to create a new message.
+ */
+export declare const CreateContainerResponseSchema: GenMessage<CreateContainerResponse>;
+
+/**
+ * @generated from message DeleteContainerRequest
+ */
+export declare type DeleteContainerRequest = Message<"DeleteContainerRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message DeleteContainerRequest.
+ * Use `create(DeleteContainerRequestSchema)` to create a new message.
+ */
+export declare const DeleteContainerRequestSchema: GenMessage<DeleteContainerRequest>;
+
+/**
+ * @generated from message DeleteContainerResponse
+ */
+export declare type DeleteContainerResponse = Message<"DeleteContainerResponse"> & {
+};
+
+/**
+ * Describes the message DeleteContainerResponse.
+ * Use `create(DeleteContainerResponseSchema)` to create a new message.
+ */
+export declare const DeleteContainerResponseSchema: GenMessage<DeleteContainerResponse>;
+
+/**
+ * @generated from message UpdateContainerRequest
+ */
+export declare type UpdateContainerRequest = Message<"UpdateContainerRequest"> & {
+  /**
+   * @generated from field: Container container = 1;
+   */
+  container?: Container;
+};
+
+/**
+ * Describes the message UpdateContainerRequest.
+ * Use `create(UpdateContainerRequestSchema)` to create a new message.
+ */
+export declare const UpdateContainerRequestSchema: GenMessage<UpdateContainerRequest>;
+
+/**
+ * @generated from message UpdateContainerResponse
+ */
+export declare type UpdateContainerResponse = Message<"UpdateContainerResponse"> & {
+};
+
+/**
+ * Describes the message UpdateContainerResponse.
+ * Use `create(UpdateContainerResponseSchema)` to create a new message.
+ */
+export declare const UpdateContainerResponseSchema: GenMessage<UpdateContainerResponse>;
+
+/**
+ * @generated from message ListContainersRequest
+ */
+export declare type ListContainersRequest = Message<"ListContainersRequest"> & {
+};
+
+/**
+ * Describes the message ListContainersRequest.
+ * Use `create(ListContainersRequestSchema)` to create a new message.
+ */
+export declare const ListContainersRequestSchema: GenMessage<ListContainersRequest>;
+
+/**
+ * @generated from message ListContainersResponse
+ */
+export declare type ListContainersResponse = Message<"ListContainersResponse"> & {
+  /**
+   * @generated from field: repeated Container containers = 1;
+   */
+  containers: Container[];
+};
+
+/**
+ * Describes the message ListContainersResponse.
+ * Use `create(ListContainersResponseSchema)` to create a new message.
+ */
+export declare const ListContainersResponseSchema: GenMessage<ListContainersResponse>;
+
+/**
+ * @generated from service CanbiocinService
+ */
+export declare const CanbiocinService: GenService<{
+  /**
+   * @generated from rpc CanbiocinService.CreateIngredient
    */
   createIngredient: {
     methodKind: "unary";
@@ -204,7 +577,15 @@ export declare const Canbiocin: GenService<{
     output: typeof CreateIngredientResponseSchema;
   },
   /**
-   * @generated from rpc Canbiocin.UpdateIngredient
+   * @generated from rpc CanbiocinService.GetIngredient
+   */
+  getIngredient: {
+    methodKind: "unary";
+    input: typeof GetIngredientRequestSchema;
+    output: typeof GetIngredientResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.UpdateIngredient
    */
   updateIngredient: {
     methodKind: "unary";
@@ -212,7 +593,15 @@ export declare const Canbiocin: GenService<{
     output: typeof UpdateIngredientResponseSchema;
   },
   /**
-   * @generated from rpc Canbiocin.ListIngredients
+   * @generated from rpc CanbiocinService.DeleteIngredient
+   */
+  deleteIngredient: {
+    methodKind: "unary";
+    input: typeof DeleteIngredientRequestSchema;
+    output: typeof DeleteIngredientResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.ListIngredients
    */
   listIngredients: {
     methodKind: "unary";
@@ -220,7 +609,23 @@ export declare const Canbiocin: GenService<{
     output: typeof ListIngredientsResponseSchema;
   },
   /**
-   * @generated from rpc Canbiocin.CreateRecipe
+   * @generated from rpc CanbiocinService.ListProbioticSpp
+   */
+  listProbioticSpp: {
+    methodKind: "unary";
+    input: typeof ListProbioticSppRequestSchema;
+    output: typeof ListProbioticSppResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.ListPrebioticCategory
+   */
+  listPrebioticCategory: {
+    methodKind: "unary";
+    input: typeof ListPrebioticCategoryRequestSchema;
+    output: typeof ListPrebioticCategoryResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.CreateRecipe
    */
   createRecipe: {
     methodKind: "unary";
@@ -228,7 +633,15 @@ export declare const Canbiocin: GenService<{
     output: typeof CreateRecipeResponseSchema;
   },
   /**
-   * @generated from rpc Canbiocin.UpdateRecipe
+   * @generated from rpc CanbiocinService.GetRecipe
+   */
+  getRecipe: {
+    methodKind: "unary";
+    input: typeof GetRecipeRequestSchema;
+    output: typeof GetRecipeResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.UpdateRecipe
    */
   updateRecipe: {
     methodKind: "unary";
@@ -236,7 +649,15 @@ export declare const Canbiocin: GenService<{
     output: typeof UpdateRecipeResponseSchema;
   },
   /**
-   * @generated from rpc Canbiocin.ListRecipes
+   * @generated from rpc CanbiocinService.DeleteRecipe
+   */
+  deleteRecipe: {
+    methodKind: "unary";
+    input: typeof DeleteRecipeRequestSchema;
+    output: typeof DeleteRecipeResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.ListRecipes
    */
   listRecipes: {
     methodKind: "unary";
@@ -244,12 +665,44 @@ export declare const Canbiocin: GenService<{
     output: typeof ListRecipesResponseSchema;
   },
   /**
-   * @generated from rpc Canbiocin.CalculateRecipe
+   * @generated from rpc CanbiocinService.CalculateRecipe
    */
   calculateRecipe: {
     methodKind: "unary";
     input: typeof CalculateRecipeRequestSchema;
     output: typeof CalculateRecipeResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.CreateContainer
+   */
+  createContainer: {
+    methodKind: "unary";
+    input: typeof CreateContainerRequestSchema;
+    output: typeof CreateContainerResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.DeleteContainer
+   */
+  deleteContainer: {
+    methodKind: "unary";
+    input: typeof DeleteContainerRequestSchema;
+    output: typeof DeleteContainerResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.UpdateContainer
+   */
+  updateContainer: {
+    methodKind: "unary";
+    input: typeof UpdateContainerRequestSchema;
+    output: typeof UpdateContainerResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.ListContainers
+   */
+  listContainers: {
+    methodKind: "unary";
+    input: typeof ListContainersRequestSchema;
+    output: typeof ListContainersResponseSchema;
   },
 }>;
 
