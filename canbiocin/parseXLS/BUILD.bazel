@@ -17,6 +17,9 @@ filegroup(
     name = "initfiles",
     srcs = [
       "GMP - Probiotic Supplement for Cats and Dogs.xlsx",
+      "Jarred Powder Workbook.xlsx",
+      "Soft Chew Workbook.xlsx",
+      "Bulk Product Workbook.xlsx",
     ]
 )
 

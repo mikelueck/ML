@@ -169,7 +169,8 @@ message UpdateSavedRecipeResponse {
 }
 
 message DeleteSavedRecipeRequest {
-    string id = 1;
+    string savedRecipeId = 1;
+    string recipeId = 2;
 }
 
 message DeleteSavedRecipeResponse {

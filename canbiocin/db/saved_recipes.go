@@ -72,3 +72,32 @@ func (pc *SavedRecipesCollection) QueryByRecipe(ctx context.Context, recipeId st
 	}
 	return docs, nil
 }
+
+func (pc *SavedRecipesCollection) DeleteByRecipe(ctx context.Context, recipeId string) error {
+	iter, err := client.Query(ctx, pc.collectionName,
+		[]*QueryCriteria{&QueryCriteria{
+			Name:  "recipe_id",
+			Op:    "==",
+			Value: recipeId,
+		}}, pc.defaultOrderBy, -1)
+	if err != nil {
+		return err
+	}
+	defer iter.Stop()
+
+	// TODO should implement a batch mechanism
+	//batch := client.Batch()
+
+	for {
+		docWrapper := pc.getWrapper()
+		err := iter.Next(docWrapper)
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		pc.Delete(ctx, docWrapper.GetID())
+	}
+	return nil
+}

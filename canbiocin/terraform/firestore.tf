@@ -27,7 +27,7 @@ resource "google_firestore_index" "canbiocin_recipes_index" {
   project    = var.project_id
 
   fields {
-    field_path = "user_id"
+    field_path = "id"
     order      = "ASCENDING"
   }
 
@@ -37,8 +37,32 @@ resource "google_firestore_index" "canbiocin_recipes_index" {
   }
 
   fields {
-    field_path = "__name__"
+    field_path = "name"
     order      = "ASCENDING"
+  }
+
+  depends_on = [
+    google_firestore_database.canbiocin_firestore
+  ]
+}
+
+resource "google_firestore_index" "canbiocin_saved_recipes_index" {
+  collection = "savedRecipes"
+  project    = var.project_id
+
+  fields {
+    field_path = "recipe_id"
+    order      = "ASCENDING"
+  }
+
+  fields {
+    field_path = "date"
+    order      = "DESCENDING"
+  }
+
+  fields {
+    field_path = "__name__"
+    order      = "DESCENDING"
   }
 
   depends_on = [

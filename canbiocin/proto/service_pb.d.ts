@@ -671,9 +671,14 @@ export declare const UpdateSavedRecipeResponseSchema: GenMessage<UpdateSavedReci
  */
 export declare type DeleteSavedRecipeRequest = Message<"DeleteSavedRecipeRequest"> & {
   /**
-   * @generated from field: string id = 1;
+   * @generated from field: string savedRecipeId = 1;
    */
-  id: string;
+  savedRecipeId: string;
+
+  /**
+   * @generated from field: string recipeId = 2;
+   */
+  recipeId: string;
 };
 
 /**

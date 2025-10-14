@@ -19,7 +19,7 @@ import (
 type ParseType int
 
 var (
-	fake = flag.Bool("fake", true, "grpcport")
+	fake = flag.Bool("fake", false, "grpcport")
 )
 
 func getMultiplier() float64 {
@@ -121,7 +121,16 @@ func ReadIngredients(ctx context.Context, xl *xlsxreader.XlsxFile) error {
 	var prevRow *xlsxreader.Row
 	var lastHeaderRow *xlsxreader.Row
 
-	for row := range xl.ReadRows(xl.Sheets[len(xl.Sheets)-1]) {
+	ingredientSheet := len(xl.Sheets) - 1 //It's usually the last one
+	ingredientSheetName := "INGREDIENT PRICING"
+	for i := range xl.Sheets {
+		if xl.Sheets[i] == ingredientSheetName {
+			ingredientSheet = i
+			break
+		}
+	}
+
+	for row := range xl.ReadRows(xl.Sheets[ingredientSheet]) {
 		if row.Error != nil {
 			log.Printf("Error parsing Ingredients: %v\n", row.Error)
 			return row.Error
@@ -129,7 +138,7 @@ func ReadIngredients(ctx context.Context, xl *xlsxreader.XlsxFile) error {
 		if row.Cells[0].Type == xlsxreader.TypeString {
 			if getNonEmptyCellCount(&row) == 0 || (prevRow != nil && prevRow.Cells[0].Row+1 != row.Cells[0].Row) {
 				// Sometimes there is a blank line right after a header
-				if lastHeaderRow.Cells[0].Row+2 != row.Cells[0].Row {
+				if lastHeaderRow != nil && lastHeaderRow.Cells[0].Row+2 != row.Cells[0].Row {
 					parser = nil
 				}
 			}

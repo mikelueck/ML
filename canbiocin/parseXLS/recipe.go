@@ -3,6 +3,8 @@ package parseXLS
 import (
 	"context"
 	"fmt"
+	"log"
+	"math"
 	"strings"
 
 	"github.com/ML/canbiocin/db"
@@ -84,6 +86,39 @@ func (p *RecipeParser) parseOverage(row *xlsxreader.Row) bool {
 	return false
 }
 
+func (p *RecipeParser) adjustForServingSize() {
+	// What I have found is that the Probiotics section is not scaling properly
+	// In the sheet it ends up working fine for 1g servings but anything larger
+	// or smaller end up diluting the probiotics
+
+	// The prebiotics and postbiotics see accurate for the mg/serving but here we
+	// try to move it to mg/g and you specify the size of the serving at "blend"
+	// time.
+
+	var total float32 = 0.0
+
+	for _, i := range p.prebiotics {
+		total += i.GetMgServing()
+	}
+	for _, i := range p.postbiotics {
+		total += i.GetMgServing()
+	}
+
+	servingSize := float32(math.Ceil(float64(total / 1000.0)))
+	log.Printf("######################\n")
+	log.Printf("Scaling ingredients for 1g serving size, identified as %fg\n", servingSize)
+	log.Printf("######################\n")
+
+	if servingSize != 1 {
+		for _, i := range p.prebiotics {
+			i.MgServing = i.MgServing / servingSize
+		}
+		for _, i := range p.postbiotics {
+			i.MgServing = i.MgServing / servingSize
+		}
+	}
+}
+
 func (p *RecipeParser) parse(ctx context.Context, xl *xlsxreader.XlsxFile) error {
 	p.name = xl.Sheets[0]
 	for row := range xl.ReadRows(xl.Sheets[0]) {
@@ -92,6 +127,10 @@ func (p *RecipeParser) parse(ctx context.Context, xl *xlsxreader.XlsxFile) error
 			return err
 		}
 	}
+
+	// Here we try to normalize things so that we use mg/g rather than mg/serving
+	p.adjustForServingSize()
+
 	p.save(ctx)
 	return nil
 }
@@ -148,8 +187,8 @@ func (p *RecipeParser) parseRecipe(ctx context.Context, row *xlsxreader.Row) err
 	if len(p.columns) > 0 && p.ingredientSection != "" {
 		ingredient := String(row, p.columns["ingredient"])
 		if getNonEmptyCellCount(row) >= len(p.columns) && ingredient != "" {
-			switch p.ingredientSection {
-			case "Probiotics":
+			switch {
+			case p.ingredientSection == "Probiotics":
 				toobig, err := Int64(row, p.columns["cfuG"])
 				if err != nil {
 					return err
@@ -162,30 +201,26 @@ func (p *RecipeParser) parseRecipe(ctx context.Context, row *xlsxreader.Row) err
 				}
 
 				p.probiotics = append(p.probiotics, &pb.ProbioticIngredient{Item: lookup[0].GetID(), CfuG: desiredCfuG})
-			case "Prebiotics":
+			case (p.ingredientSection == "Prebiotics" ||
+				p.ingredientSection == "Postbiotics"):
 				mgServing, err := Float(row, p.columns["mgServing"])
 				if err != nil {
 					return err
 				}
 
+				// Try to find in Prebiotics
 				lookup, err := db.GetPrebioticsCollection().QueryByName(ctx, ingredient)
-				if len(lookup) != 1 {
-					return fmt.Errorf("Tried to lookup %s but found %d entries\n", ingredient, len(lookup))
+				if len(lookup) == 1 {
+					p.prebiotics = append(p.prebiotics, &pb.PrebioticIngredient{Item: lookup[0].GetID(), MgServing: float32(mgServing)})
+				} else {
+					// Try to find in Postbiotics
+					lookup, err := db.GetPostbioticsCollection().QueryByName(ctx, ingredient)
+					if err != nil {
+						return fmt.Errorf("Tried to lookup %s but found %d entries\n", ingredient, len(lookup))
+					}
+					p.postbiotics = append(p.postbiotics, &pb.PostbioticIngredient{Item: lookup[0].GetID(), MgServing: float32(mgServing)})
 				}
 
-				p.prebiotics = append(p.prebiotics, &pb.PrebioticIngredient{Item: lookup[0].GetID(), MgServing: float32(mgServing)})
-			case "Postbiotics":
-				mgServing, err := Float(row, p.columns["mgServing"])
-				if err != nil {
-					return err
-				}
-
-				lookup, err := db.GetPostbioticsCollection().QueryByName(ctx, ingredient)
-				if len(lookup) != 1 {
-					return fmt.Errorf("Tried to lookup %s but found %d entries\n", ingredient, len(lookup))
-				}
-
-				p.postbiotics = append(p.postbiotics, &pb.PostbioticIngredient{Item: lookup[0].GetID(), MgServing: float32(mgServing)})
 			}
 		}
 	}

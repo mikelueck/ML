@@ -75,7 +75,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 		}
 		prebiotic := prebioticDoc.GetProto().(*pb.Prebiotic)
 
-		perserving := float64(i.GetMgServing())
+		perserving := float64(i.GetMgServing()) * float64(servingSizeGrams)
 		percent := perserving / float64(servingSizeGrams) / 1000.0
 		total := float64(grams) / float64(servingSizeGrams) * perserving / 1000.0
 		cbCostKg := prebiotic.GetCostKg()
@@ -105,7 +105,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 		}
 		postbiotic := postbioticDoc.GetProto().(*pb.Postbiotic)
 
-		perserving := float64(i.GetMgServing())
+		perserving := float64(i.GetMgServing()) * float64(servingSizeGrams)
 		percent := perserving / float64(servingSizeGrams) / 1000.0
 		total := float64(grams) / float64(servingSizeGrams) * perserving / 1000.0
 		cbCostKg := postbiotic.GetCostKg()

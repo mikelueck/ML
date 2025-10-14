@@ -379,7 +379,12 @@ func (s *server) ListSavedRecipes(ctx context.Context, req *pb.ListSavedRecipesR
 }
 
 func (s *server) DeleteSavedRecipe(ctx context.Context, req *pb.DeleteSavedRecipeRequest) (*pb.DeleteSavedRecipeResponse, error) {
-	err := db.GetSavedRecipesCollection().Delete(ctx, req.GetId())
+	var err error = nil
+	if req.GetSavedRecipeId() != "" {
+		err = db.GetSavedRecipesCollection().Delete(ctx, req.GetSavedRecipeId())
+	} else if req.GetRecipeId() != "" {
+		err = db.GetSavedRecipesCollection().DeleteByRecipe(ctx, req.GetRecipeId())
+	}
 
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
