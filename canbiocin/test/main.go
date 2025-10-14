@@ -23,7 +23,7 @@ func main() {
 	}
 	if len(recipes) > 0 {
 		r := recipes[0]
-		rows, err := recipe.ComputeQuantities(ctx, r, 1, 10000, containers[0].GetProto().(*pb.Container), 0)
+		rows, err := recipe.ComputeQuantities(ctx, r, 1, 10000, containers[0].GetProto().(*pb.Container), 0, false)
 		if err != nil {
 			fmt.Printf("Bad Compute: %v\n", err)
 		}

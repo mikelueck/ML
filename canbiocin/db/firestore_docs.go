@@ -3,6 +3,8 @@ package db
 import (
 	pb "github.com/ML/canbiocin/proto"
 	"google.golang.org/protobuf/proto"
+
+	"github.com/golang/protobuf/ptypes"
 )
 
 // FirestoreDoc is the interface that all Firestore document wrappers must implement
@@ -296,6 +298,73 @@ func NewSupplierDoc(msg *pb.Supplier) (*SupplierDoc, error) {
 	return &SupplierDoc{
 		ID:         msg.GetId(),
 		Name:       msg.GetName(),
+		ProtoBytes: bytes,
+	}, nil
+}
+
+// SavedRecipeDoc wraps a recipe document for Firestore storage
+type SavedRecipeDoc struct {
+	ID         string `firestore:"id"`
+	RecipeID   string `firestore:"recipe_id"`
+	Name       string `firestore:"name"`
+	Company    string `firestore:"company"`
+	Date       int    `firestore:"date"`
+	ProtoBytes []byte `firestore:"proto_bytes"`
+}
+
+// GetID returns the document ID
+func (d *SavedRecipeDoc) GetID() string {
+	return d.ID
+}
+
+// GetProtoBytes returns the raw proto bytes
+func (d *SavedRecipeDoc) GetProtoBytes() []byte {
+	return d.ProtoBytes
+}
+
+// GetProto unmarshals and returns the proto message
+func (d *SavedRecipeDoc) GetProto() proto.Message {
+	msg := &pb.RecipeDetails{}
+	if err := proto.Unmarshal(d.ProtoBytes, msg); err != nil {
+		return nil
+	}
+	return msg
+}
+
+// GetName returns the recipe name
+func (d *SavedRecipeDoc) GetRecipeID() string {
+	return d.RecipeID
+}
+
+// GetName returns the recipe name
+func (d *SavedRecipeDoc) GetName() string {
+	return d.Name
+}
+
+// GetCompany returns the company name
+func (d *SavedRecipeDoc) GetCompany() string {
+	return d.Company
+}
+
+// GetDAte returns the company name
+func (d *SavedRecipeDoc) GetDate() int {
+	return d.Date
+}
+
+// NewRecipeDoc creates a new RecipeDoc from a proto message
+func NewSavedRecipeDoc(msg *pb.RecipeDetails) (*SavedRecipeDoc, error) {
+	bytes, err := proto.Marshal(msg)
+	if err != nil {
+		return nil, err
+	}
+	// Use ID as name since Recipe has no name field
+	t, _ := ptypes.Timestamp(msg.GetTime())
+	return &SavedRecipeDoc{
+		ID:         msg.GetId(),
+		RecipeID:   msg.GetRecipe().GetId(),
+		Name:       msg.GetRecipe().GetName(),
+		Company:    msg.GetRecipe().GetCompany().GetName(),
+		Date:       t.Second(),
 		ProtoBytes: bytes,
 	}, nil
 }

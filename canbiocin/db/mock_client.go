@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	"iter"
-	"maps"
 	"reflect"
+	"slices"
+	"sort"
 
 	"google.golang.org/api/iterator"
 )
@@ -111,17 +112,25 @@ func (c *MockClient) Delete(ctx context.Context, folder string, id string) error
 	return nil
 }
 
-func (c *MockClient) List(ctx context.Context, folder string) (DocIterator, error) {
+func (c *MockClient) List(ctx context.Context, folder string, orderBy string, limit int) (DocIterator, error) {
 	docs, ok := c.collections[folder]
 	if !ok {
 		return nil, fmt.Errorf("Not Found")
 	}
-	return NewMockIterator(docs.docs), nil
+	arr := make([]Document, 0, len(docs.docs))
+	for key := range docs.docs {
+		arr = append(arr, docs.docs[key])
+	}
+	sort.Slice(arr, func(i, j int) bool {
+		return arr[i].GetName() < arr[j].GetName()
+	})
+
+	return NewMockIterator(arr), nil
 }
 
-func (c *MockClient) Query(ctx context.Context, folder string, query []*QueryCriteria) (DocIterator, error) {
+func (c *MockClient) Query(ctx context.Context, folder string, query []*QueryCriteria, orderBy string, limit int) (DocIterator, error) {
 	// TODO now we just call List
-	return c.List(ctx, folder)
+	return c.List(ctx, folder, orderBy, limit)
 }
 
 func (c *MockClient) Close() error {
@@ -133,8 +142,8 @@ type MockIterator struct {
 	stop func()
 }
 
-func NewMockIterator(docs map[string]Document) *MockIterator {
-	next, stop := iter.Pull(maps.Values(docs))
+func NewMockIterator(docs []Document) *MockIterator {
+	next, stop := iter.Pull(slices.Values(docs))
 	return &MockIterator{next: next, stop: stop}
 }
 

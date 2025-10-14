@@ -15,6 +15,8 @@ func init() {
 		c := &PostbioticsCollection{
 			BaseCollection: BaseCollection[pb.Postbiotic, *PostbioticDoc]{
 				collectionName: postbioticsCollection,
+				defaultOrderBy: "name",
+				defaultLimit:   -1,
 			},
 		}
 		c.setAdapt(c.adapt)
@@ -48,7 +50,7 @@ func (pc *PostbioticsCollection) QueryByName(ctx context.Context, name string) (
 			Name:  "name",
 			Op:    "==",
 			Value: name,
-		}})
+		}}, pc.defaultOrderBy, pc.defaultLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +80,7 @@ func (pc *PostbioticsCollection) QueryByBagSize(ctx context.Context, bagSize int
 			Name:  "proto_bytes",
 			Op:    "!=",
 			Value: nil,
-		}})
+		}}, pc.defaultOrderBy, pc.defaultLimit)
 	if err != nil {
 		return nil, err
 	}

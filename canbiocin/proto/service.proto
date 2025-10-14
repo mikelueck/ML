@@ -6,6 +6,7 @@ import "canbiocin/proto/recipe.proto";
 import "canbiocin/proto/probiotics.proto";
 import "canbiocin/proto/prebiotics.proto";
 import "canbiocin/proto/postbiotics.proto";
+import "google/protobuf/timestamp.proto";
 
 
 message CreateIngredientRequest {
@@ -142,6 +143,46 @@ message ListContainersResponse {
     repeated Container containers = 1;
 }
 
+message CreateSavedRecipeRequest {
+    RecipeDetails recipe = 1;
+}
+
+message CreateSavedRecipeResponse {
+    string id = 1;
+    google.protobuf.Timestamp time = 2;       
+}
+
+message GetSavedRecipeRequest {
+    string saved_recipe_id = 1;
+}
+
+message GetSavedRecipeResponse {
+    RecipeDetails recipe = 1;
+}
+
+message UpdateSavedRecipeRequest {
+    RecipeDetails recipe = 1;
+}
+
+message UpdateSavedRecipeResponse {
+    google.protobuf.Timestamp time = 2;       
+}
+
+message DeleteSavedRecipeRequest {
+    string id = 1;
+}
+
+message DeleteSavedRecipeResponse {
+}
+
+message ListSavedRecipesRequest {
+  string recipeId = 1;
+}
+
+message ListSavedRecipesResponse {
+    repeated RecipeDetails recipes = 1;
+}
+
 
 
 service CanbiocinService {
@@ -162,5 +203,11 @@ service CanbiocinService {
   rpc DeleteContainer(DeleteContainerRequest) returns (DeleteContainerResponse) {}
   rpc UpdateContainer(UpdateContainerRequest) returns (UpdateContainerResponse) {}
   rpc ListContainers(ListContainersRequest) returns (ListContainersResponse) {}
+
+  rpc CreateSavedRecipe(CreateSavedRecipeRequest) returns (CreateSavedRecipeResponse) {}
+  rpc GetSavedRecipe(GetSavedRecipeRequest) returns (GetSavedRecipeResponse) {}
+  rpc UpdateSavedRecipe(UpdateSavedRecipeRequest) returns (UpdateSavedRecipeResponse) {}
+  rpc DeleteSavedRecipe(DeleteSavedRecipeRequest) returns (DeleteSavedRecipeResponse) {}
+  rpc ListSavedRecipes(ListSavedRecipesRequest) returns (ListSavedRecipesResponse) {}
 
 }

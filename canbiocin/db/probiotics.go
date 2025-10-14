@@ -18,6 +18,8 @@ func init() {
 		c := &ProbioticsCollection{
 			BaseCollection: BaseCollection[pb.Probiotic, *ProbioticDoc]{
 				collectionName: probioticsCollection,
+				defaultOrderBy: "name",
+				defaultLimit:   -1,
 			},
 			probioticSpp: []string{},
 		}
@@ -80,7 +82,7 @@ func (pc *ProbioticsCollection) QueryByName(ctx context.Context, name string) ([
 			Name:  "name",
 			Op:    "==",
 			Value: name,
-		}})
+		}}, pc.defaultOrderBy, pc.defaultLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +112,7 @@ func (pc *ProbioticsCollection) QueryBySupplier(ctx context.Context, supplierID 
 			Name:  "proto_bytes",
 			Op:    "!=",
 			Value: nil,
-		}})
+		}}, pc.defaultOrderBy, pc.defaultLimit)
 	if err != nil {
 		return nil, err
 	}

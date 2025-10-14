@@ -21,6 +21,8 @@ type CollectionInterface[ProtoType any, DocType Document] interface {
 
 type BaseCollection[ProtoType any, DocType Document] struct {
 	collectionName string
+	defaultOrderBy string
+	defaultLimit   int
 
 	// This is really hacky...I want to call my parent classes adapt method
 	// so I have to set this during construction of the parent class
@@ -78,7 +80,7 @@ func (b *BaseCollection[ProtoType, DocType]) Delete(ctx context.Context, id stri
 
 // List retrieves all postbiotics
 func (b *BaseCollection[ProtoType, DocType]) List(ctx context.Context) ([]DocType, error) {
-	iter, err := client.List(ctx, b.collectionName)
+	iter, err := client.List(ctx, b.collectionName, b.defaultOrderBy, b.defaultLimit)
 	if err != nil {
 		return nil, err
 	}

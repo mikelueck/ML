@@ -13,6 +13,7 @@ import { emptyIngredientForType } from "./utils.js";
 import { emptyRecipe } from "./utils.js";
 import { valueToPrecision } from './utils.js';
 import { styled } from '@mui/material/styles';
+import { SavedRecipeDropdown } from './Dropdowns';
 
 import { getGrpcClient } from './grpc.js';
 
@@ -361,6 +362,7 @@ function FormulationHelper({recipe, editable}) {
 }
 
 function Formulation({recipe, editable, ingredientsByType, actionColumns, rowModels, handleChange}) {
+  const navigate = useNavigate();
 
   const getNamesForType = (type) => {
     let names = [];
@@ -413,6 +415,10 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
     return newIngredient;
   }
 
+  const onSavedDropdownSelect = (event) => {
+      navigate(`/recipeMix?&savedRecipeId=${event.id}`)
+  }
+
   if (recipe == null) {
     return (
         <>
@@ -427,6 +433,10 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
       <Grid container spacing={4}>
         <MyNewFormItem field='name' />
         <MyNewFormItem field="probioticOveragePercent" label="Probiotic Overage %" type="number" units="%" />
+        <SavedRecipeDropdown
+          recipeId={recipe.id}
+          onChange={onSavedDropdownSelect}
+        />
       </Grid>
       <IngredientRows 
           title="Probiotics" 

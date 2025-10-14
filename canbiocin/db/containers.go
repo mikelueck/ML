@@ -12,6 +12,8 @@ func init() {
 		c := &ContainersCollection{
 			BaseCollection: BaseCollection[pb.Container, *ContainerDoc]{
 				collectionName: containersCollection,
+				defaultOrderBy: "name",
+				defaultLimit:   -1,
 			},
 		}
 		c.setAdapt(c.adapt)

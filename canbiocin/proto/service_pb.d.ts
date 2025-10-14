@@ -9,6 +9,7 @@ import type { Probiotic } from "./probiotics_pb.js";
 import type { Prebiotic } from "./prebiotics_pb.js";
 import type { Postbiotic } from "./postbiotics_pb.js";
 import type { Container } from "./container_pb.js";
+import type { Timestamp } from "@bufbuild/protobuf/wkt";
 
 /**
  * Describes the file canbiocin/proto/service.proto.
@@ -565,6 +566,167 @@ export declare type ListContainersResponse = Message<"ListContainersResponse"> &
 export declare const ListContainersResponseSchema: GenMessage<ListContainersResponse>;
 
 /**
+ * @generated from message CreateSavedRecipeRequest
+ */
+export declare type CreateSavedRecipeRequest = Message<"CreateSavedRecipeRequest"> & {
+  /**
+   * @generated from field: RecipeDetails recipe = 1;
+   */
+  recipe?: RecipeDetails;
+};
+
+/**
+ * Describes the message CreateSavedRecipeRequest.
+ * Use `create(CreateSavedRecipeRequestSchema)` to create a new message.
+ */
+export declare const CreateSavedRecipeRequestSchema: GenMessage<CreateSavedRecipeRequest>;
+
+/**
+ * @generated from message CreateSavedRecipeResponse
+ */
+export declare type CreateSavedRecipeResponse = Message<"CreateSavedRecipeResponse"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp time = 2;
+   */
+  time?: Timestamp;
+};
+
+/**
+ * Describes the message CreateSavedRecipeResponse.
+ * Use `create(CreateSavedRecipeResponseSchema)` to create a new message.
+ */
+export declare const CreateSavedRecipeResponseSchema: GenMessage<CreateSavedRecipeResponse>;
+
+/**
+ * @generated from message GetSavedRecipeRequest
+ */
+export declare type GetSavedRecipeRequest = Message<"GetSavedRecipeRequest"> & {
+  /**
+   * @generated from field: string saved_recipe_id = 1;
+   */
+  savedRecipeId: string;
+};
+
+/**
+ * Describes the message GetSavedRecipeRequest.
+ * Use `create(GetSavedRecipeRequestSchema)` to create a new message.
+ */
+export declare const GetSavedRecipeRequestSchema: GenMessage<GetSavedRecipeRequest>;
+
+/**
+ * @generated from message GetSavedRecipeResponse
+ */
+export declare type GetSavedRecipeResponse = Message<"GetSavedRecipeResponse"> & {
+  /**
+   * @generated from field: RecipeDetails recipe = 1;
+   */
+  recipe?: RecipeDetails;
+};
+
+/**
+ * Describes the message GetSavedRecipeResponse.
+ * Use `create(GetSavedRecipeResponseSchema)` to create a new message.
+ */
+export declare const GetSavedRecipeResponseSchema: GenMessage<GetSavedRecipeResponse>;
+
+/**
+ * @generated from message UpdateSavedRecipeRequest
+ */
+export declare type UpdateSavedRecipeRequest = Message<"UpdateSavedRecipeRequest"> & {
+  /**
+   * @generated from field: RecipeDetails recipe = 1;
+   */
+  recipe?: RecipeDetails;
+};
+
+/**
+ * Describes the message UpdateSavedRecipeRequest.
+ * Use `create(UpdateSavedRecipeRequestSchema)` to create a new message.
+ */
+export declare const UpdateSavedRecipeRequestSchema: GenMessage<UpdateSavedRecipeRequest>;
+
+/**
+ * @generated from message UpdateSavedRecipeResponse
+ */
+export declare type UpdateSavedRecipeResponse = Message<"UpdateSavedRecipeResponse"> & {
+  /**
+   * @generated from field: google.protobuf.Timestamp time = 2;
+   */
+  time?: Timestamp;
+};
+
+/**
+ * Describes the message UpdateSavedRecipeResponse.
+ * Use `create(UpdateSavedRecipeResponseSchema)` to create a new message.
+ */
+export declare const UpdateSavedRecipeResponseSchema: GenMessage<UpdateSavedRecipeResponse>;
+
+/**
+ * @generated from message DeleteSavedRecipeRequest
+ */
+export declare type DeleteSavedRecipeRequest = Message<"DeleteSavedRecipeRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message DeleteSavedRecipeRequest.
+ * Use `create(DeleteSavedRecipeRequestSchema)` to create a new message.
+ */
+export declare const DeleteSavedRecipeRequestSchema: GenMessage<DeleteSavedRecipeRequest>;
+
+/**
+ * @generated from message DeleteSavedRecipeResponse
+ */
+export declare type DeleteSavedRecipeResponse = Message<"DeleteSavedRecipeResponse"> & {
+};
+
+/**
+ * Describes the message DeleteSavedRecipeResponse.
+ * Use `create(DeleteSavedRecipeResponseSchema)` to create a new message.
+ */
+export declare const DeleteSavedRecipeResponseSchema: GenMessage<DeleteSavedRecipeResponse>;
+
+/**
+ * @generated from message ListSavedRecipesRequest
+ */
+export declare type ListSavedRecipesRequest = Message<"ListSavedRecipesRequest"> & {
+  /**
+   * @generated from field: string recipeId = 1;
+   */
+  recipeId: string;
+};
+
+/**
+ * Describes the message ListSavedRecipesRequest.
+ * Use `create(ListSavedRecipesRequestSchema)` to create a new message.
+ */
+export declare const ListSavedRecipesRequestSchema: GenMessage<ListSavedRecipesRequest>;
+
+/**
+ * @generated from message ListSavedRecipesResponse
+ */
+export declare type ListSavedRecipesResponse = Message<"ListSavedRecipesResponse"> & {
+  /**
+   * @generated from field: repeated RecipeDetails recipes = 1;
+   */
+  recipes: RecipeDetails[];
+};
+
+/**
+ * Describes the message ListSavedRecipesResponse.
+ * Use `create(ListSavedRecipesResponseSchema)` to create a new message.
+ */
+export declare const ListSavedRecipesResponseSchema: GenMessage<ListSavedRecipesResponse>;
+
+/**
  * @generated from service CanbiocinService
  */
 export declare const CanbiocinService: GenService<{
@@ -703,6 +865,46 @@ export declare const CanbiocinService: GenService<{
     methodKind: "unary";
     input: typeof ListContainersRequestSchema;
     output: typeof ListContainersResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.CreateSavedRecipe
+   */
+  createSavedRecipe: {
+    methodKind: "unary";
+    input: typeof CreateSavedRecipeRequestSchema;
+    output: typeof CreateSavedRecipeResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.GetSavedRecipe
+   */
+  getSavedRecipe: {
+    methodKind: "unary";
+    input: typeof GetSavedRecipeRequestSchema;
+    output: typeof GetSavedRecipeResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.UpdateSavedRecipe
+   */
+  updateSavedRecipe: {
+    methodKind: "unary";
+    input: typeof UpdateSavedRecipeRequestSchema;
+    output: typeof UpdateSavedRecipeResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.DeleteSavedRecipe
+   */
+  deleteSavedRecipe: {
+    methodKind: "unary";
+    input: typeof DeleteSavedRecipeRequestSchema;
+    output: typeof DeleteSavedRecipeResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.ListSavedRecipes
+   */
+  listSavedRecipes: {
+    methodKind: "unary";
+    input: typeof ListSavedRecipesRequestSchema;
+    output: typeof ListSavedRecipesResponseSchema;
   },
 }>;
 

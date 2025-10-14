@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CalculateRecipeRequest, CalculateRecipeResponse, CreateContainerRequest, CreateContainerResponse, CreateIngredientRequest, CreateIngredientResponse, CreateRecipeRequest, CreateRecipeResponse, DeleteContainerRequest, DeleteContainerResponse, DeleteIngredientRequest, DeleteIngredientResponse, DeleteRecipeRequest, DeleteRecipeResponse, GetIngredientRequest, GetIngredientResponse, GetRecipeRequest, GetRecipeResponse, ListContainersRequest, ListContainersResponse, ListIngredientsRequest, ListIngredientsResponse, ListPrebioticCategoryRequest, ListPrebioticCategoryResponse, ListProbioticSppRequest, ListProbioticSppResponse, ListRecipesRequest, ListRecipesResponse, UpdateContainerRequest, UpdateContainerResponse, UpdateIngredientRequest, UpdateIngredientResponse, UpdateRecipeRequest, UpdateRecipeResponse } from "./service_pbjs";
+import { CalculateRecipeRequest, CalculateRecipeResponse, CreateContainerRequest, CreateContainerResponse, CreateIngredientRequest, CreateIngredientResponse, CreateRecipeRequest, CreateRecipeResponse, CreateSavedRecipeRequest, CreateSavedRecipeResponse, DeleteContainerRequest, DeleteContainerResponse, DeleteIngredientRequest, DeleteIngredientResponse, DeleteRecipeRequest, DeleteRecipeResponse, DeleteSavedRecipeRequest, DeleteSavedRecipeResponse, GetIngredientRequest, GetIngredientResponse, GetRecipeRequest, GetRecipeResponse, GetSavedRecipeRequest, GetSavedRecipeResponse, ListContainersRequest, ListContainersResponse, ListIngredientsRequest, ListIngredientsResponse, ListPrebioticCategoryRequest, ListPrebioticCategoryResponse, ListProbioticSppRequest, ListProbioticSppResponse, ListRecipesRequest, ListRecipesResponse, ListSavedRecipesRequest, ListSavedRecipesResponse, UpdateContainerRequest, UpdateContainerResponse, UpdateIngredientRequest, UpdateIngredientResponse, UpdateRecipeRequest, UpdateRecipeResponse, UpdateSavedRecipeRequest, UpdateSavedRecipeResponse } from "./service_pbjs";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -163,6 +163,51 @@ export declare const CanbiocinService: {
       readonly name: "ListContainers",
       readonly I: typeof ListContainersRequest,
       readonly O: typeof ListContainersResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.CreateSavedRecipe
+     */
+    readonly createSavedRecipe: {
+      readonly name: "CreateSavedRecipe",
+      readonly I: typeof CreateSavedRecipeRequest,
+      readonly O: typeof CreateSavedRecipeResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.GetSavedRecipe
+     */
+    readonly getSavedRecipe: {
+      readonly name: "GetSavedRecipe",
+      readonly I: typeof GetSavedRecipeRequest,
+      readonly O: typeof GetSavedRecipeResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.UpdateSavedRecipe
+     */
+    readonly updateSavedRecipe: {
+      readonly name: "UpdateSavedRecipe",
+      readonly I: typeof UpdateSavedRecipeRequest,
+      readonly O: typeof UpdateSavedRecipeResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.DeleteSavedRecipe
+     */
+    readonly deleteSavedRecipe: {
+      readonly name: "DeleteSavedRecipe",
+      readonly I: typeof DeleteSavedRecipeRequest,
+      readonly O: typeof DeleteSavedRecipeResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.ListSavedRecipes
+     */
+    readonly listSavedRecipes: {
+      readonly name: "ListSavedRecipes",
+      readonly I: typeof ListSavedRecipesRequest,
+      readonly O: typeof ListSavedRecipesResponse,
       readonly kind: MethodKind.Unary,
     },
   }

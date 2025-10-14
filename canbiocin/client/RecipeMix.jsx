@@ -1,11 +1,11 @@
 const React = require('React');
 import { timestampToDate } from './timestamp.js';
+import { timestampToDateTimeString } from './timestamp.js';
 import { floatToMoney } from './money.js';
 import { moneyToString } from './money.js';
 import { moneyToFloat } from './money.js';
 import { Link, useNavigate, useSearchParams } from 'react-router';
-import { ConfirmDialog } from './Dialog';
-import { AlertDialog } from './Dialog';
+import { InputDialog } from './Dialog';
 import { valueToPrecision } from './utils.js';
 import { ContainerDropdown } from './Dropdowns';
 
@@ -326,33 +326,9 @@ function TotalRow({title, columnDef, ingredients}) {
   )
 }
 
-function RecipeMix({recipeId, servingSizeGrams, totalGrams, container, discountPercent }) {
-  const [isLoading, setIsLoading] = React.useState(true)
-  const [recipeMix, setRecipeMix] = React.useState(null);
+function RecipeMix({recipe}) {
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const response = await getGrpcClient().calculateRecipe(
-            {recipeId: recipeId, 
-             servingSizeGrams: servingSizeGrams, 
-             totalGrams: totalGrams,
-             container: container,
-             discountPercent: discountPercent });
-        
-        setRecipeMix(response.recipeDetails);
-      } catch (error) {
-        //setError(error);
-        console.log(error);
-      } finally {
-        setIsLoading(false)
-      }
-    };
-    fetchData();
-  }, [recipeId, servingSizeGrams, totalGrams, container, discountPercent]);
-
-  if (recipeMix == null) {
+  if (recipe == null) {
     return (
         <>
         "Error"
@@ -366,21 +342,21 @@ function RecipeMix({recipeId, servingSizeGrams, totalGrams, container, discountP
       <Field
           id='id'
           label='ID' 
-          value={recipeMix.recipe.id}
+          value={recipe.recipe.id}
           size="small"
           variant="standard"
       />
       <Field
           id='name'
           label='Name' 
-          value={recipeMix.recipe.name}
+          value={recipe.recipe.name}
           size="small"
           variant="standard"
       />
       <Field
           id='overage'
           label='Probiotic Overage %' 
-          value={recipeMix.recipe.probioticOveragePercent}
+          value={recipe.recipe.probioticOveragePercent}
           size="small"
           variant="standard"
           type="number"
@@ -389,11 +365,11 @@ function RecipeMix({recipeId, servingSizeGrams, totalGrams, container, discountP
     </Grid>
     
     <Box sx={{ m:1 }}>
-      <TotalRow title="Totals" columnDef={prebioticColumns} ingredients={recipeMix.ingredients} />
+      <TotalRow title="Totals" columnDef={prebioticColumns} ingredients={recipe.ingredients} />
 
-      <IngredientRows title="Probiotics" columnDef={probioticColumns} ingredients={recipeMix.ingredients} type="probiotic" />
-      <IngredientRows title="Prebiotics" columnDef={prebioticColumns} ingredients={recipeMix.ingredients} type="prebiotic" />
-      <IngredientRows title="Postbiotics" columnDef={prebioticColumns} ingredients={recipeMix.ingredients} type="postbiotic" />
+      <IngredientRows title="Probiotics" columnDef={probioticColumns} ingredients={recipe.ingredients} type="probiotic" />
+      <IngredientRows title="Prebiotics" columnDef={prebioticColumns} ingredients={recipe.ingredients} type="prebiotic" />
+      <IngredientRows title="Postbiotics" columnDef={prebioticColumns} ingredients={recipe.ingredients} type="postbiotic" />
     </Box>
     </>
   )
@@ -401,6 +377,7 @@ function RecipeMix({recipeId, servingSizeGrams, totalGrams, container, discountP
 
 export default function () {
   let initSize = 10000
+  const [isLoading, setIsLoading] = React.useState(true)
   const [servingGrams, setServingGrams] = React.useState(1)
   const [totalGrams, setTotalGrams] = React.useState(initSize)
   const [searchParams, setSearchParams] = useSearchParams();
@@ -408,8 +385,13 @@ export default function () {
   const [numContainers, setNumContainers] = React.useState(1)
   const [gramsPerContainer, setGramsPerContainer] = React.useState(initSize)
   const [discountPercent, setDiscountPercent] = React.useState(0)
+  const [recipe, setRecipe] = React.useState(null)
+  const [isSaving, setIsSaving] = React.useState(false)
+  const [isDeleting, setIsDeleting] = React.useState(false)
+  const [saveNameOpen, setSaveNameOpen] = React.useState(false)
 
   const recipeId = searchParams.get('recipeId')
+  const savedRecipeId = searchParams.get('savedRecipeId')
   const navigate = useNavigate();
 
   const handleClose = () => () => {
@@ -446,6 +428,185 @@ export default function () {
     setDiscountPercent(event.target.value)
   }
 
+  function ContainerFieldOrDropdown({recipe, editable}) {
+    if (editable) {
+      return (
+      <ContainerDropdown
+        value={recipe ? recipe.container : ""}
+        onChange={handleContainerChange}
+        editable={!savedRecipeId}
+      />
+      )
+    } else {
+      return (
+      <Field
+          id='container'
+          label='Container' 
+          value={recipe && recipe.container ? `${recipe.container.name} - ${recipe.container.sizeG}g` : ""}
+          size="small"
+          type="string"
+          variant="standard"
+          editable={false}
+      />
+      )
+    }
+  }
+
+
+
+  const handleSaveClick = () => {
+    if (recipe) {
+      if (recipe.name) {
+        setIsSaving(true)
+      } else {
+        setSaveNameOpen(true)
+      }
+    }
+  }
+
+  const handleSaveClickChange = (value) => {
+    recipe.name = value
+  }
+
+  const handleSaveNameClose = () => {
+    setSaveNameOpen(false)
+  }
+
+  const handleSaveNameConfirm = () => {
+    if (recipe.name) {
+      setSaveNameOpen(false)
+      setIsSaving(true)
+      return true
+    }
+    return false
+  }
+
+  React.useEffect(() => {
+    const saveRecipeMix = async () => {
+      if (isSaving) {
+        let isError = false
+        let isAdd = !recipe.id
+        try {
+          if (isAdd) {
+            const response = await getGrpcClient().createSavedRecipe({recipe: recipe});
+            recipe.id = response.id
+          } else {
+            const response = await getGrpcClient().updateSavedRecipe({recipe: recipe});
+          }
+        } catch (e) {
+          isError = true
+          setError(e.message);
+          console.log(e)
+        } finally {
+          setIsSaving(false)
+          if (isError) {
+            setErrorOpen(true);
+          } else {
+            navigate(`/recipeMix?&savedRecipeId=${recipe.id}`, { replace: true })
+          }
+        }
+      }
+    }
+    saveRecipeMix()
+  }, [isSaving, recipe]);
+
+  const handleDeleteClick = () => {
+    if (savedRecipeId) {
+        setIsDeleting(true)
+    }
+  }
+
+  React.useEffect(() => {
+    const deleteRecipeMix = async () => {
+      if (isDeleting) {
+        let isError = false
+        try {
+            const response = await getGrpcClient().deleteSavedRecipe({id: savedRecipeId});
+        } catch (e) {
+          isError = true
+          setError(e.message);
+          console.log(e)
+        } finally {
+          setIsDeleting(false)
+          if (isError) {
+            setErrorOpen(true);
+          } else {
+            navigate(`/recipe?recipeId=${recipe.recipe.id}`, { replace: true })
+          }
+        }
+      }
+    }
+    deleteRecipeMix()
+  }, [isDeleting, savedRecipeId]);
+
+
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        // If we have a savedRecipeId we load it here
+        if (savedRecipeId && !recipe) {
+          const response = await getGrpcClient().getSavedRecipe(
+              {savedRecipeId: savedRecipeId});
+          let r = response.recipe
+          setRecipe(r)
+          setServingGrams(r.servingSizeGrams)
+          setTotalGrams(r.totalGrams)
+          setContainer(r.container)
+          setDiscountPercent(r.discountPercent)
+          updateNumContainers(r.totalGrams, r.servingSizeGrams, r.container)
+        } else if (!savedRecipeId) {
+          const response = await getGrpcClient().calculateRecipe(
+              {recipeId: recipeId, 
+               servingSizeGrams: servingGrams, 
+               totalGrams: totalGrams,
+               container: container,
+               discountPercent: discountPercent });
+          setRecipe(response.recipeDetails)
+        }
+      } catch (error) {
+        //setError(error);
+        console.log(error);
+      } finally {
+        setIsLoading(false)
+      }
+    };
+    fetchData();
+  }, [savedRecipeId, recipeId, servingGrams, totalGrams, container, discountPercent]);
+
+  function SaveToolbar() {
+    if (savedRecipeId) {
+      return (<></>)
+    }
+    return (
+        <IconButton
+          edge="end"
+          color="inherit"
+          onClick={handleSaveClick}
+          aria-label={"save"}
+        >
+          <SaveIcon />
+        </IconButton>
+    )
+  }
+
+  function DeleteToolbar() {
+    if (!savedRecipeId) {
+      return (<></>)
+    }
+    return (
+        <IconButton
+          edge="end"
+          color="inherit"
+          onClick={handleDeleteClick}
+          aria-label={"delete"}
+        >
+          <DeleteIcon />
+        </IconButton>
+    )
+  }
+
   return (
     <>
     <AppBar sx={{ position: 'relative' }}>
@@ -458,6 +619,29 @@ export default function () {
         >
           <CloseIcon />
         </IconButton>
+        <Box
+            sx={{
+                display: 'flex', // Enable flexbox
+                alignItems: 'flex-end', // Align items to the bottom (flex-end)
+                gap: 1, // Optional: Add spacing between the words
+                padding: 1}}>
+        <Typography variant="h3" component="span">
+          {recipe ? recipe.name : ""}
+        </Typography>
+        <Typography variant="body1" component="span">
+          {(recipe && recipe.name) ? timestampToDateTimeString(recipe.time) : ""}
+        </Typography>
+        </Box>
+        <Box sx={{ flexGrow: 1}} />
+        <SaveToolbar />
+        <DeleteToolbar />
+        <InputDialog
+          title="Formulation name"
+          content="Please provide a name for the formulation"
+          onChange={handleSaveClickChange}
+          open={saveNameOpen}
+          onClose={handleSaveNameClose}
+          onConfirm={handleSaveNameConfirm} />
       </Toolbar>
     </AppBar>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
@@ -469,7 +653,7 @@ export default function () {
           type="number"
           variant="standard"
           onChange={handleServingGramsChange}
-          editable={true}
+          editable={!savedRecipeId}
       />
       <Field
           id='total_grams'
@@ -479,13 +663,13 @@ export default function () {
           type="number"
           variant="standard"
           onChange={handleTotalGramsChange}
-          editable={true}
+          editable={!savedRecipeId}
       />
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
-      <ContainerDropdown
-        onChange={handleContainerChange}
-      />
+      <ContainerFieldOrDropdown
+        recipe={recipe}
+        editable={!savedRecipeId} />
       <Field
           id='servings_per_container'
           label='Servings per container' 
@@ -514,11 +698,11 @@ export default function () {
           type="number"
           variant="standard"
           onChange={handleDiscountPercentChange}
-          editable={true}
+          editable={!savedRecipeId}
           units="%"
       />
     </Grid>
-    <RecipeMix recipeId={recipeId} servingSizeGrams={servingGrams} totalGrams={totalGrams} container={container} discountPercent={discountPercent} />
+    <RecipeMix recipe={recipe} />
     </>
   )
 }

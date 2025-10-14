@@ -41,16 +41,23 @@ func (c *FireStoreClient) Delete(ctx context.Context, folder string, id string) 
 	return err
 }
 
-func (c *FireStoreClient) List(ctx context.Context, folder string) (DocIterator, error) {
-	iter := c.client.Collection(folder).Documents(ctx)
+func (c *FireStoreClient) List(ctx context.Context, folder string, orderBy string, limit int) (DocIterator, error) {
+	q := c.client.Collection(folder).OrderBy(orderBy, firestore.Desc)
+	if limit > 0 {
+		q.Limit(limit)
+	}
+	iter := q.Documents(ctx)
 	return &FireStoreIterator{client: c, iter: iter}, nil
 }
 
-func (c *FireStoreClient) Query(ctx context.Context, folder string, query []*QueryCriteria) (DocIterator, error) {
+func (c *FireStoreClient) Query(ctx context.Context, folder string, query []*QueryCriteria, orderBy string, limit int) (DocIterator, error) {
 	var stmt firestore.Query
 	if len(query) > 0 {
 		q := query[0]
-		stmt = c.client.Collection(folder).Where(q.Name, q.Op, q.Value)
+		stmt = c.client.Collection(folder).Where(q.Name, q.Op, q.Value).OrderBy(orderBy, firestore.Desc)
+		if limit > 0 {
+			stmt = stmt.Limit(limit)
+		}
 	}
 	if len(query) > 1 {
 		for _, q := range query[1:] {

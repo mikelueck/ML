@@ -2,6 +2,7 @@ const React = require('React');
 
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import { timestampToDateTimeString } from './timestamp.js';
 
 import { getGrpcClient } from './grpc.js';
 
@@ -171,10 +172,20 @@ export function ContainerDropdown({value, onChange}) {
   let id_prefix = "container"
   let label = "Container"
 
+  const getOptionLabel = (option) => {
+      return option ? `${option.name} - ${option.sizeG} g` : ""
+  }
+
+  const computeWidth = (v) => {
+    let w = (getOptionLabel(v).length * FONT_SIZE) + WIDTH_PADDING;
+    if (w < DEFAULT_WIDTH) return DEFAULT_WIDTH
+    return w
+  }
+
   const [inputWidth, setInputWidth] = React.useState(computeWidth(value))
 
   const updateWidth = (v) => {
-    let w = computeWidth(v.name)
+    let w = computeWidth(v)
     if (w < DEFAULT_WIDTH) {
       w = DEFAULT_WIDTH
     }
@@ -211,7 +222,72 @@ export function ContainerDropdown({value, onChange}) {
       value={value}
       renderInput={(params) => <TextField {...params} label={label} variant="outlined" />}
       onChange={handleChange}
-      getOptionLabel={(option) => option ? `${option.name} - ${option.sizeG} g` : ""}
+      getOptionLabel={(option) => getOptionLabel(option)}
+      isOptionEqualToValue={(option, selectedValue) => {
+        return option.id == selectedValue.id
+      }}
+      disableClearable
+      blurOnSelect
+      size='small'
+    />
+  )
+}
+
+export function SavedRecipeDropdown({recipeId, value, onChange}) {
+  const [options, setOptions] = React.useState([]);
+  const [v, setV] = React.useState(value);
+
+  let id_prefix = "savedRecipe"
+  let label = "Saved Recipes"
+
+  const [inputWidth, setInputWidth] = React.useState(computeWidth(value))
+
+  const updateWidth = (v) => {
+    let w = computeWidth(v.name)
+    if (w < DEFAULT_WIDTH) {
+      w = DEFAULT_WIDTH
+    }
+    setInputWidth(w)
+  }
+
+  React.useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const response = await getGrpcClient().listSavedRecipes({recipeId: recipeId});
+        setOptions(response.recipes)
+      } catch (error) {
+        console.log(error);
+      } finally {
+      }
+    };
+    fetchOptions();
+  }, []);
+
+  const handleChange = (event, newValue) => {
+    if (onChange) {
+       onChange(newValue);
+    }
+    setV(newValue)
+    updateWidth(newValue)
+  }
+
+  if (!options || options.length == 0) {
+    return (
+        <>
+        </>
+    )
+  }
+
+  return (
+    <Autocomplete
+      componentsProps={{ popper: { style: { width: 'fit-content' } } }}
+      sx={{ width: `${inputWidth}px` }}
+      options={options}
+      filterOptions={(options, state) => options}
+      value={value}
+      renderInput={(params) => <TextField {...params} label={label} variant="outlined" />}
+      onChange={handleChange}
+      getOptionLabel={(option) => option ? `${option.name}` + " - " + timestampToDateTimeString(option.time)  : ""}
       isOptionEqualToValue={(option, selectedValue) => {
         return option.id == selectedValue.id
       }}

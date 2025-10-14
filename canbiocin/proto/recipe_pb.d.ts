@@ -4,6 +4,7 @@
 
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import type { Message } from "@bufbuild/protobuf";
+import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import type { Container } from "./container_pb.js";
 import type { Probiotic } from "./probiotics_pb.js";
 import type { Prebiotic } from "./prebiotics_pb.js";
@@ -144,6 +145,21 @@ export declare const RecipeSchema: GenMessage<Recipe>;
  * @generated from message RecipeDetails
  */
 export declare type RecipeDetails = Message<"RecipeDetails"> & {
+  /**
+   * @generated from field: string id = 8;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string name = 9;
+   */
+  name: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp time = 7;
+   */
+  time?: Timestamp;
+
   /**
    * @generated from field: Recipe recipe = 1;
    */

@@ -24,6 +24,7 @@ go_library(
             "prebiotics.go",
             "probiotics.go",
             "recipes.go",
+            "saved_recipes.go",
             "suppliers.go",
     ],
     importpath = "github.com/ML/canbiocin/db",
@@ -36,6 +37,7 @@ go_library(
         "@org_golang_google_api//iterator:go_default_library",
         "@com_github_google_uuid//:uuid",
         "@org_golang_google_protobuf//proto:go_default_library",
+        "@com_github_golang_protobuf//ptypes:go_default_library",
     ],
 )
 

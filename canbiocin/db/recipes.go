@@ -15,6 +15,8 @@ func init() {
 		c := &RecipesCollection{
 			BaseCollection: BaseCollection[pb.Recipe, *RecipeDoc]{
 				collectionName: recipesCollection,
+				defaultOrderBy: "name",
+				defaultLimit:   -1,
 			},
 		}
 		c.setAdapt(c.adapt)
@@ -48,7 +50,7 @@ func (pc *RecipesCollection) QueryByCompanyAndName(ctx context.Context, company 
 			Name:  "name",
 			Op:    "==",
 			Value: name,
-		}})
+		}}, pc.defaultOrderBy, pc.defaultLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +74,7 @@ func (pc *RecipesCollection) QueryByCompanyAndName(ctx context.Context, company 
 }
 
 func (pc *RecipesCollection) QueryByIngredient(ctx context.Context, ingredientId string) ([]*RecipeDoc, error) {
-	iter, err := client.List(ctx, pc.collectionName)
+	iter, err := client.List(ctx, pc.collectionName, pc.defaultOrderBy, pc.defaultLimit)
 	if err != nil {
 		return nil, err
 	}

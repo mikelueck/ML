@@ -6,7 +6,7 @@ export function timestampToDate(timestamp) {
   if (timestamp) {
     let sec = timestamp.getSeconds ? timestamp.getSeconds() : timestamp.seconds
     let nanos = timestamp.getNanos ? timestamp.getNanos() : timestamp.nanos
-    let milliseconds = BigInt(sec) * BigInt(1000) + BigInt(nanos / 1000000);
+    let milliseconds = BigInt(sec) * BigInt(1000) + BigInt(Math.floor(nanos / 1000000));
     return new Date(Number(milliseconds));
   } else {
     return null
@@ -21,12 +21,28 @@ export function dateToTimestamp(date) {
 
 export function timestampToDateString(timestamp) {
   if (timestamp) {
-    let milliseconds = BigInt(timestamp.seconds) * BigInt(1000) + BigInt(timestamp.nanos / 1000000);
+    let milliseconds = BigInt(timestamp.seconds) * BigInt(1000) + BigInt(Math.floor(timestamp.nanos / 1000000));
     let date = new Date(Number(milliseconds));
     let month = date.getMonth()
     let day = date.getDate()
     let year = date.getFullYear()
     return  `${month}/${day}/${year}`;
+  } else {
+    return ""
+  }
+}
+
+export function timestampToDateTimeString(timestamp) {
+  if (timestamp) {
+    let milliseconds = BigInt(timestamp.seconds) * BigInt(1000) + BigInt(Math.floor(timestamp.nanos / 1000000));
+    let date = new Date(Number(milliseconds));
+    let month = date.getMonth()
+    let day = date.getDate()
+    let year = date.getFullYear()
+    let hour = date.getHours()
+    let minute = date.getMinutes()
+    let second = date.getSeconds()
+    return  `${month}/${day}/${year} ${hour}:${minute}:${second}`;
   } else {
     return ""
   }

@@ -33,6 +33,7 @@ type QueryCriteria struct {
 
 type Document interface {
 	GetID() string
+	GetName() string
 }
 
 type ClientInterface interface {
@@ -40,8 +41,8 @@ type ClientInterface interface {
 	Get(context.Context, string, string, Document) error
 	Update(context.Context, string, Document) error
 	Delete(context.Context, string, string) error
-	List(context.Context, string) (DocIterator, error)
-	Query(context.Context, string, []*QueryCriteria) (DocIterator, error)
+	List(context.Context, string, string, int) (DocIterator, error)
+	Query(context.Context, string, []*QueryCriteria, string, int) (DocIterator, error)
 	Close() error
 	NewDocument(interface{}, Document) error
 }
@@ -66,12 +67,12 @@ func (c *DbClient) Delete(ctx context.Context, folder string, id string) error {
 	return c.client.Delete(ctx, folder, id)
 }
 
-func (c *DbClient) List(ctx context.Context, folder string) (DocIterator, error) {
-	return c.client.List(ctx, folder)
+func (c *DbClient) List(ctx context.Context, folder string, orderBy string, limit int) (DocIterator, error) {
+	return c.client.List(ctx, folder, orderBy, limit)
 }
 
-func (c *DbClient) Query(ctx context.Context, folder string, query []*QueryCriteria) (DocIterator, error) {
-	return c.client.Query(ctx, folder, query)
+func (c *DbClient) Query(ctx context.Context, folder string, query []*QueryCriteria, orderBy string, limit int) (DocIterator, error) {
+	return c.client.Query(ctx, folder, query, orderBy, limit)
 }
 
 func (c *DbClient) Close() error {

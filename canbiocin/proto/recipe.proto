@@ -6,6 +6,7 @@ import "canbiocin/proto/money.proto";
 import "canbiocin/proto/prebiotics.proto";
 import "canbiocin/proto/probiotics.proto";
 import "canbiocin/proto/postbiotics.proto";
+import "google/protobuf/timestamp.proto";
 
 message ProbioticIngredient {
   string item = 1;
@@ -37,6 +38,9 @@ message Recipe {
 }
 
 message RecipeDetails {
+  string id = 8;
+  string name = 9;
+  google.protobuf.Timestamp time = 7;       
   Recipe recipe = 1;
   int32 serving_size_grams = 2;
   int32 total_grams = 3;

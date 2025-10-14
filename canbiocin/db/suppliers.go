@@ -27,6 +27,8 @@ func NewSuppliersCollection() *SuppliersCollection {
 	c := &SuppliersCollection{
 		BaseCollection: BaseCollection[pb.Supplier, *SupplierDoc]{
 			collectionName: suppliersCollection,
+			defaultOrderBy: "name",
+			defaultLimit:   -1,
 		},
 	}
 	c.setAdapt(c.adapt)
@@ -40,7 +42,7 @@ func (sc *SuppliersCollection) ListActive(ctx context.Context) ([]*SupplierDoc, 
 			Name:  "proto_bytes",
 			Op:    "!=",
 			Value: nil,
-		}})
+		}}, sc.defaultOrderBy, sc.defaultLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +78,7 @@ func (sc *SuppliersCollection) ListByProductCategory(ctx context.Context, catego
 			Name:  "proto_bytes",
 			Op:    "!=",
 			Value: nil,
-		}})
+		}}, sc.defaultOrderBy, sc.defaultLimit)
 	if err != nil {
 		return nil, err
 	}

@@ -4,10 +4,12 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"time"
 
 	"github.com/ML/canbiocin/db"
 	pb "github.com/ML/canbiocin/proto"
 	recipeTools "github.com/ML/canbiocin/recipe"
+	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -260,7 +262,8 @@ func (s *server) CalculateRecipe(ctx context.Context, req *pb.CalculateRecipeReq
 		req.GetServingSizeGrams(),
 		req.GetTotalGrams(),
 		req.GetContainer(),
-		req.GetDiscountPercent())
+		req.GetDiscountPercent(),
+		false) // Don't save
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
 	}
@@ -312,4 +315,75 @@ func (s *server) ListContainers(ctx context.Context, req *pb.ListContainersReque
 		containers = append(containers, c)
 	}
 	return &pb.ListContainersResponse{Containers: containers}, nil
+}
+
+func (s *server) CreateSavedRecipe(ctx context.Context, req *pb.CreateSavedRecipeRequest) (*pb.CreateSavedRecipeResponse, error) {
+	recipe := req.GetRecipe()
+	t, _ := ptypes.TimestampProto(time.Now())
+	recipe.Time = t
+	id, err := db.GetSavedRecipesCollection().Create(ctx, recipe)
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	return &pb.CreateSavedRecipeResponse{
+		Id:   id,
+		Time: recipe.GetTime(),
+	}, nil
+}
+
+func (s *server) GetSavedRecipe(ctx context.Context, req *pb.GetSavedRecipeRequest) (*pb.GetSavedRecipeResponse, error) {
+	r, err := db.GetSavedRecipesCollection().Get(ctx, req.GetSavedRecipeId())
+	if err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	return &pb.GetSavedRecipeResponse{
+		Recipe: r.GetProto().(*pb.RecipeDetails),
+	}, nil
+}
+
+func (s *server) UpdateSavedRecipe(ctx context.Context, req *pb.UpdateSavedRecipeRequest) (*pb.UpdateSavedRecipeResponse, error) {
+	recipe := req.GetRecipe()
+	t, _ := ptypes.TimestampProto(time.Now())
+	recipe.Time = t
+	err := db.GetSavedRecipesCollection().Update(ctx, recipe)
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	return &pb.UpdateSavedRecipeResponse{
+		Time: recipe.Time,
+	}, nil
+}
+
+func (s *server) ListSavedRecipes(ctx context.Context, req *pb.ListSavedRecipesRequest) (*pb.ListSavedRecipesResponse, error) {
+	var recipeList []*db.SavedRecipeDoc
+	var err error
+	if req.GetRecipeId() == "" {
+		recipeList, err = db.GetSavedRecipesCollection().List(ctx)
+	} else {
+		recipeList, err = db.GetSavedRecipesCollection().QueryByRecipe(ctx, req.GetRecipeId())
+	}
+	recipes := []*pb.RecipeDetails{}
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	for _, item := range recipeList {
+		proto := item.GetProto()
+		if proto == nil {
+			continue
+		}
+		r := proto.(*pb.RecipeDetails)
+		recipes = append(recipes, r)
+	}
+	return &pb.ListSavedRecipesResponse{Recipes: recipes}, nil
+}
+
+func (s *server) DeleteSavedRecipe(ctx context.Context, req *pb.DeleteSavedRecipeRequest) (*pb.DeleteSavedRecipeResponse, error) {
+	err := db.GetSavedRecipesCollection().Delete(ctx, req.GetId())
+
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+
+	return &pb.DeleteSavedRecipeResponse{}, nil
 }

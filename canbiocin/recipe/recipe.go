@@ -8,15 +8,19 @@ import (
 	"github.com/ML/canbiocin/db"
 	pb "github.com/ML/canbiocin/proto"
 	"github.com/ML/canbiocin/utils"
+
+	"github.com/golang/protobuf/ptypes"
 )
 
 // Given a recipe and number of grams required outputs number of milligrams for each ingredient
-func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams int32, grams int32, container *pb.Container, discountPercent int32) (*pb.RecipeDetails, error) {
+func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams int32, grams int32, container *pb.Container, discountPercent int32, save bool) (*pb.RecipeDetails, error) {
 	recipe := doc.GetProto().(*pb.Recipe)
 	if recipe == nil {
 		return nil, fmt.Errorf("Error bad recipe: %v\n", doc)
 	}
-	retval := &pb.RecipeDetails{Recipe: recipe,
+	retval := &pb.RecipeDetails{
+		Time:             ptypes.TimestampNow(),
+		Recipe:           recipe,
 		ServingSizeGrams: servingSizeGrams,
 		TotalGrams:       grams,
 		Container:        container,
@@ -30,6 +34,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 	}
 
 	numServingsPerContainer := math.Floor(float64(containerSizeGrams) / float64(servingSizeGrams))
+
 	for _, i := range recipe.GetProbiotics() {
 		// the stock probiotics are more concentrated so need to be diluted
 		probioticDoc, err := db.GetProbioticsCollection().Get(ctx, i.GetItem())
@@ -40,10 +45,11 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 
 		percent := float64(i.GetCfuG()) / float64(probiotic.GetStockCfuG())
 		perserving := float64(servingSizeGrams) * percent
-		total := float64(grams) * percent * (1 + float64(recipe.ProbioticOveragePercent)/100)
+		overage_factor := (1 + float64(recipe.ProbioticOveragePercent)/100)
+		total := float64(grams) * percent * overage_factor
 		cbCostKg := probiotic.GetCostKg()
 		cbTotal := utils.Mult(cbCostKg, total/1000)
-		cbCostPerContainer := utils.Mult(utils.Div(cbCostKg, 1000), float64(numServingsPerContainer)*float64(servingSizeGrams))
+		cbCostPerContainer := utils.Mult(utils.Div(cbCostKg, 1000), float64(numServingsPerContainer)*float64(perserving*overage_factor))
 		markupPercent := probiotic.GetMarkupPercent() - discountPercent
 		clientTotal := utils.Mult(cbTotal, (1.0 + (float64(markupPercent) / float64(100))))
 
@@ -74,7 +80,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 		total := float64(grams) / float64(servingSizeGrams) * perserving / 1000.0
 		cbCostKg := prebiotic.GetCostKg()
 		cbTotal := utils.Mult(cbCostKg, total/1000)
-		cbCostPerContainer := utils.Mult(utils.Div(cbCostKg, 1000), float64(numServingsPerContainer)*float64(servingSizeGrams))
+		cbCostPerContainer := utils.Mult(utils.Div(cbCostKg, 1000), float64(numServingsPerContainer)*float64(perserving/1000))
 		markupPercent := prebiotic.GetMarkupPercent() - discountPercent
 		clientTotal := utils.Mult(cbTotal, (1.0 + (float64(markupPercent) / float64(100))))
 
@@ -104,7 +110,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 		total := float64(grams) / float64(servingSizeGrams) * perserving / 1000.0
 		cbCostKg := postbiotic.GetCostKg()
 		cbTotal := utils.Mult(cbCostKg, total/1000)
-		cbCostPerContainer := utils.Mult(utils.Div(cbCostKg, 1000), float64(numServingsPerContainer)*float64(servingSizeGrams))
+		cbCostPerContainer := utils.Mult(utils.Div(cbCostKg, 1000), float64(numServingsPerContainer)*float64(perserving/1000))
 		markupPercent := postbiotic.GetMarkupPercent() - discountPercent
 		clientTotal := utils.Mult(cbTotal, (1.0 + (float64(markupPercent) / float64(100))))
 
@@ -122,6 +128,10 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 		rows = append(rows, row)
 	}
 	retval.Ingredients = rows
+
+	if save {
+		db.GetSavedRecipesCollection().Create(ctx, retval)
+	}
 
 	return retval, nil
 }
