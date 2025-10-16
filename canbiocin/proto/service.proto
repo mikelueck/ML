@@ -107,6 +107,7 @@ message CalculateRecipeRequest {
   int32 serving_size_grams = 2;
   int32 total_grams = 3;
   Container container = 4;
+  int32 container_size_grams = 6;
   int32 discount_percent = 5;
 }
 

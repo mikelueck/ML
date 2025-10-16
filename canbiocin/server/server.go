@@ -262,6 +262,7 @@ func (s *server) CalculateRecipe(ctx context.Context, req *pb.CalculateRecipeReq
 		req.GetServingSizeGrams(),
 		req.GetTotalGrams(),
 		req.GetContainer(),
+		req.GetContainerSizeGrams(),
 		req.GetDiscountPercent(),
 		false) // Don't save
 	if err != nil {

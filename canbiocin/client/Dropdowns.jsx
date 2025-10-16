@@ -173,7 +173,7 @@ export function ContainerDropdown({value, onChange}) {
   let label = "Container"
 
   const getOptionLabel = (option) => {
-      return option ? `${option.name} - ${option.sizeG} g` : ""
+      return option ? `${option.packaging.name}` : ""
   }
 
   const computeWidth = (v) => {

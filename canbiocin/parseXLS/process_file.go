@@ -154,6 +154,10 @@ func ReadIngredients(ctx context.Context, xl *xlsxreader.XlsxFile) error {
 				lastHeaderRow = &row
 				parser = NewPostbioticsParser()
 			}
+			if isPackagingHeader(&row) {
+				lastHeaderRow = &row
+				parser = NewPackagingParser()
+			}
 			if parser != nil {
 				err := parser.parseIngredient(ctx, &row)
 				if err != nil {

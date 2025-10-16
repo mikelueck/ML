@@ -46,6 +46,7 @@ message RecipeDetails {
   int32 total_grams = 3;
   repeated IngredientDetails ingredients = 4;
   Container container = 5;
+  int32 container_size_grams = 10;
   int32 discount_percent = 6;
 }
 

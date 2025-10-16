@@ -4,9 +4,7 @@
 
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import type { Message } from "@bufbuild/protobuf";
-import type { Money } from "./money_pb.js";
-import type { Supplier } from "./supplier_pb.js";
-import type { Timestamp } from "@bufbuild/protobuf/wkt";
+import type { Packaging } from "./other_pb.js";
 
 /**
  * Describes the file canbiocin/proto/container.proto.
@@ -23,44 +21,14 @@ export declare type Container = Message<"Container"> & {
   id: string;
 
   /**
-   * @generated from field: string name = 2;
+   * @generated from field: Packaging packaging = 2;
    */
-  name: string;
+  packaging?: Packaging;
 
   /**
    * @generated from field: int32 size_g = 3;
    */
   sizeG: number;
-
-  /**
-   * @generated from field: Money unit_cost = 4;
-   */
-  unitCost?: Money;
-
-  /**
-   * @generated from field: Money unit_cost_shipping = 5;
-   */
-  unitCostShipping?: Money;
-
-  /**
-   * @generated from field: Supplier supplier = 6;
-   */
-  supplier?: Supplier;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp most_recent_quote_date = 7;
-   */
-  mostRecentQuoteDate?: Timestamp;
-
-  /**
-   * @generated from field: int32 markup_percent = 9;
-   */
-  markupPercent: number;
-
-  /**
-   * @generated from field: string notes = 10;
-   */
-  notes: string;
 };
 
 /**

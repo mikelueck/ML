@@ -376,14 +376,14 @@ function RecipeMix({recipe}) {
 }
 
 export default function () {
-  let initSize = 10000
+  let initSizeG = 10000
   const [isLoading, setIsLoading] = React.useState(true)
   const [servingGrams, setServingGrams] = React.useState(1)
-  const [totalGrams, setTotalGrams] = React.useState(initSize)
+  const [totalGrams, setTotalGrams] = React.useState(initSizeG)
   const [searchParams, setSearchParams] = useSearchParams();
   const [container, setContainer] = React.useState(null);
   const [numContainers, setNumContainers] = React.useState(1)
-  const [gramsPerContainer, setGramsPerContainer] = React.useState(initSize)
+  const [containerSizeG, setContainerSizeG] = React.useState(initSizeG)
   const [discountPercent, setDiscountPercent] = React.useState(0)
   const [recipe, setRecipe] = React.useState(null)
   const [isSaving, setIsSaving] = React.useState(false)
@@ -400,7 +400,7 @@ export default function () {
 
   const handleTotalGramsChange = (event) => {
     setTotalGrams(event.target.value)
-    updateNumContainers(event.target.value, servingGrams, gramsPerContainer)
+    updateNumContainers(event.target.value, servingGrams, containerSizeG)
   }
 
   const handleContainerChange = (event) => {
@@ -409,19 +409,21 @@ export default function () {
     updateNumContainers(totalGrams, servingGrams, event)
   }
 
-  const updateNumContainers = (total, servingSize, container) => {
-    let g_cont = container ? container.sizeG : initSize
-
-    let num_servings_cont = Math.floor(g_cont / servingSize)
+  const updateNumContainers = (total, servingSize, contSizeG) => {
+    let num_servings_cont = Math.floor(contSizeG / servingSize)
 
     setNumContainers(Math.ceil(total / (num_servings_cont * servingSize)))
+  }
+
+  const handleContainerSizeChange = (event) => {
+    setContainerSizeG(event.target.value)
+    updateNumContainers(totalGrams, servingGrams, event.target.value)
   }
 
 
   const handleServingGramsChange = (event) => {
     setServingGrams(event.target.value)
-    setServingsPerContainer(Math.floor(gramsPerContainer / event.target.value))
-    updateNumContainers(totalGrams, event.target.value, container)
+    updateNumContainers(totalGrams, event.target.value, containerSizeG)
   }
 
   const handleDiscountPercentChange = (event) => {
@@ -555,13 +557,15 @@ export default function () {
           setTotalGrams(r.totalGrams)
           setContainer(r.container)
           setDiscountPercent(r.discountPercent)
-          updateNumContainers(r.totalGrams, r.servingSizeGrams, r.container)
-        } else if (!savedRecipeId) {
+          setContainerSizeG(r.containerSizeGrams)
+          updateNumContainers(r.totalGrams, r.servingSizeGrams, r.containerSizeGrams)
+        } else if (!savedRecipeId && containerSizeG > 0) {
           const response = await getGrpcClient().calculateRecipe(
               {recipeId: recipeId, 
                servingSizeGrams: servingGrams, 
                totalGrams: totalGrams,
                container: container,
+               containerSizeGrams: containerSizeG,
                discountPercent: discountPercent });
           setRecipe(response.recipeDetails)
         }
@@ -573,7 +577,7 @@ export default function () {
       }
     };
     fetchData();
-  }, [savedRecipeId, recipeId, servingGrams, totalGrams, container, discountPercent]);
+  }, [savedRecipeId, recipeId, servingGrams, totalGrams, container, containerSizeG, discountPercent]);
 
   function SaveToolbar() {
     if (savedRecipeId) {
@@ -654,6 +658,7 @@ export default function () {
           variant="standard"
           onChange={handleServingGramsChange}
           editable={!savedRecipeId}
+          units="g"
       />
       <Field
           id='total_grams'
@@ -664,6 +669,7 @@ export default function () {
           variant="standard"
           onChange={handleTotalGramsChange}
           editable={!savedRecipeId}
+          units="g"
       />
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
@@ -671,9 +677,20 @@ export default function () {
         recipe={recipe}
         editable={!savedRecipeId} />
       <Field
+          id='container_size_g'
+          label='Container size grams' 
+          value={containerSizeG}
+          size="small"
+          type="number"
+          variant="standard"
+          editable={true}
+          units="g"
+          onChange={handleContainerSizeChange}
+      />
+      <Field
           id='servings_per_container'
           label='Servings per container' 
-          value={container ? Math.floor(container.sizeG / servingGrams) : Math.floor(initSize / servingGrams) }
+          value={Math.floor(containerSizeG / servingGrams)}
           size="small"
           type="number"
           variant="standard"

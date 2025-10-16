@@ -2,18 +2,10 @@ syntax = "proto3";
 
 option go_package = "github.com/canbiocin/proto";
 
-import "google/protobuf/timestamp.proto";
-import "canbiocin/proto/money.proto";
-import "canbiocin/proto/supplier.proto";
+import "canbiocin/proto/other.proto";
 
 message Container {
     string id = 1;
-    string name = 2;
+    Packaging packaging = 2;
     int32 size_g = 3;
-    Money unit_cost = 4;
-    Money unit_cost_shipping = 5;
-    Supplier supplier = 6;
-    google.protobuf.Timestamp most_recent_quote_date = 7;       
-    int32 markup_percent = 9;    
-    string notes = 10;
 }

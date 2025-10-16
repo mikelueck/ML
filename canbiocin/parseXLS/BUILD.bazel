@@ -37,6 +37,7 @@ go_library(
     name = "parseXLS_lib",
     srcs = [
         "init.go",
+        "packaging.go",
         "prebiotics.go",
         "postbiotics.go",
         "probiotics.go",

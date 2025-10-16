@@ -18,9 +18,9 @@ export declare const file_canbiocin_proto_other: GenFile;
  */
 export declare type Packaging = Message<"Packaging"> & {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id: number;
+  id: string;
 
   /**
    * @generated from field: string name = 2;
@@ -28,9 +28,9 @@ export declare type Packaging = Message<"Packaging"> & {
   name: string;
 
   /**
-   * @generated from field: Money cost_package = 3;
+   * @generated from field: Money total_cost = 3;
    */
-  costPackage?: Money;
+  totalCost?: Money;
 
   /**
    * @generated from field: int32 units_package = 4;
@@ -48,14 +48,19 @@ export declare type Packaging = Message<"Packaging"> & {
   mostRecentQuoteDate?: Timestamp;
 
   /**
-   * @generated from field: int32 amount_needed_per_order = 7;
+   * @generated from field: int32 amount_needed_for_order = 7;
    */
-  amountNeededPerOrder: number;
+  amountNeededForOrder: number;
 
   /**
    * @generated from field: int32 markup_percent = 8;
    */
   markupPercent: number;
+
+  /**
+   * @generated from field: string notes = 9;
+   */
+  notes: string;
 };
 
 /**
@@ -69,9 +74,9 @@ export declare const PackagingSchema: GenMessage<Packaging>;
  */
 export declare type Milling_Blending_Packaging = Message<"Milling_Blending_Packaging"> & {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id: number;
+  id: string;
 
   /**
    * @generated from field: string name = 2;

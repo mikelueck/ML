@@ -253,7 +253,7 @@ func NewContainerDoc(msg *pb.Container) (*ContainerDoc, error) {
 	// Use ID as name since Container has no name field
 	return &ContainerDoc{
 		ID:         msg.GetId(),
-		Name:       msg.GetName(),
+		Name:       msg.GetPackaging().GetName(),
 		ProtoBytes: bytes,
 	}, nil
 }
@@ -346,7 +346,7 @@ func (d *SavedRecipeDoc) GetCompany() string {
 	return d.Company
 }
 
-// GetDAte returns the company name
+// GetDate returns the company name
 func (d *SavedRecipeDoc) GetDate() int {
 	return d.Date
 }
@@ -365,6 +365,50 @@ func NewSavedRecipeDoc(msg *pb.RecipeDetails) (*SavedRecipeDoc, error) {
 		Name:       msg.GetRecipe().GetName(),
 		Company:    msg.GetRecipe().GetCompany().GetName(),
 		Date:       t.Second(),
+		ProtoBytes: bytes,
+	}, nil
+}
+
+// PackagingDoc wraps a container document for Firestore storage
+type PackagingDoc struct {
+	ID         string `firestore:"id"`
+	Name       string `firestore:"name"`
+	ProtoBytes []byte `firestore:"proto_bytes"`
+}
+
+// GetID returns the document ID
+func (d *PackagingDoc) GetID() string {
+	return d.ID
+}
+
+// GetProtoBytes returns the raw proto bytes
+func (d *PackagingDoc) GetProtoBytes() []byte {
+	return d.ProtoBytes
+}
+
+// GetProto unmarshals and returns the proto message
+func (d *PackagingDoc) GetProto() proto.Message {
+	msg := &pb.Packaging{}
+	if err := proto.Unmarshal(d.ProtoBytes, msg); err != nil {
+		return nil
+	}
+	return msg
+}
+
+// GetName returns the document name
+func (d *PackagingDoc) GetName() string {
+	return d.Name
+}
+
+// NewPackagingDoc creates a new PackagingDoc from a proto message
+func NewPackagingDoc(msg *pb.Packaging) (*PackagingDoc, error) {
+	bytes, err := proto.Marshal(msg)
+	if err != nil {
+		return nil, err
+	}
+	return &PackagingDoc{
+		ID:         msg.GetId(),
+		Name:       msg.GetName(),
 		ProtoBytes: bytes,
 	}, nil
 }

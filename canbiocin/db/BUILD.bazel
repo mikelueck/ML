@@ -20,6 +20,7 @@ go_library(
             "firestore_docs.go",
             "firestore_client.go",
             "mock_client.go",
+            "packaging.go",
             "postbiotics.go",
             "prebiotics.go",
             "probiotics.go",

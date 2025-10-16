@@ -186,6 +186,11 @@ export declare type RecipeDetails = Message<"RecipeDetails"> & {
   container?: Container;
 
   /**
+   * @generated from field: int32 container_size_grams = 10;
+   */
+  containerSizeGrams: number;
+
+  /**
    * @generated from field: int32 discount_percent = 6;
    */
   discountPercent: number;

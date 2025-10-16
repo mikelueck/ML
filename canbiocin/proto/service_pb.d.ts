@@ -422,6 +422,11 @@ export declare type CalculateRecipeRequest = Message<"CalculateRecipeRequest"> &
   container?: Container;
 
   /**
+   * @generated from field: int32 container_size_grams = 6;
+   */
+  containerSizeGrams: number;
+
+  /**
    * @generated from field: int32 discount_percent = 5;
    */
   discountPercent: number;

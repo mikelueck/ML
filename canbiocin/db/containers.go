@@ -1,8 +1,11 @@
 package db
 
 import (
+	"context"
+
 	pb "github.com/ML/canbiocin/proto"
 	"github.com/google/uuid"
+	"google.golang.org/api/iterator"
 )
 
 const containersCollection = "containers"
@@ -39,4 +42,33 @@ func (p *ContainersCollection) adapt(pb *pb.Container) (*ContainerDoc, error) {
 func GetContainersCollection() *ContainersCollection {
 	c := registry.Get(containersCollection)
 	return c.(*ContainersCollection)
+}
+
+func (pc *ContainersCollection) QueryByName(ctx context.Context, name string) ([]*ContainerDoc, error) {
+	iter, err := client.Query(ctx, pc.collectionName,
+		[]*QueryCriteria{&QueryCriteria{
+			Name:  "name",
+			Op:    "==",
+			Value: name,
+		}}, pc.defaultOrderBy, pc.defaultLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer iter.Stop()
+
+	var docs []*ContainerDoc
+	for {
+		docWrapper := pc.getWrapper()
+		err := iter.Next(docWrapper)
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		if docWrapper.GetName() == name {
+			docs = append(docs, docWrapper)
+		}
+	}
+	return docs, nil
 }
