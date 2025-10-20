@@ -6,8 +6,12 @@ import { moneyToString } from './money.js';
 import { moneyToFloat } from './money.js';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { InputDialog } from './Dialog';
+import { AlertDialog } from './Dialog';
+import { emptyIngredientForType } from "./utils.js";
 import { valueToPrecision } from './utils.js';
 import { ContainerDropdown } from './Dropdowns';
+
+import { EditToolbar } from './DataGridEditToolbar';
 
 import { getGrpcClient } from './grpc.js';
 
@@ -24,14 +28,17 @@ import { AppBar,
          Typography } from '@mui/material';
 
 import CloseIcon from '@mui/icons-material/Close';
+import CancelIcon from '@mui/icons-material/Cancel';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import BlenderIcon from '@mui/icons-material/Blender';
 
 import { DataGrid,
+         useGridApiRef,
          GridRowModes,
          GridActionsCellItem,
+         GridEditInputCell,
          GridRowEditStopReasons,
          TollbarButton, 
 } from '@mui/x-data-grid';
@@ -218,6 +225,96 @@ const prebioticColumns = [
   ...commonColumns
 ];
 
+const packagingColumns = [
+  { field: 'name',
+    headerName: 'Name', 
+    sortable:true,
+    valueGetter: (value, row) => {
+      return getItemValue(row).name;
+    },
+    flex: 6,
+    renderHeader: () => (
+      <strong>{'Name'}</strong>
+    ),
+  },
+  { field: 'amount_needed', 
+    headerName: 'Number Needed', 
+    valueGetter: (value, row) => {
+      return row.totalGrams
+    },
+    flex: 1.5,
+    renderHeader: () => (
+      <strong>{'Number'}<br/>{'Needed'}</strong>
+    ),
+    valueFormatter: (value) => {
+      return valueToPrecision(value, precision)
+    },
+  },
+  { field: 'cb_cost_container', 
+    headerName: 'CB Cost Container', 
+    type: 'number',
+    valueGetter: (value, row) => {
+      return moneyToString(row.cbCostPerContainer, precision, true)
+    },
+    flex: 1.5,
+    renderHeader: () => (
+      <strong>{'CanBiocin'}<br/>{'CoGs/Container'}</strong>
+    ),
+    valueFormatter: (value) => {
+      if (value.length > 0) {
+        return '$ ' + value;
+      }
+      return ''
+    },
+  },
+  { field: 'cb_total', 
+    headerName: 'CB Total', 
+    type: 'number',
+    valueGetter: (value, row) => {
+      return moneyToString(row.cbTotal, precision, true);
+    },
+    flex: 1.5,
+    renderHeader: () => (
+      <strong>{'Total'}<br/>{'CanBiocin'}<br/>{'CoGs/Order'}</strong>
+    ),
+    valueFormatter: (value) => {
+      if (value.length > 0) {
+        return '$ ' + value;
+      }
+      return ''
+    },
+  },
+  { field: 'markup', 
+    headerName: 'Markup', 
+    valueGetter: (value, row) => {
+      return row.markupPercent ?  row.markupPercent : ""
+    },
+    renderCell: (params) => (
+      <>
+      {params.row.markupPercent ? params.row.markupPercent + '%' : ""}
+      </>
+    ),
+    renderHeader: () => (
+      <strong>{'Markup'}</strong>
+    ),
+    flex: 1.5,
+  },
+  { field: 'client_total', 
+    headerName: 'Client Total', 
+    type: 'number',
+    valueGetter: (value, row) => {
+      return moneyToString(row.clientTotal, precision, true);
+    },
+    flex: 1.5,
+    renderHeader: () => (
+      <strong>{'Client'}<br/>{'CoGs/'}<br/>{'Order'}</strong>
+    ),
+    valueFormatter: (value) => {
+      return '$ ' + value;
+    },
+  },
+]
+
 const computeTotals = (ingredients, rows) => {
   if (ingredients.length == 0) {
     return
@@ -326,6 +423,51 @@ function TotalRow({title, columnDef, ingredients}) {
   )
 }
 
+function PackagingSelect({columnDef, newRowFn, editable, packaging, apiRef, setPackaging, rowModesModel, setRowModesModel, onRowModesModelChange, onRowEditStop, processRowUpdate, fieldToFocus }) {
+
+  const onProcessRowUpdateError = (e) => {
+    alert("ProcessRowUpdateError fixme")
+    console.log(e)
+  };
+  
+  const getRowId = (row) => {
+    return row.id
+  }
+
+  return (
+    <Box sx={{ width: '100%' }}>
+    <Typography variant="h5" align="left">
+      Packaging
+    </Typography>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <DataGrid
+      apiRef={apiRef}
+      rows={packaging}
+      getRowId={getRowId}
+      columns={columnDef}
+      editMode="row"
+      rowModesModel={rowModesModel}
+      onRowModesModelChange={onRowModesModelChange}
+      onRowEditStop={onRowEditStop}
+      processRowUpdate={processRowUpdate}
+      onProcessRowUpdateError={onProcessRowUpdateError}
+      slots={{ toolbar: EditToolbar }}
+      slotProps={{
+        toolbar: { label: "Add Packaging",
+                   fieldToFocus: fieldToFocus,
+                   newRowFn: newRowFn,
+                   setIngredients: setPackaging, 
+                   setRowModesModel: setRowModesModel, 
+                   editable: editable },
+      }}
+      hideFooter
+      showToolbar
+    />
+    </div>
+    </Box>
+  )
+}
+
 function RecipeMix({recipe}) {
 
   if (recipe == null) {
@@ -370,10 +512,13 @@ function RecipeMix({recipe}) {
       <IngredientRows title="Probiotics" columnDef={probioticColumns} ingredients={recipe.ingredients} type="probiotic" />
       <IngredientRows title="Prebiotics" columnDef={prebioticColumns} ingredients={recipe.ingredients} type="prebiotic" />
       <IngredientRows title="Postbiotics" columnDef={prebioticColumns} ingredients={recipe.ingredients} type="postbiotic" />
+      <IngredientRows title="Packaging" columnDef={packagingColumns} ingredients={recipe.ingredients} type="packaging" />
     </Box>
     </>
   )
 }
+
+const editNameField = "edittedName";
 
 export default function () {
   let initSizeG = 10000
@@ -382,17 +527,32 @@ export default function () {
   const [totalGrams, setTotalGrams] = React.useState(initSizeG)
   const [searchParams, setSearchParams] = useSearchParams();
   const [container, setContainer] = React.useState(null);
+  const [packagingItems, setPackagingItems] = React.useState([]);
   const [numContainers, setNumContainers] = React.useState(1)
   const [containerSizeG, setContainerSizeG] = React.useState(initSizeG)
   const [discountPercent, setDiscountPercent] = React.useState(0)
   const [recipe, setRecipe] = React.useState(null)
   const [isSaving, setIsSaving] = React.useState(false)
   const [isDeleting, setIsDeleting] = React.useState(false)
+  const [savedRecipeName, setSavedRecipeName] = React.useState("")
+  const [savedRecipeTime, setSavedRecipeTime] = React.useState("")
   const [saveNameOpen, setSaveNameOpen] = React.useState(false)
+  const [packagingList, setPackagingList] = React.useState([]);
+  const [packagingByName, setPackagingByName] = React.useState(new Map());
+
+  const [errorOpen, setErrorOpen] = React.useState(false)
+  const [error, setError] = React.useState("")
+
+  const handleErrorClose = () => {
+    setErrorOpen(false)
+  }
+
 
   const recipeId = searchParams.get('recipeId')
   const savedRecipeId = searchParams.get('savedRecipeId')
   const navigate = useNavigate();
+
+  const [editable, setEditable] = React.useState(!savedRecipeId)
 
   const handleClose = () => () => {
     navigate(-1);
@@ -404,9 +564,8 @@ export default function () {
   }
 
   const handleContainerChange = (event) => {
-    setGramsPerContainer(event.sizeG)
     setContainer(event)
-    updateNumContainers(totalGrams, servingGrams, event)
+    updateNumContainers(totalGrams, servingGrams, containerSizeG)
   }
 
   const updateNumContainers = (total, servingSize, contSizeG) => {
@@ -436,7 +595,7 @@ export default function () {
       <ContainerDropdown
         value={recipe ? recipe.container : ""}
         onChange={handleContainerChange}
-        editable={!savedRecipeId}
+        editable={editable}
       />
       )
     } else {
@@ -444,7 +603,7 @@ export default function () {
       <Field
           id='container'
           label='Container' 
-          value={recipe && recipe.container ? `${recipe.container.name} - ${recipe.container.sizeG}g` : ""}
+          value={recipe && recipe.container ? `${recipe.container.packaging.name}` : ""}
           size="small"
           type="string"
           variant="standard"
@@ -468,6 +627,7 @@ export default function () {
 
   const handleSaveClickChange = (value) => {
     recipe.name = value
+    setSavedRecipeName(value)
   }
 
   const handleSaveNameClose = () => {
@@ -483,16 +643,273 @@ export default function () {
     return false
   }
 
+
+  const packagingApiRef = useGridApiRef();
+  const[packagingRowModesModel, setPackagingRowModesModel] = React.useState({});
+
+  const handlePackagingRowModesModelChange = (newRowModesModel) => {
+    setPackagingRowModesModel(newRowModesModel)
+  }       
+
+  const verifyPackaging = (list) => {
+    let map = new Map()
+    for (let i = 0; i < list.length; i++) {
+      if (map.has(list[i].id)) {
+        return false
+      }
+      map.set(list[i].id)
+    }
+    return true
+  }
+
+  const processRowUpdate = (newRow) => {
+    // Can probably do something better here than copying things around
+    let clone = structuredClone(packagingItems);
+
+    let index = -1;
+    for (let i = 0; i < clone.length; i++) {
+      if (newRow.id == clone[i].id) {
+        index = i
+        break
+      }
+    }
+
+    if (index >= 0 && index < clone.length) {
+      let oldPackaging;
+
+      const rowIsNew = newRow.isNew
+
+      if (newRow[editNameField] && newRow[editNameField] != clone[index][editNameField]) {
+        // They changed the type of the packaging
+        let updatedPackaging = packagingByName.get(newRow[editNameField])
+        if (updatedPackaging) {
+          oldPackaging = clone[index]
+          newRow = updatedPackaging
+        } else {
+          console.log(`An ingredient was selected but we couldn't find it ${newRow[editNameField]}`);
+        }
+      }
+      clone.splice(index, 1, newRow)
+      let verify = verifyPackaging(clone)
+      if (!verify && oldPackaging) {
+        // Datagrid behaves badly if two rows have the same id
+        clone.splice(index, 1, oldPackaging)
+      }
+      if (!verify && rowIsNew) {
+        // if the new row is an addition and the recipe can't verify properly then we just delete the ingredient
+        clone.splice(index, 1)
+        Promise.reject();
+      }
+      // We update the updatedRecipe even if it isn't valid so that it renders correctly
+      setPackagingItems(clone)
+    } else {
+      console.log(`Couldn't find ingredients to update for ${newRow}`)
+      Promise.reject();
+    }
+    
+    const updatedRow = { ...newRow, isNew: false };
+    return updatedRow;
+  };
+
+  const packagingRowModels = {
+    apiRef: packagingApiRef,
+    rowModesModel:packagingRowModesModel,
+    setRowModesModel: setPackagingRowModesModel,  
+    onModesModelChange: handlePackagingRowModesModelChange,
+    processRowUpdate: processRowUpdate
+  }
+
+  const handleRowCancelClick = (id) => () => {
+    const [rowModesModel, setRowModesModel] = [packagingRowModels.rowModesModel, packagingRowModels.setRowModesModel] 
+  
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View, ignoreModifications: true } });
+  }
+
+  const handleRowEditClick = (id) => () => {
+    const [rowModesModel, setRowModesModel] = [packagingRowModels.rowModesModel, packagingRowModels.setRowModesModel] 
+        
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  }     
+
+  const handleRowEditStop = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevent = true;
+    }         
+  }             
+
+  const handleRowDeleteClick = (id) => () => {
+    for (let i = 0; i < packagingItems.length; i++) {
+      if (packagingItems[i].id == id) {
+        let clone = structuredClone(packagingItems)
+        clone.splice(i, 1)
+        setPackagingItems(clone)
+        return
+      }   
+    }   
+  }   
+
+
+  const setPackaging = (packagingItems) => (rowsOrFn) => {
+    if (typeof rowsOrFn === 'function') {
+      
+      let newPackaging = rowsOrFn(packagingItems)
+      setPackagingItems(newPackaging)
+    } else {
+      console.log("setPackaging")
+      alert("setPackaging called without a function")
+      setPackagingItems(rowsOrFn)
+    }     
+  }
+
+  const packagingCols = (editable) => {
+    let names = Array.from(packagingByName.keys())
+
+    return [{ field: editNameField,
+      headerName: 'Name',
+      editable: editable,
+      sortable:true,
+      valueGetter: (value, row) => {
+        if (!row) return ""
+        return row.name;
+      },
+      valueOptions: names,
+      type: "singleSelect",
+      flex: 4,
+      renderHeader: () => (
+        <strong>{'Name'}</strong>
+      ),
+    },]
+  }
+
+  const actionColumns = (editable) => {
+    if (!editable) {
+      return []
+    }   
+    return [
+    {     
+    field: 'actions',
+    type: 'actions',
+    headerName: 'Actions',
+    width: 100,
+    cellClassName: 'actions',
+    getActions: ({ id }) => {
+      const isInEditMode = packagingRowModels.rowModesModel?.[id]?.mode === GridRowModes.Edit;
+          
+      if (isInEditMode) {
+        return [
+          <GridActionsCellItem
+            icon={<CancelIcon />}
+            label="Cancel"
+            className="textPrimary"
+            onClick={handleRowCancelClick(id)}
+            color="inherit"
+          />,
+        ];
+      } else {
+        return [
+         <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleRowEditClick(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleRowDeleteClick(id)}
+            color="inherit"
+          />,
+        ] 
+      }   
+    }
+  }]};
+
+  const newRowFn = () => {
+    // Prefill the item with the first element in the list
+    for (let i = 0; i < packagingList.length; i++) {
+      let alreadyUsed = false
+      for (let j = 0; j < packagingItems.length; j++) {
+        if (packagingItems[j].name == packagingList[i].name) {
+          alreadyUsed = true
+        }
+      }
+      if (!alreadyUsed) {
+        let clone = structuredClone(packagingList[i])
+        clone.isNew = true
+        return clone;
+      }
+    } 
+        
+    console.log("This recipe is already using all the ingredients so adding a new row doesn't make sense")
+    
+    let clone = structuredClone(packagingList[0])
+    clone.isNew = true
+    return clone
+  }
+
+
+
+  React.useEffect(() => {
+    const fetchPackaging = async () => {
+      let isError = false
+      setIsLoading(true);
+      try {
+        const response = await getGrpcClient().listPackaging({});
+        let packagingList = []
+        let nameMap = new Map()
+        for (let i = 0; i < response.packaging.length; i++) {
+          let value = response.packaging[i]
+
+          nameMap.set(value.name, value);
+          packagingList.push(value)
+        }
+        // Sort each type 
+        packagingList.sort((a,b) => {
+          return a.name.localeCompare(b.name)
+        })
+
+        setPackagingList(packagingList)
+        setPackagingByName(nameMap)
+      } catch (error) {
+        isError = true
+        setError(error);
+        setErrorOpen(true)
+        console.log(error);
+      } finally {
+        if (isError) {
+          setErrorOpen(true);
+        }
+        setIsLoading(false)
+      }
+    };
+    fetchPackaging();
+  }, []);
+
+  const updateNewRecipeFields = (r) => {
+    setRecipe(r)
+    setSavedRecipeName(r.name)
+    setSavedRecipeTime(timestampToDateTimeString(r.time))
+    setServingGrams(r.servingSizeGrams)
+    setTotalGrams(r.totalGrams)
+    setContainer(r.container)
+    setPackagingItems(r.packaging)
+    setDiscountPercent(r.discountPercent)
+    setContainerSizeG(r.containerSizeGrams)
+    updateNumContainers(r.totalGrams, r.servingSizeGrams, r.containerSizeGrams)
+  }
+
   React.useEffect(() => {
     const saveRecipeMix = async () => {
       if (isSaving) {
         let isError = false
-        let isAdd = !recipe.id
+        let isAdd = !savedRecipeId
         try {
+          recipe.packaging = packagingItems
           if (isAdd) {
             const response = await getGrpcClient().createSavedRecipe({recipe: recipe});
-            recipe.id = response.id
           } else {
+            recipe.id = savedRecipeId
             const response = await getGrpcClient().updateSavedRecipe({recipe: recipe});
           }
         } catch (e) {
@@ -500,6 +917,8 @@ export default function () {
           setError(e.message);
           console.log(e)
         } finally {
+          setRecipe(null) // This forces reloading of the recipe mostly to get the right timestamp
+          setEditable(false)
           setIsSaving(false)
           if (isError) {
             setErrorOpen(true);
@@ -518,12 +937,16 @@ export default function () {
     }
   }
 
+  const handleEditClick = () => {
+    setEditable(true)
+  }
+
   React.useEffect(() => {
     const deleteRecipeMix = async () => {
       if (isDeleting) {
         let isError = false
         try {
-            const response = await getGrpcClient().deleteSavedRecipe({id: savedRecipeId});
+            const response = await getGrpcClient().deleteSavedRecipe({savedRecipeId: savedRecipeId});
         } catch (e) {
           isError = true
           setError(e.message);
@@ -548,26 +971,24 @@ export default function () {
       setIsLoading(true);
       try {
         // If we have a savedRecipeId we load it here
-        if (savedRecipeId && !recipe) {
-          const response = await getGrpcClient().getSavedRecipe(
-              {savedRecipeId: savedRecipeId});
-          let r = response.recipe
-          setRecipe(r)
-          setServingGrams(r.servingSizeGrams)
-          setTotalGrams(r.totalGrams)
-          setContainer(r.container)
-          setDiscountPercent(r.discountPercent)
-          setContainerSizeG(r.containerSizeGrams)
-          updateNumContainers(r.totalGrams, r.servingSizeGrams, r.containerSizeGrams)
-        } else if (!savedRecipeId && containerSizeG > 0) {
-          const response = await getGrpcClient().calculateRecipe(
-              {recipeId: recipeId, 
-               servingSizeGrams: servingGrams, 
-               totalGrams: totalGrams,
-               container: container,
-               containerSizeGrams: containerSizeG,
-               discountPercent: discountPercent });
-          setRecipe(response.recipeDetails)
+        if (editable || !recipe) {
+          if (savedRecipeId && !editable) {
+            const response = await getGrpcClient().getSavedRecipe(
+                {savedRecipeId: savedRecipeId});
+            let r = response.recipe
+            updateNewRecipeFields(r)
+          } else if (containerSizeG > 0) {
+            const response = await getGrpcClient().calculateRecipe(
+                {recipeId: recipe && recipe.recipe.id ? recipe.recipe.id : recipeId, 
+                 servingSizeGrams: servingGrams, 
+                 totalGrams: totalGrams,
+                 container: container,
+                 packaging: packagingItems,
+                 containerSizeGrams: containerSizeG,
+                 discountPercent: discountPercent });
+            response.recipeDetails.name = savedRecipeName
+            setRecipe(response.recipeDetails)
+          }
         }
       } catch (error) {
         //setError(error);
@@ -577,10 +998,10 @@ export default function () {
       }
     };
     fetchData();
-  }, [savedRecipeId, recipeId, servingGrams, totalGrams, container, containerSizeG, discountPercent]);
+  }, [savedRecipeId, recipeId, editable, servingGrams, totalGrams, container, packagingItems, containerSizeG, discountPercent]);
 
   function SaveToolbar() {
-    if (savedRecipeId) {
+    if (!editable) {
       return (<></>)
     }
     return (
@@ -596,10 +1017,19 @@ export default function () {
   }
 
   function DeleteToolbar() {
-    if (!savedRecipeId) {
+    if (editable) {
       return (<></>)
     }
     return (
+        <>
+        <IconButton
+          edge="end"
+          color="inherit"
+          onClick={handleEditClick}
+          aria-label={"edit"}
+        >
+          <EditIcon />
+        </IconButton>
         <IconButton
           edge="end"
           color="inherit"
@@ -608,6 +1038,7 @@ export default function () {
         >
           <DeleteIcon />
         </IconButton>
+        </>
     )
   }
 
@@ -630,10 +1061,10 @@ export default function () {
                 gap: 1, // Optional: Add spacing between the words
                 padding: 1}}>
         <Typography variant="h3" component="span">
-          {recipe ? recipe.name : ""}
+          {savedRecipeName}
         </Typography>
         <Typography variant="body1" component="span">
-          {(recipe && recipe.name) ? timestampToDateTimeString(recipe.time) : ""}
+          {savedRecipeTime}
         </Typography>
         </Box>
         <Box sx={{ flexGrow: 1}} />
@@ -646,6 +1077,11 @@ export default function () {
           open={saveNameOpen}
           onClose={handleSaveNameClose}
           onConfirm={handleSaveNameConfirm} />
+        <AlertDialog
+          title="Error"
+          content={error}
+          open={errorOpen}
+          onClose={handleErrorClose} />
       </Toolbar>
     </AppBar>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
@@ -657,7 +1093,7 @@ export default function () {
           type="number"
           variant="standard"
           onChange={handleServingGramsChange}
-          editable={!savedRecipeId}
+          editable={editable}
           units="g"
       />
       <Field
@@ -668,14 +1104,14 @@ export default function () {
           type="number"
           variant="standard"
           onChange={handleTotalGramsChange}
-          editable={!savedRecipeId}
+          editable={editable}
           units="g"
       />
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
       <ContainerFieldOrDropdown
         recipe={recipe}
-        editable={!savedRecipeId} />
+        editable={editable} />
       <Field
           id='container_size_g'
           label='Container size grams' 
@@ -707,6 +1143,23 @@ export default function () {
       />
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
+      <PackagingSelect 
+          title="Packaging" 
+          newRowFn={newRowFn}
+          columnDef={packagingCols(true).concat(editable ? actionColumns(true, packagingRowModels) : [])} 
+          editable={editable}
+          packaging={packagingItems}
+          setPackaging={setPackaging(packagingItems)}
+          apiRef={packagingRowModels.apiRef}
+          rowModesModel={packagingRowModels.rowModesModel}
+          setRowModesModel={packagingRowModels.setRowModesModel}
+          onRowModesModelChange={packagingRowModels.onModesModelChange}
+          onRowEditStop={packagingRowModels.handleRowEditStop}
+          processRowUpdate={packagingRowModels.processRowUpdate}
+          fieldToFocus={editNameField}
+      />
+    </Grid>
+    <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
       <Field
           id='discount'
           label='Discount Percent' 
@@ -715,7 +1168,7 @@ export default function () {
           type="number"
           variant="standard"
           onChange={handleDiscountPercentChange}
-          editable={!savedRecipeId}
+          editable={editable}
           units="%"
       />
     </Grid>

@@ -9,6 +9,7 @@ import type { Probiotic } from "./probiotics_pb.js";
 import type { Prebiotic } from "./prebiotics_pb.js";
 import type { Postbiotic } from "./postbiotics_pb.js";
 import type { Container } from "./container_pb.js";
+import type { Packaging } from "./other_pb.js";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 
 /**
@@ -422,6 +423,11 @@ export declare type CalculateRecipeRequest = Message<"CalculateRecipeRequest"> &
   container?: Container;
 
   /**
+   * @generated from field: repeated Packaging packaging = 7;
+   */
+  packaging: Packaging[];
+
+  /**
    * @generated from field: int32 container_size_grams = 6;
    */
   containerSizeGrams: number;
@@ -737,6 +743,122 @@ export declare type ListSavedRecipesResponse = Message<"ListSavedRecipesResponse
 export declare const ListSavedRecipesResponseSchema: GenMessage<ListSavedRecipesResponse>;
 
 /**
+ * @generated from message CreatePackagingRequest
+ */
+export declare type CreatePackagingRequest = Message<"CreatePackagingRequest"> & {
+  /**
+   * @generated from field: Packaging packaging = 1;
+   */
+  packaging?: Packaging;
+};
+
+/**
+ * Describes the message CreatePackagingRequest.
+ * Use `create(CreatePackagingRequestSchema)` to create a new message.
+ */
+export declare const CreatePackagingRequestSchema: GenMessage<CreatePackagingRequest>;
+
+/**
+ * @generated from message CreatePackagingResponse
+ */
+export declare type CreatePackagingResponse = Message<"CreatePackagingResponse"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message CreatePackagingResponse.
+ * Use `create(CreatePackagingResponseSchema)` to create a new message.
+ */
+export declare const CreatePackagingResponseSchema: GenMessage<CreatePackagingResponse>;
+
+/**
+ * @generated from message DeletePackagingRequest
+ */
+export declare type DeletePackagingRequest = Message<"DeletePackagingRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message DeletePackagingRequest.
+ * Use `create(DeletePackagingRequestSchema)` to create a new message.
+ */
+export declare const DeletePackagingRequestSchema: GenMessage<DeletePackagingRequest>;
+
+/**
+ * @generated from message DeletePackagingResponse
+ */
+export declare type DeletePackagingResponse = Message<"DeletePackagingResponse"> & {
+};
+
+/**
+ * Describes the message DeletePackagingResponse.
+ * Use `create(DeletePackagingResponseSchema)` to create a new message.
+ */
+export declare const DeletePackagingResponseSchema: GenMessage<DeletePackagingResponse>;
+
+/**
+ * @generated from message UpdatePackagingRequest
+ */
+export declare type UpdatePackagingRequest = Message<"UpdatePackagingRequest"> & {
+  /**
+   * @generated from field: Packaging packaging = 1;
+   */
+  packaging?: Packaging;
+};
+
+/**
+ * Describes the message UpdatePackagingRequest.
+ * Use `create(UpdatePackagingRequestSchema)` to create a new message.
+ */
+export declare const UpdatePackagingRequestSchema: GenMessage<UpdatePackagingRequest>;
+
+/**
+ * @generated from message UpdatePackagingResponse
+ */
+export declare type UpdatePackagingResponse = Message<"UpdatePackagingResponse"> & {
+};
+
+/**
+ * Describes the message UpdatePackagingResponse.
+ * Use `create(UpdatePackagingResponseSchema)` to create a new message.
+ */
+export declare const UpdatePackagingResponseSchema: GenMessage<UpdatePackagingResponse>;
+
+/**
+ * @generated from message ListPackagingRequest
+ */
+export declare type ListPackagingRequest = Message<"ListPackagingRequest"> & {
+};
+
+/**
+ * Describes the message ListPackagingRequest.
+ * Use `create(ListPackagingRequestSchema)` to create a new message.
+ */
+export declare const ListPackagingRequestSchema: GenMessage<ListPackagingRequest>;
+
+/**
+ * @generated from message ListPackagingResponse
+ */
+export declare type ListPackagingResponse = Message<"ListPackagingResponse"> & {
+  /**
+   * @generated from field: repeated Packaging packaging = 1;
+   */
+  packaging: Packaging[];
+};
+
+/**
+ * Describes the message ListPackagingResponse.
+ * Use `create(ListPackagingResponseSchema)` to create a new message.
+ */
+export declare const ListPackagingResponseSchema: GenMessage<ListPackagingResponse>;
+
+/**
  * @generated from service CanbiocinService
  */
 export declare const CanbiocinService: GenService<{
@@ -915,6 +1037,38 @@ export declare const CanbiocinService: GenService<{
     methodKind: "unary";
     input: typeof ListSavedRecipesRequestSchema;
     output: typeof ListSavedRecipesResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.CreatePackaging
+   */
+  createPackaging: {
+    methodKind: "unary";
+    input: typeof CreatePackagingRequestSchema;
+    output: typeof CreatePackagingResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.DeletePackaging
+   */
+  deletePackaging: {
+    methodKind: "unary";
+    input: typeof DeletePackagingRequestSchema;
+    output: typeof DeletePackagingResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.UpdatePackaging
+   */
+  updatePackaging: {
+    methodKind: "unary";
+    input: typeof UpdatePackagingRequestSchema;
+    output: typeof UpdatePackagingResponseSchema;
+  },
+  /**
+   * @generated from rpc CanbiocinService.ListPackaging
+   */
+  listPackaging: {
+    methodKind: "unary";
+    input: typeof ListPackagingRequestSchema;
+    output: typeof ListPackagingResponseSchema;
   },
 }>;
 

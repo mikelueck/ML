@@ -40,8 +40,17 @@ export function timestampToDateTimeString(timestamp) {
     let day = date.getDate()
     let year = date.getFullYear()
     let hour = date.getHours()
+    if (hour < 10) {
+      hour = `0${hour}`
+    }
     let minute = date.getMinutes()
+    if (minute < 10) {
+      minute = `0${minute}`
+    }
     let second = date.getSeconds()
+    if (second < 10) {
+      second = `0${second}`
+    }
     return  `${month}/${day}/${year} ${hour}:${minute}:${second}`;
   } else {
     return ""

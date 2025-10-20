@@ -262,6 +262,7 @@ func (s *server) CalculateRecipe(ctx context.Context, req *pb.CalculateRecipeReq
 		req.GetServingSizeGrams(),
 		req.GetTotalGrams(),
 		req.GetContainer(),
+		req.GetPackaging(),
 		req.GetContainerSizeGrams(),
 		req.GetDiscountPercent(),
 		false) // Don't save
@@ -392,4 +393,51 @@ func (s *server) DeleteSavedRecipe(ctx context.Context, req *pb.DeleteSavedRecip
 	}
 
 	return &pb.DeleteSavedRecipeResponse{}, nil
+}
+
+func (s *server) CreatePackaging(ctx context.Context, req *pb.CreatePackagingRequest) (*pb.CreatePackagingResponse, error) {
+	var err error
+	var id string
+	id, err = db.GetPackagingCollection().Create(ctx, req.GetPackaging())
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	return &pb.CreatePackagingResponse{Id: id}, nil
+}
+
+func (s *server) DeletePackaging(ctx context.Context, req *pb.DeletePackagingRequest) (*pb.DeletePackagingResponse, error) {
+	err := db.GetPackagingCollection().Delete(ctx, req.GetId())
+
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+
+	return &pb.DeletePackagingResponse{}, nil
+}
+
+func (s *server) UpdatePackaging(ctx context.Context, req *pb.UpdatePackagingRequest) (*pb.UpdatePackagingResponse, error) {
+	err := db.GetPackagingCollection().Update(ctx, req.GetPackaging())
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	return nil, nil
+}
+
+func (s *server) ListPackaging(ctx context.Context, req *pb.ListPackagingRequest) (*pb.ListPackagingResponse, error) {
+	var packagingList []*db.PackagingDoc
+	var err error
+	packagingList, err = db.GetPackagingCollection().List(ctx)
+	packaging := []*pb.Packaging{}
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	for _, item := range packagingList {
+		proto := item.GetProto()
+		if proto == nil {
+			continue
+		}
+		p := proto.(*pb.Packaging)
+		packaging = append(packaging, p)
+	}
+	return &pb.ListPackagingResponse{Packaging: packaging}, nil
 }

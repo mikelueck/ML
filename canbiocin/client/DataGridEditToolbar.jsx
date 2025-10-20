@@ -11,7 +11,7 @@ import { Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
 export function EditToolbar(props) {
-  const { newRowFn, setIngredients, setRowModesModel, editable } = props;
+  const { label, fieldToFocus, newRowFn, setIngredients, setRowModesModel, editable } = props;
 
   const handleClick = () => {
     
@@ -24,9 +24,17 @@ export function EditToolbar(props) {
       ]
     });
 
+    let id = ""
+
+    if (newIngredient.id) {
+      id = newIngredient.id
+    } else if (newIngredient.item && newIngredient.item.value) {
+      id = newIngredient.item.value.id
+    }
+
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [newIngredient.item.value.id]: { mode: GridRowModes.Edit, fieldToFocus: 'editNameField' },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: fieldToFocus },
     }));
   };
 
@@ -42,7 +50,7 @@ export function EditToolbar(props) {
           onClick={handleClick}
           style={{ float: 'right' }}
         >
-          Add Ingredient
+          {label ? label : "Add Ingredient"}
         </Button>
     </GridToolbarContainer>
   );

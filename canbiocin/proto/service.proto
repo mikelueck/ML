@@ -6,6 +6,7 @@ import "canbiocin/proto/recipe.proto";
 import "canbiocin/proto/probiotics.proto";
 import "canbiocin/proto/prebiotics.proto";
 import "canbiocin/proto/postbiotics.proto";
+import "canbiocin/proto/other.proto";
 import "google/protobuf/timestamp.proto";
 
 
@@ -107,6 +108,7 @@ message CalculateRecipeRequest {
   int32 serving_size_grams = 2;
   int32 total_grams = 3;
   Container container = 4;
+  repeated Packaging packaging = 7;
   int32 container_size_grams = 6;
   int32 discount_percent = 5;
 }
@@ -185,6 +187,35 @@ message ListSavedRecipesResponse {
     repeated RecipeDetails recipes = 1;
 }
 
+message CreatePackagingRequest {
+    Packaging packaging = 1;
+}
+
+message CreatePackagingResponse {
+  string id = 1;
+}
+
+message DeletePackagingRequest {
+  string id = 1;
+}
+
+message DeletePackagingResponse {
+}
+
+message UpdatePackagingRequest {
+    Packaging packaging = 1;
+}
+
+message UpdatePackagingResponse {
+}
+
+message ListPackagingRequest {
+}
+
+message ListPackagingResponse {
+    repeated Packaging packaging = 1;
+}
+
 
 
 service CanbiocinService {
@@ -211,5 +242,10 @@ service CanbiocinService {
   rpc UpdateSavedRecipe(UpdateSavedRecipeRequest) returns (UpdateSavedRecipeResponse) {}
   rpc DeleteSavedRecipe(DeleteSavedRecipeRequest) returns (DeleteSavedRecipeResponse) {}
   rpc ListSavedRecipes(ListSavedRecipesRequest) returns (ListSavedRecipesResponse) {}
+  rpc CreatePackaging(CreatePackagingRequest) returns (CreatePackagingResponse) {}
+  rpc DeletePackaging(DeletePackagingRequest) returns (DeletePackagingResponse) {}
+  rpc UpdatePackaging(UpdatePackagingRequest) returns (UpdatePackagingResponse) {}
+  rpc ListPackaging(ListPackagingRequest) returns (ListPackagingResponse) {}
+
 
 }

@@ -216,7 +216,7 @@ const postbioticColumns = (editable, nameOptions) => {return [
   },
 ]};
 
-function IngredientRows({title, newRowFn, columnDef, editable, ingredients, apiRef, setIngredients, rowModesModel, setRowModesModel, onRowModesModelChange, onRowEditStop, processRowUpdate}) {
+function IngredientRows({title, newRowFn, columnDef, editable, ingredients, apiRef, setIngredients, rowModesModel, setRowModesModel, onRowModesModelChange, onRowEditStop, processRowUpdate, fieldToFocus}) {
   if (!editable && ingredients.length == 0) {
     return "" 
   }
@@ -244,7 +244,13 @@ function IngredientRows({title, newRowFn, columnDef, editable, ingredients, apiR
         onProcessRowUpdateError={onProcessRowUpdateError}
         slots={{ toolbar: EditToolbar }}
         slotProps={{
-          toolbar: { newRowFn, setIngredients, setRowModesModel, editable },
+          toolbar: { 
+            label: "Add Ingredient",
+            fieldToFocus: fieldToFocus,
+            newRowFn: newRowFn, 
+            setIngredients: setIngredients, 
+            setRowModesModel: setRowModesModel, 
+            editable: editable },
         }}
         hideFooter
         showToolbar
@@ -451,6 +457,7 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
           onRowModesModelChange={rowModels.probiotics.onModesModelChange}
           onRowEditStop={rowModels.handleRowEditStop}
           processRowUpdate={rowModels.processRowUpdate}
+          fieldToFocus={editNameField}
       />
       <IngredientRows 
           title="Prebiotics" 
@@ -465,6 +472,7 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
           onRowModesModelChange={rowModels.prebiotics.onModesModelChange}
           onRowEditStop={rowModels.handleRowEditStop}
           processRowUpdate={rowModels.processRowUpdate}
+          fieldToFocus={editNameField}
       />
       <IngredientRows 
           title="Postbiotics" 
@@ -479,6 +487,7 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
           onRowModesModelChange={rowModels.postbiotics.onModesModelChange}
           onRowEditStop={rowModels.handleRowEditStop}
           processRowUpdate={rowModels.processRowUpdate}
+          fieldToFocus={editNameField}
       />
     </Grid>
     </>

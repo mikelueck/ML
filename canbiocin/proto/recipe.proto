@@ -3,6 +3,7 @@ option go_package = "github.com/canbiocin/proto";
 
 import "canbiocin/proto/container.proto";
 import "canbiocin/proto/money.proto";
+import "canbiocin/proto/other.proto";
 import "canbiocin/proto/prebiotics.proto";
 import "canbiocin/proto/probiotics.proto";
 import "canbiocin/proto/postbiotics.proto";
@@ -34,6 +35,7 @@ message Recipe {
   repeated ProbioticIngredient probiotics = 3;
   repeated PrebioticIngredient prebiotics = 4;
   repeated PostbioticIngredient postbiotics = 5;
+  repeated Packaging packaging = 8;
   int32 probiotic_overage_percent = 6;
 }
 
@@ -46,6 +48,7 @@ message RecipeDetails {
   int32 total_grams = 3;
   repeated IngredientDetails ingredients = 4;
   Container container = 5;
+  repeated Packaging packaging = 11;
   int32 container_size_grams = 10;
   int32 discount_percent = 6;
 }
@@ -55,6 +58,7 @@ message Ingredient {
       Probiotic probiotic = 1;
       Prebiotic prebiotic = 2;
       Postbiotic postbiotic = 3;
+      Packaging packaging = 4;
     }
 }
 

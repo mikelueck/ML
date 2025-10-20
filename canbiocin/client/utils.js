@@ -3,6 +3,7 @@ const recipe_pb = require('../proto/recipe_pb.js');
 const probiotic_pb = require('../proto/probiotics_pb.js');
 const prebiotic_pb = require('../proto/prebiotics_pb.js');
 const postbiotic_pb = require('../proto/postbiotics_pb.js');
+const other_pb = require('../proto/other_pb.js');
 const supplier_pb = require('../proto/supplier_pb.js');
 const money_pb = require('../proto/money_pb.js');
 import { timestampToDate } from './timestamp.js';
@@ -140,6 +141,14 @@ export const emptyPostbiotic = (p) => {
       })
 }
 
+export const emptyPackagingIngredient = (p) => {
+  return create(other_pb.PackagingSchema, {
+      totalCost: emptyMoney(),
+      supplier: emptySupplier(),
+      mostRecentQuoteDate: emptyTS(),
+      })
+}
+
 export const emptyIngredient = (type) => {
   let i = create(recipe_pb.IngredientSchema, {})
   if (type == "probiotic") {
@@ -148,6 +157,8 @@ export const emptyIngredient = (type) => {
     i.item = {value: emptyPrebiotic(), case: "prebiotic"}
   } else if (type == "postbiotic") {
     i.item = {value: emptyPostbiotic(), case: "postbiotic"}
+  } else if (type == "packaging") {
+    i.item = {value: emptyPackaging(), case: "packaging"}
   } else {  
     alert(`TODO emptyIngredient ${type}`)
   }
@@ -161,6 +172,8 @@ export const emptyIngredientForType = (type) => {
     return emptyPrebioticIngredient()
   } else if (type == "postbiotic") {
     return emptyPostbioticIngredient()
+  } else if (type == "packaging") {
+    return emptyPackagingIngredient()
   } else {  
     alert(`TODO emptyIngredient ${type}`)
   }
