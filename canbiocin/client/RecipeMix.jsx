@@ -908,6 +908,7 @@ export default function () {
           recipe.packaging = packagingItems
           if (isAdd) {
             const response = await getGrpcClient().createSavedRecipe({recipe: recipe});
+            recipe.id = response.id
           } else {
             recipe.id = savedRecipeId
             const response = await getGrpcClient().updateSavedRecipe({recipe: recipe});
@@ -917,13 +918,14 @@ export default function () {
           setError(e.message);
           console.log(e)
         } finally {
+          let id = recipe.id
           setRecipe(null) // This forces reloading of the recipe mostly to get the right timestamp
           setEditable(false)
           setIsSaving(false)
           if (isError) {
             setErrorOpen(true);
           } else {
-            navigate(`/recipeMix?&savedRecipeId=${recipe.id}`, { replace: true })
+            navigate(`/recipeMix?&savedRecipeId=${id}`, { replace: true })
           }
         }
       }
@@ -1119,7 +1121,7 @@ export default function () {
           size="small"
           type="number"
           variant="standard"
-          editable={true}
+          editable={editable}
           units="g"
           onChange={handleContainerSizeChange}
       />
