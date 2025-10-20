@@ -169,7 +169,7 @@ const prebioticColumns = (editable, nameOptions) => {return [
     ),
   },
   { field: 'mgServing', 
-    headerName: 'mg / Serving', 
+    headerName: 'mg / gram in formulation', 
     editable: editable,
     preProcessEditCellProps: validateNumber('mgServing'),
     renderEditCell: renderEditCell,
@@ -179,7 +179,7 @@ const prebioticColumns = (editable, nameOptions) => {return [
     },
     flex: 1,
     renderHeader: () => (
-      <strong>{'mg / Serving'}</strong>
+      <strong>{'mg / gram'}<br/>{'in formulation'}</strong>
     ),
   },
 ]};
@@ -201,7 +201,7 @@ const postbioticColumns = (editable, nameOptions) => {return [
     ),
   },
   { field: 'mgServing', 
-    headerName: 'mg / Serving', 
+    headerName: 'mg / gram in formulation', 
     editable: editable,
     preProcessEditCellProps: validateNumber('mgServing'),
     renderEditCell: renderEditCell,
@@ -211,7 +211,7 @@ const postbioticColumns = (editable, nameOptions) => {return [
     },
     flex: 1,
     renderHeader: () => (
-      <strong>{'mg / Serving'}</strong>
+      <strong>{'mg / gram'}<br/>{'in formulation'}</strong>
     ),
   },
 ]};
