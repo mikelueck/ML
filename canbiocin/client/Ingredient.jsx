@@ -43,7 +43,7 @@ const commonFields = {
 }
 
 const fieldsByType = {
-  "probiotic": {...commonFields, "spp": true, "strain": true},
+  "probiotic": {...commonFields, "spp": true, "strain": true, "stockCfuG": true, "notes": true},
   "prebiotic": {...commonFields, "category": true, "name": true, "function": true, "notes": true},
   "postbiotic": {...commonFields, "name": true, "bagSizeKg": true, "function": true, "notes": true},
 }
