@@ -18,7 +18,7 @@ var client *DbClient
 
 var _ ClientInterface = (*DbClient)(nil)
 
-const useMock = true
+const useMock = false
 
 type DocIterator interface {
 	Next(Document) error
