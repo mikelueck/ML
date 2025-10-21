@@ -428,8 +428,7 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
 
   return (
     <>
-    <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }}spacing={2}>
-      <Grid container spacing={4}>
+      <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
         <MyNewFormItem field='name' />
         <MyNewFormItem field="probioticOveragePercent" label="Probiotic Overage %" type="number" units="%" />
         <SavedRecipeDropdown
@@ -437,6 +436,7 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
           onChange={onSavedDropdownSelect}
         />
       </Grid>
+      <Box sx={{ m:5 }}>
       <IngredientRows 
           title="Probiotics" 
           newRowFn={newRowFn("probiotic", "probiotics")}
@@ -452,6 +452,8 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
           processRowUpdate={rowModels.processRowUpdate}
           fieldToFocus={editNameField}
       />
+      </Box>
+      <Box sx={{ m:5 }}>
       <IngredientRows 
           title="Prebiotics" 
           newRowFn={newRowFn("prebiotic", "prebiotics")}
@@ -467,6 +469,8 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
           processRowUpdate={rowModels.processRowUpdate}
           fieldToFocus={editNameField}
       />
+      </Box>
+      <Box sx={{ m:5 }}>
       <IngredientRows 
           title="Postbiotics" 
           newRowFn={newRowFn("postbiotic", "postbiotics")}
@@ -482,7 +486,7 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
           processRowUpdate={rowModels.processRowUpdate}
           fieldToFocus={editNameField}
       />
-    </Grid>
+      </Box>
     </>
   )
 }

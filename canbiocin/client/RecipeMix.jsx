@@ -514,12 +514,22 @@ function RecipeMix({recipe}) {
     </Grid>
     
     <Box sx={{ m:1 }}>
+      <Box sx={{ m:5 }}>
       <TotalRow title="Totals" columnDef={prebioticColumns} ingredients={recipe.ingredients} />
 
+      </Box>
+      <Box sx={{ m:5 }}>
       <IngredientRows title="Probiotics" columnDef={probioticColumns} ingredients={recipe.ingredients} type="probiotic" />
+      </Box>
+      <Box sx={{ m:5 }}>
       <IngredientRows title="Prebiotics" columnDef={prebioticColumns} ingredients={recipe.ingredients} type="prebiotic" />
+      </Box>
+      <Box sx={{ m:5 }}>
       <IngredientRows title="Postbiotics" columnDef={prebioticColumns} ingredients={recipe.ingredients} type="postbiotic" />
+      </Box>
+      <Box sx={{ m:5 }}>
       <IngredientRows title="Packaging" columnDef={packagingColumns} ingredients={recipe.ingredients} type="packaging" />
+      </Box>
     </Box>
     </>
   )
