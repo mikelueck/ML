@@ -120,7 +120,7 @@ function Ingredient({ingredientType, ingredient, editable, handleChange}) {
     </Grid>
     {/* Probiotics */}
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {MyNewFormItem({field:'stockCfuG', label: '', type:'number', units:'M CFU/g'})}
+      {MyNewFormItem({field:'stockCfuG', label: 'Stock M CFU/g', type:'number', units:'M CFU/g'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
       {MyNewFormItem({field:'bagSizeKg', label: 'Bag Size (kg)', type:'number'})}
