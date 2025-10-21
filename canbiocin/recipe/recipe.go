@@ -133,8 +133,6 @@ func generatePackagingRow(
 	packaging *pb.Packaging) (*pb.IngredientDetails, error) {
 	servingsPerContainer := int32(math.Floor(float64(containerSizeGrams) / float64(servingSizeGrams)))
 
-	fmt.Printf("Total: %v\n", packaging.GetTotalCost())
-	fmt.Printf("#: %v\n", packaging.GetUnitsPackage())
 	totalCost := packaging.GetTotalCost()
 	unitsPerPackage := packaging.GetUnitsPackage()
 	cbCostPerContainer := utils.Div(totalCost, float64(unitsPerPackage))

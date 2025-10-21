@@ -180,7 +180,7 @@ const probioticColumns = [
     valueGetter: (value, row) => {
       return getItemValue(row).strain;
     },
-    flex: 4,
+    flex: 3,
     renderHeader: () => (
       <strong>{'Strain'}</strong>
     ),
@@ -212,7 +212,7 @@ const prebioticColumns = [
     valueGetter: (value, row) => {
       return getItemValue(row).name;
     },
-    flex: 6,
+    flex: 4,
     renderHeader: () => (
       <strong>{'Name'}</strong>
     ),
@@ -393,7 +393,6 @@ function IngredientRows({title, columnDef, ingredients, type}) {
         hideFooter
         disableColumnMenu
         disableColumnSorting
-        autosizeOnMount
       />
       {/* Disable column functionally to support a Total row.  TODO could use DataGridPremium*/}
       </div>
@@ -424,7 +423,6 @@ function TotalRow({title, columnDef, ingredients}) {
         hideFooter
         disableColumnMenu
         disableColumnSorting
-        autosizeOnMount
       />
       {/* Disable column functionally to support a Total row.  TODO could use DataGridPremium*/}
       </div>
@@ -783,7 +781,7 @@ export default function () {
       },
       valueOptions: names,
       type: "singleSelect",
-      flex: 4,
+      flex: 3,
       renderHeader: () => (
         <strong>{'Name'}</strong>
       ),
