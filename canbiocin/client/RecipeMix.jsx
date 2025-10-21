@@ -10,6 +10,7 @@ import { AlertDialog } from './Dialog';
 import { emptyIngredientForType } from "./utils.js";
 import { valueToPrecision } from './utils.js';
 import { ContainerDropdown } from './Dropdowns';
+import { IngredientCellRender } from './DataGridUtils';
 
 import { EditToolbar } from './DataGridEditToolbar';
 
@@ -56,6 +57,8 @@ const precision = 2;
 const commonColumns = [
   { field: 'percent', 
     headerName: '', 
+    align: 'center',
+    headerAlign: 'center',
     valueGetter: (value, row) => {
       return row.percent * 100
     },
@@ -69,6 +72,8 @@ const commonColumns = [
   },
   { field: 'mg_serving', 
     headerName: 'mg/serving', 
+    align: 'center',
+    headerAlign: 'center',
     valueGetter: (value, row) => {
       return row.perservingMg
     },
@@ -82,6 +87,8 @@ const commonColumns = [
   },
   { field: 'amount_needed', 
     headerName: 'Amount Needed (kg)', 
+    align: 'center',
+    headerAlign: 'center',
     valueGetter: (value, row) => {
       return row.totalGrams / 1000
     },
@@ -93,25 +100,10 @@ const commonColumns = [
       return valueToPrecision(value, precision)
     },
   },
-  { field: 'cb_cost_kg', 
-    headerName: 'CB Cost/kg', 
-    type: 'number',
-    valueGetter: (value, row) => {
-      return moneyToString(row.cbCostKg, precision, true);
-    },
-    flex: 1.5,
-    renderHeader: () => (
-      <strong>{'CanBiocin'}<br/>{'Cost/kg'}</strong>
-    ),
-    valueFormatter: (value) => {
-      if (value.length > 0) {
-        return '$ ' + value;
-      }
-      return ''
-    },
-  },
   { field: 'cb_cost_container', 
     headerName: 'CB Cost Container', 
+    align: 'center',
+    headerAlign: 'center',
     type: 'number',
     valueGetter: (value, row) => {
       return moneyToString(row.cbCostPerContainer, precision, true)
@@ -122,13 +114,15 @@ const commonColumns = [
     ),
     valueFormatter: (value) => {
       if (value.length > 0) {
-        return '$ ' + value;
+        return '$\u00A0' + value;
       }
       return ''
     },
   },
   { field: 'cb_total', 
     headerName: 'CB Total', 
+    align: 'center',
+    headerAlign: 'center',
     type: 'number',
     valueGetter: (value, row) => {
       return moneyToString(row.cbTotal, precision, true);
@@ -139,13 +133,15 @@ const commonColumns = [
     ),
     valueFormatter: (value) => {
       if (value.length > 0) {
-        return '$ ' + value;
+        return '$\u00A0' + value;
       }
       return ''
     },
   },
   { field: 'markup', 
     headerName: 'Markup', 
+    align: 'center',
+    headerAlign: 'center',
     valueGetter: (value, row) => {
       return row.markupPercent ?  row.markupPercent : ""
     },
@@ -161,16 +157,18 @@ const commonColumns = [
   },
   { field: 'client_total', 
     headerName: 'Client Total', 
+    align: 'center',
+    headerAlign: 'center',
     type: 'number',
     valueGetter: (value, row) => {
       return moneyToString(row.clientTotal, precision, true);
     },
     flex: 1.5,
     renderHeader: () => (
-      <strong>{'Client'}<br/>{'CoGs/'}<br/>{'Order'}</strong>
+      <strong>{'Client'}<br/>{'CoGs/Order'}</strong>
     ),
     valueFormatter: (value) => {
-      return '$ ' + value;
+      return '$\u00A0' + value;
     },
   },
 ]
@@ -186,19 +184,16 @@ const probioticColumns = [
     renderHeader: () => (
       <strong>{'Strain'}</strong>
     ),
-  },
-  { field: 'stockCfuG', 
-    headerName: 'Stock M CFU/g', 
-    valueGetter: (value, row) => {
-      return getItemValue(row).stockCfuG;
-    },
-    flex: 1,
-    renderHeader: () => (
-      <strong>{'Stock'}<br/>{'M CFU/g'}</strong>
-    ),
+    renderCell:(params) => (<IngredientCellRender 
+                                params={params} 
+                                itemGetter={(row) => {
+                                  return row.ingredient.item
+                                }}/>)
   },
   { field: 'desiredCfuG', 
     headerName: 'Desired M CFU/g', 
+    align: 'center',
+    headerAlign: 'center',
     valueGetter: (value, row) => {
       return row.desiredCfuG
     },
@@ -221,6 +216,11 @@ const prebioticColumns = [
     renderHeader: () => (
       <strong>{'Name'}</strong>
     ),
+    renderCell:(params) => (<IngredientCellRender 
+                                params={params} 
+                                itemGetter={(row) => {
+                                  return row.ingredient.item
+                                }}/>)
   },
   ...commonColumns
 ];
@@ -236,6 +236,11 @@ const packagingColumns = [
     renderHeader: () => (
       <strong>{'Name'}</strong>
     ),
+    renderCell:(params) => (<IngredientCellRender 
+                                params={params} 
+                                itemGetter={(row) => {
+                                  return row.ingredient.item
+                                }}/>)
   },
   { field: 'amount_needed', 
     headerName: 'Number Needed', 
@@ -262,7 +267,7 @@ const packagingColumns = [
     ),
     valueFormatter: (value) => {
       if (value.length > 0) {
-        return '$ ' + value;
+        return '$\u00A0' + value;
       }
       return ''
     },
@@ -279,7 +284,7 @@ const packagingColumns = [
     ),
     valueFormatter: (value) => {
       if (value.length > 0) {
-        return '$ ' + value;
+        return '$\u00A0' + value;
       }
       return ''
     },
@@ -310,7 +315,7 @@ const packagingColumns = [
       <strong>{'Client'}<br/>{'CoGs/'}<br/>{'Order'}</strong>
     ),
     valueFormatter: (value) => {
-      return '$ ' + value;
+      return '$\u00A0' + value;
     },
   },
 ]
@@ -384,9 +389,11 @@ function IngredientRows({title, columnDef, ingredients, type}) {
         rows={rows}
         getRowId={getRowId}
         columns={columnDef}
+        getRowHeight={() => 'auto'}
         hideFooter
         disableColumnMenu
         disableColumnSorting
+        autosizeOnMount
       />
       {/* Disable column functionally to support a Total row.  TODO could use DataGridPremium*/}
       </div>
@@ -413,9 +420,11 @@ function TotalRow({title, columnDef, ingredients}) {
         rows={rows}
         getRowId={getRowId}
         columns={columnDef}
+        getRowHeight={() => 'auto'}
         hideFooter
         disableColumnMenu
         disableColumnSorting
+        autosizeOnMount
       />
       {/* Disable column functionally to support a Total row.  TODO could use DataGridPremium*/}
       </div>

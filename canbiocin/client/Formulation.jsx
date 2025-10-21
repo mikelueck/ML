@@ -9,6 +9,7 @@ import { AlertDialog } from './Dialog';
 import { getNameForIngredient } from './utils.js';
 import { getGroupForIngredient } from './utils.js';
 import { verifyIngredient } from './utils.js';
+import { IngredientCellRender } from './DataGridUtils';
 import { emptyIngredientForType } from "./utils.js";
 import { emptyRecipe } from "./utils.js";
 import { valueToPrecision } from './utils.js';
@@ -123,18 +124,7 @@ const probioticColumns = (editable, nameOptions) => {return [
     renderHeader: () => (
       <strong>{'Strain'}</strong>
     ),
-  },
-  { field: 'stockCfuG', 
-    headerName: 'Stock M CFU/g', 
-    editable: false,
-    type: 'number',
-    valueGetter: (value, row) => {
-      return getItemValue(row).stockCfuG;
-    },
-    flex: 1,
-    renderHeader: () => (
-      <strong>{'Stock'}<br/>{'M CFU/g'}</strong>
-    ),
+    renderCell:(params) => (<IngredientCellRender params={params} />)
   },
   { field: 'cfuG', 
     headerName: 'Desired M CFU/g', 
@@ -167,6 +157,7 @@ const prebioticColumns = (editable, nameOptions) => {return [
     renderHeader: () => (
       <strong>{'Name'}</strong>
     ),
+    renderCell:(params) => (<IngredientCellRender params={params} />)
   },
   { field: 'mgServing', 
     headerName: 'mg / gram in formulation', 
@@ -213,6 +204,7 @@ const postbioticColumns = (editable, nameOptions) => {return [
     renderHeader: () => (
       <strong>{'mg / gram'}<br/>{'in formulation'}</strong>
     ),
+    renderCell:(params) => (<IngredientCellRender params={params} />)
   },
 ]};
 
@@ -237,6 +229,7 @@ function IngredientRows({title, newRowFn, columnDef, editable, ingredients, apiR
         getRowId={getRowId}
         columns={columnDef}
         editMode="row"
+        getRowHeight={() => 'auto'}
         rowModesModel={rowModesModel}
         onRowModesModelChange={onRowModesModelChange}
         onRowEditStop={onRowEditStop}
