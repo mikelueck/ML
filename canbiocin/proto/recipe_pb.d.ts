@@ -4,7 +4,7 @@
 
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import type { Message } from "@bufbuild/protobuf";
-import type { Packaging } from "./other_pb.js";
+import type { Milling_Blending_Packaging, Packaging } from "./other_pb.js";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import type { Container } from "./container_pb.js";
 import type { Probiotic } from "./probiotics_pb.js";
@@ -249,6 +249,12 @@ export declare type Ingredient = Message<"Ingredient"> & {
      */
     value: Packaging;
     case: "packaging";
+  } | {
+    /**
+     * @generated from field: Milling_Blending_Packaging blending = 5;
+     */
+    value: Milling_Blending_Packaging;
+    case: "blending";
   } | { case: undefined; value?: undefined };
 };
 

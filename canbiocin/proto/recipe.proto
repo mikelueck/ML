@@ -60,6 +60,7 @@ message Ingredient {
       Prebiotic prebiotic = 2;
       Postbiotic postbiotic = 3;
       Packaging packaging = 4;
+      Milling_Blending_Packaging blending = 5;
     }
 }
 

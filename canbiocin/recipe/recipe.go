@@ -165,6 +165,39 @@ func generatePackagingRow(
 	return row, nil
 }
 
+func generateBlendingRow(
+	ctx context.Context,
+	servingSizeGrams int32,
+	containerSizeGrams int32,
+	grams int32,
+	count int32,
+	targetMargin int32,
+	currencyRate float64,
+	blending *pb.Milling_Blending_Packaging) (*pb.IngredientDetails, error) {
+
+	servingsPerContainer := int32(math.Floor(float64(containerSizeGrams) / float64(servingSizeGrams)))
+
+	cbTotal := utils.Mult(blending.GetCost(), float64(count))
+
+	numContainers := math.Ceil(float64(grams) / float64(servingsPerContainer*servingSizeGrams))
+	cbCostPerContainer := utils.Div(cbTotal, numContainers)
+
+	margin := float64(100-targetMargin) / float64(100)
+	clientCostPerContainer := utils.Div(cbCostPerContainer, margin)
+	clientTotal := utils.Div(cbTotal, margin)
+
+	row := &pb.IngredientDetails{
+		Ingredient:             &pb.Ingredient{Item: &pb.Ingredient_Blending{Blending: blending}},
+		TotalGrams:             float64(count),
+		CbCostPerContainer:     cbCostPerContainer,
+		ClientCostPerContainer: clientCostPerContainer,
+		CbTotal:                cbTotal,
+		ClientTotal:            clientTotal,
+		ClientTotalCurrency:    utils.Mult(clientTotal, currencyRate),
+	}
+	return row, nil
+}
+
 // Given a recipe and number of grams required outputs number of milligrams for each ingredient
 func ComputeQuantities(
 	ctx context.Context,
@@ -241,6 +274,53 @@ func ComputeQuantities(
 			rows = append(rows, row)
 		}
 	}
+
+	// Handle the milling/blending/packaging
+	// Might have to rent a room to mix and have additional labor
+	// 100kg is 2 hours for 1 person
+	// 2000 jars is 8 hours for 3 people
+	var millingItems []*db.BlendingDoc
+	var err error
+	if grams >= 10000 { // have to rent a room
+		millingItems, err = db.GetBlendingCollection().QueryByName(ctx, "Milling >10kg")
+	} else {
+		millingItems, err = db.GetBlendingCollection().QueryByName(ctx, "Milling <10kg")
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	if len(millingItems) != 1 {
+		return nil, fmt.Errorf("Was expecting one milling ingredient but found: %d", len(millingItems))
+	}
+
+	milling := millingItems[0]
+
+	row, err := generateBlendingRow(ctx, servingSizeGrams, containerSizeGrams, grams, 1, targetMargin, currencyRate, milling.GetProto().(*pb.Milling_Blending_Packaging))
+	rows = append(rows, row)
+
+	var hoursOfLabor int32
+	hoursOfLabor += int32(math.Ceil(float64(grams) / 50000)) // one hour per 50kg milling
+
+	numContainers := math.Ceil(float64(grams) / float64(containerSizeGrams))
+	// Seems to be about 666 jars per person per 8 hrs
+	// Maybe we say 85 jars per hour?
+	hoursOfLabor += int32(math.Ceil(numContainers / 85))
+
+	millingItems, err = db.GetBlendingCollection().QueryByName(ctx, "Labor")
+	if err != nil {
+		return nil, err
+	}
+
+	if len(millingItems) != 1 {
+		return nil, fmt.Errorf("Was expecting one milling ingredient for 'Labor' but found: %d", len(millingItems))
+	}
+
+	milling = millingItems[0]
+
+	row, err = generateBlendingRow(ctx, servingSizeGrams, containerSizeGrams, grams, hoursOfLabor, targetMargin, currencyRate, milling.GetProto().(*pb.Milling_Blending_Packaging))
+	rows = append(rows, row)
+
 	retval.Ingredients = rows
 
 	if save {
@@ -294,6 +374,10 @@ func PrintRow(row *pb.IngredientDetails) {
 		name = row.GetIngredient().GetPrebiotic().GetName()
 	} else if row.GetIngredient().GetPostbiotic() != nil {
 		name = row.GetIngredient().GetPostbiotic().GetName()
+	} else if row.GetIngredient().GetPackaging() != nil {
+		name = row.GetIngredient().GetPackaging().GetName()
+	} else if row.GetIngredient().GetBlending() != nil {
+		name = row.GetIngredient().GetBlending().GetName()
 	}
 	fmt.Printf("| %30s | %12s | %12s | %12s | %12s | %12s | %12s | %12s | %12s | %12s |\n",
 		Shrink(name, 30),

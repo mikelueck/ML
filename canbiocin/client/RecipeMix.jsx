@@ -545,6 +545,10 @@ function RecipeMix({recipe, currencyRate}) {
   let packagingColsToShow = new Map()
   packagingColsToShow.set('cb_cost_container')
   packagingColsToShow.set('cb_total')
+
+  let blendingColsToShow = new Map()
+  blendingColsToShow.set('cb_cost_container')
+  blendingColsToShow.set('cb_total')
   
 
   if (recipe == null) {
@@ -614,6 +618,12 @@ function RecipeMix({recipe, currencyRate}) {
           title="Packaging" 
           columnDef={packagingColumns(packagingColsToShow, currencyRate)} 
           ingredients={recipe.ingredients} type="packaging" />
+      </Box>
+      <Box sx={{ m:5 }}>
+      <IngredientRows 
+          title="Milling/Blending/Packaging" 
+          columnDef={packagingColumns(blendingColsToShow, currencyRate)} 
+          ingredients={recipe.ingredients} type="blending" />
       </Box>
     </Box>
     </>

@@ -20,8 +20,7 @@ message Packaging {
 message Milling_Blending_Packaging {
     string id = 1;
     string name = 2;
-    Money cost_package = 3;
-    int32 num_kg = 7;
+    Money cost= 3;
     Supplier supplier = 4;
     google.protobuf.Timestamp most_recent_quote_date = 5;
 }

@@ -151,6 +151,25 @@ resource "google_firestore_index" "canbiocin_packaging_index" {
   ]
 }
 
+resource "google_firestore_index" "canbiocin_blending_index" {
+  collection = "blending"
+  project    = var.project_id
+
+  fields {
+    field_path = "id"
+    order      = "ASCENDING"
+  }
+
+  fields {
+    field_path = "name"
+    order      = "ASCENDING"
+  }
+
+  depends_on = [
+    google_firestore_database.canbiocin_firestore
+  ]
+}
+
 
 # IAM binding for Cloud Run service to access Firestore
 resource "google_project_iam_binding" "firestore_user" {

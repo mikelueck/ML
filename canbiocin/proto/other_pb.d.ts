@@ -79,14 +79,9 @@ export declare type Milling_Blending_Packaging = Message<"Milling_Blending_Packa
   name: string;
 
   /**
-   * @generated from field: Money cost_package = 3;
+   * @generated from field: Money cost = 3;
    */
-  costPackage?: Money;
-
-  /**
-   * @generated from field: int32 num_kg = 7;
-   */
-  numKg: number;
+  cost?: Money;
 
   /**
    * @generated from field: Supplier supplier = 4;

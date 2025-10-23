@@ -412,3 +412,47 @@ func NewPackagingDoc(msg *pb.Packaging) (*PackagingDoc, error) {
 		ProtoBytes: bytes,
 	}, nil
 }
+
+// BlendingDoc wraps a container document for Firestore storage
+type BlendingDoc struct {
+	ID         string `firestore:"id"`
+	Name       string `firestore:"name"`
+	ProtoBytes []byte `firestore:"proto_bytes"`
+}
+
+// GetID returns the document ID
+func (d *BlendingDoc) GetID() string {
+	return d.ID
+}
+
+// GetProtoBytes returns the raw proto bytes
+func (d *BlendingDoc) GetProtoBytes() []byte {
+	return d.ProtoBytes
+}
+
+// GetProto unmarshals and returns the proto message
+func (d *BlendingDoc) GetProto() proto.Message {
+	msg := &pb.Milling_Blending_Packaging{}
+	if err := proto.Unmarshal(d.ProtoBytes, msg); err != nil {
+		return nil
+	}
+	return msg
+}
+
+// GetName returns the document name
+func (d *BlendingDoc) GetName() string {
+	return d.Name
+}
+
+// NewBlendingDoc creates a new BlendingDoc from a proto message
+func NewBlendingDoc(msg *pb.Milling_Blending_Packaging) (*BlendingDoc, error) {
+	bytes, err := proto.Marshal(msg)
+	if err != nil {
+		return nil, err
+	}
+	return &BlendingDoc{
+		ID:         msg.GetId(),
+		Name:       msg.GetName(),
+		ProtoBytes: bytes,
+	}, nil
+}
