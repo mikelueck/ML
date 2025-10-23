@@ -148,7 +148,6 @@ func generatePackagingRow(
 	cbCostPerContainer := utils.Div(totalCost, float64(unitsPerPackage))
 	numContainers := math.Ceil(float64(grams) / float64(servingsPerContainer*servingSizeGrams))
 
-	//markupPercent := packaging.GetMarkupPercent() - discountPercent
 	cbTotal := utils.Mult(cbCostPerContainer, numContainers)
 	margin := float64(100-targetMargin) / float64(100)
 	clientCostPerContainer := utils.Div(cbCostPerContainer, margin)

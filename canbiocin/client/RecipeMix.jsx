@@ -54,8 +54,21 @@ function getRowId(row) {
 
 const precision = 2;
 
-const commonColumns = [
-  { field: 'percent', 
+const renderDualCell = (params) => {
+  return (
+    <>
+    <Typography variant="span">
+      {`(${params.value.cb})\u00A0/\u00A0`}
+    </Typography>
+    <Typography fontWeight="bold" color="primary" variant="span">
+      {`${params.value.client}`}
+    </Typography>
+    </>
+  )
+}
+
+const commonColumns = (columnsToShow, currencyRate) => { return [
+  ...(columnsToShow.has('percent') ? [{ field: 'percent', 
     headerName: '', 
     align: 'center',
     headerAlign: 'center',
@@ -69,8 +82,8 @@ const commonColumns = [
     valueFormatter: (value) => {
       return valueToPrecision(value, precision, " %")
     },
-  },
-  { field: 'mg_serving', 
+  }] : []),
+  ...(columnsToShow.has('mg_serving') ? [{ field: 'mg_serving', 
     headerName: 'mg/serving', 
     align: 'center',
     headerAlign: 'center',
@@ -84,8 +97,8 @@ const commonColumns = [
       return valueToPrecision(value, precision)
     },
     flex: 1.5,
-  },
-  { field: 'amount_needed', 
+  }] : []),
+  ...(columnsToShow.has('amount_needed') ? [{ field: 'amount_needed', 
     headerName: 'Amount Needed (kg)', 
     align: 'center',
     headerAlign: 'center',
@@ -99,8 +112,23 @@ const commonColumns = [
     valueFormatter: (value) => {
       return valueToPrecision(value, precision)
     },
-  },
-  { field: 'cb_cost_container', 
+  }] : []),
+  ...(columnsToShow.has('cost_container') ? [{ field: 'cost_container', 
+    headerName: 'Cost Container', 
+    align: 'center',
+    headerAlign: 'center',
+    type: 'string',
+    valueGetter: (value, row) => {
+      return {cb: moneyToString(row.cbCostPerContainer, precision, false),
+              client: moneyToString(row.clientCostPerContainer, precision, false),           }
+    },
+    flex: 3,
+    renderHeader: () => (
+      <strong>{'Cost / Container'}</strong>
+    ),
+    renderCell: renderDualCell,
+  }] : []),
+  ...(columnsToShow.has('cb_cost_container') ? [{ field: 'cb_cost_container', 
     headerName: 'CB Cost Container', 
     align: 'center',
     headerAlign: 'center',
@@ -118,8 +146,42 @@ const commonColumns = [
       }
       return ''
     },
-  },
-  { field: 'client_cost_container', 
+  }] : []),
+  ...(columnsToShow.has('cost_serving') ? [{ field: 'cost_serving', 
+    headerName: 'Cost Serving', 
+    align: 'center',
+    headerAlign: 'center',
+    type: 'string',
+    valueGetter: (value, row) => {
+      return {cb: moneyToString(row.cbCostPerServing, 4, false),
+              client: moneyToString(row.clientCostPerServing, 4, false),           }
+    },
+    flex: 3,
+    renderHeader: () => (
+      <strong>{'Cost / Serving'}</strong>
+    ),
+    renderCell: renderDualCell,
+  }] : []),
+  ...(columnsToShow.has('cb_cost_serving') ? [{ field: 'cb_cost_serving', 
+    headerName: 'CB Cost Serving', 
+    align: 'center',
+    headerAlign: 'center',
+    type: 'number',
+    valueGetter: (value, row) => {
+      return moneyToString(row.cbCostPerServing, 4, true)
+    },
+    flex: 1.5,
+    renderHeader: () => (
+      <strong>{'CanBiocin'}<br/>{'CoGs/Serving'}</strong>
+    ),
+    valueFormatter: (value) => {
+      if (value.length > 0) {
+        return '$\u00A0' + value;
+      }
+      return ''
+    },
+  }] : []),
+  ...(columnsToShow.has('client_cost_container') ? [{ field: 'client_cost_container', 
     headerName: 'Client Cost Container', 
     align: 'center',
     headerAlign: 'center',
@@ -137,8 +199,23 @@ const commonColumns = [
       }
       return ''
     },
-  },
-  { field: 'cb_total', 
+  }] : []),
+  ...(columnsToShow.has('total') ? [{ field: 'total', 
+    headerName: 'Order Total', 
+    align: 'center',
+    headerAlign: 'center',
+    type: 'string',
+    valueGetter: (value, row) => {
+      return {cb: moneyToString(row.cbTotal, precision, false),
+              client: moneyToString(row.clientTotal, precision, false),           }
+    },
+    flex: 3,
+    renderHeader: () => (
+      <strong>{'Order Total'}</strong>
+    ),
+    renderCell: renderDualCell,
+  }] : []),
+  ...(columnsToShow.has('cb_total') ? [{ field: 'cb_total', 
     headerName: 'CB Total', 
     align: 'center',
     headerAlign: 'center',
@@ -156,8 +233,8 @@ const commonColumns = [
       }
       return ''
     },
-  },
-  { field: 'client_total', 
+  }] : []),
+  ...(columnsToShow.has('client_total') ? [{ field: 'client_total', 
     headerName: 'Client Total', 
     align: 'center',
     headerAlign: 'center',
@@ -167,13 +244,13 @@ const commonColumns = [
     },
     flex: 1.5,
     renderHeader: () => (
-      <strong>{'Client'}<br/>{'CoGs/Order'}</strong>
+      <strong>{'Total Client'}<br/>{'CoGs/Order'}</strong>
     ),
     valueFormatter: (value) => {
       return '$\u00A0' + value;
     },
-  },
-  { field: 'client_total_currency', 
+  }] : []),
+  ...(columnsToShow.has('client_total_currency') && currencyRate != 0 && currencyRate != 1.0 ? [{ field: 'client_total_currency', 
     headerName: 'Client Total $US', 
     align: 'center',
     headerAlign: 'center',
@@ -185,13 +262,19 @@ const commonColumns = [
     renderHeader: () => (
       <strong>{'$US Client'}<br/>{'CoGs/Order'}</strong>
     ),
-    valueFormatter: (value) => {
-      return '$\u00A0' + value;
-    },
-  },
-]
+    renderCell: (params) => {
+      return (
+        <>
+        <Typography fontWeight="bold" color="primary" variant="span">
+          {`$\u00A0${params.value}`}
+        </Typography>
+        </>
+      )
+    }
+  }] : []),
+]}
 
-const probioticColumns = [
+const probioticColumns = (columnsToShow, currencyRate) => { return [
   { field: 'strain',
     headerName: 'Strain', 
     sortable:true,
@@ -220,10 +303,10 @@ const probioticColumns = [
       <strong>{'Desired'}<br/>{'M CFU/g'}</strong>
     ),
   },
-  ...commonColumns,
-];
+  ...commonColumns(columnsToShow, currencyRate),
+]};
 
-const prebioticColumns = [
+const prebioticColumns = (columnsToShow, currencyRate) => { return [
   { field: 'name',
     headerName: 'Name', 
     sortable:true,
@@ -240,10 +323,10 @@ const prebioticColumns = [
                                   return row.ingredient.item
                                 }}/>)
   },
-  ...commonColumns
-];
+  ...commonColumns(columnsToShow, currencyRate)
+]};
 
-const packagingColumns = [
+const packagingColumns = (columnsToShow, currencyRate) => { return [
   { field: 'name',
     headerName: 'Name', 
     sortable:true,
@@ -273,88 +356,8 @@ const packagingColumns = [
       return valueToPrecision(value, precision)
     },
   },
-  { field: 'cb_cost_container', 
-    headerName: 'CB Cost Container', 
-    type: 'number',
-    valueGetter: (value, row) => {
-      return moneyToString(row.cbCostPerContainer, precision, true)
-    },
-    flex: 1.5,
-    renderHeader: () => (
-      <strong>{'CanBiocin'}<br/>{'CoGs/Container'}</strong>
-    ),
-    valueFormatter: (value) => {
-      if (value.length > 0) {
-        return '$\u00A0' + value;
-      }
-      return ''
-    },
-  },
-  { field: 'client_cost_container', 
-    headerName: 'Client Cost Container', 
-    type: 'number',
-    valueGetter: (value, row) => {
-      return moneyToString(row.clientCostPerContainer, precision, true)
-    },
-    flex: 1.5,
-    renderHeader: () => (
-      <strong>{'Client'}<br/>{'CoGs/Container'}</strong>
-    ),
-    valueFormatter: (value) => {
-      if (value.length > 0) {
-        return '$\u00A0' + value;
-      }
-      return ''
-    },
-  },
-  { field: 'cb_total', 
-    headerName: 'CB Total', 
-    type: 'number',
-    valueGetter: (value, row) => {
-      return moneyToString(row.cbTotal, precision, true);
-    },
-    flex: 1.5,
-    renderHeader: () => (
-      <strong>{'Total'}<br/>{'CanBiocin'}<br/>{'CoGs/Order'}</strong>
-    ),
-    valueFormatter: (value) => {
-      if (value.length > 0) {
-        return '$\u00A0' + value;
-      }
-      return ''
-    },
-  },
-  { field: 'client_total', 
-    headerName: 'Client Total', 
-    type: 'number',
-    valueGetter: (value, row) => {
-      return moneyToString(row.clientTotal, precision, true);
-    },
-    flex: 1.5,
-    renderHeader: () => (
-      <strong>{'Client'}<br/>{'CoGs/'}<br/>{'Order'}</strong>
-    ),
-    valueFormatter: (value) => {
-      return '$\u00A0' + value;
-    },
-  },
-  { field: 'client_total_currency', 
-    headerName: 'Client Total $US', 
-    align: 'center',
-    headerAlign: 'center',
-    type: 'number',
-    valueGetter: (value, row) => {
-      return moneyToString(row.clientTotalCurrency, precision, true);
-    },
-    flex: 1.5,
-    renderHeader: () => (
-      <strong>{'$US Client'}<br/>{'CoGs/Order'}</strong>
-    ),
-    valueFormatter: (value) => {
-      return '$\u00A0' + value;
-    },
-  },
-]
+  ...commonColumns(columnsToShow, currencyRate)
+]}
 
 const computeTotals = (ingredients, rows) => {
   if (ingredients.length == 0) {
@@ -444,6 +447,13 @@ function TotalRow({title, columnDef, ingredients}) {
 
   computeTotals(ingredients, rows)
 
+  // Add a few extra columns that are valuable but not needed
+  // everywhere
+  let servingSizeG = Math.round(rows[0].perservingMg/1000)
+
+  rows[0].cbCostPerServing = floatToMoney(servingSizeG / rows[0].totalGrams * moneyToFloat(rows[0].cbTotal))
+  rows[0].clientCostPerServing = floatToMoney(servingSizeG / rows[0].totalGrams * moneyToFloat(rows[0].clientTotal))
+
   if (rows.length == 0) {
     return "" 
   }
@@ -514,7 +524,28 @@ function PackagingSelect({columnDef, newRowFn, editable, packaging, apiRef, setP
   )
 }
 
-function RecipeMix({recipe}) {
+function RecipeMix({recipe, currencyRate}) {
+
+  let totalColsToShow = new Map()
+  totalColsToShow.set('mg_serving')
+  totalColsToShow.set('amount_needed')
+  totalColsToShow.set('cost_container')
+  totalColsToShow.set('total')
+  totalColsToShow.set('total')
+  totalColsToShow.set('client_total_currency')
+  totalColsToShow.set('cost_serving')
+
+  let colsToShow = new Map()
+  colsToShow.set('percent')
+  colsToShow.set('mg_serving')
+  colsToShow.set('amount_needed')
+  colsToShow.set('cb_cost_container')
+  colsToShow.set('cb_total')
+
+  let packagingColsToShow = new Map()
+  packagingColsToShow.set('cb_cost_container')
+  packagingColsToShow.set('cb_total')
+  
 
   if (recipe == null) {
     return (
@@ -554,20 +585,35 @@ function RecipeMix({recipe}) {
     
     <Box sx={{ m:1 }}>
       <Box sx={{ m:5 }}>
-      <TotalRow title="Totals" columnDef={prebioticColumns} ingredients={recipe.ingredients} />
+      <TotalRow 
+          title="Totals" 
+          columnDef={prebioticColumns(totalColsToShow, currencyRate)} 
+          ingredients={recipe.ingredients} />
 
       </Box>
       <Box sx={{ m:5 }}>
-      <IngredientRows title="Probiotics" columnDef={probioticColumns} ingredients={recipe.ingredients} type="probiotic" />
+      <IngredientRows 
+          title="Probiotics" 
+          columnDef={probioticColumns(colsToShow, currencyRate)} 
+          ingredients={recipe.ingredients} type="probiotic" />
       </Box>
       <Box sx={{ m:5 }}>
-      <IngredientRows title="Prebiotics" columnDef={prebioticColumns} ingredients={recipe.ingredients} type="prebiotic" />
+      <IngredientRows 
+          title="Prebiotics" 
+          columnDef={prebioticColumns(colsToShow, currencyRate)} 
+          ingredients={recipe.ingredients} type="prebiotic" />
       </Box>
       <Box sx={{ m:5 }}>
-      <IngredientRows title="Postbiotics" columnDef={prebioticColumns} ingredients={recipe.ingredients} type="postbiotic" />
+      <IngredientRows 
+          title="Postbiotics" 
+          columnDef={prebioticColumns(colsToShow, currencyRate)} 
+          ingredients={recipe.ingredients} type="postbiotic" />
       </Box>
       <Box sx={{ m:5 }}>
-      <IngredientRows title="Packaging" columnDef={packagingColumns} ingredients={recipe.ingredients} type="packaging" />
+      <IngredientRows 
+          title="Packaging" 
+          columnDef={packagingColumns(packagingColsToShow, currencyRate)} 
+          ingredients={recipe.ingredients} type="packaging" />
       </Box>
     </Box>
     </>
@@ -1247,7 +1293,7 @@ export default function () {
           editable={editable}
       />
     </Grid>
-    <RecipeMix recipe={recipe} />
+    <RecipeMix recipe={recipe} currencyRate={currencyRate} />
     </>
   )
 }

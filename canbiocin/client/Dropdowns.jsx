@@ -238,7 +238,7 @@ export function SavedRecipeDropdown({recipeId, value, onChange}) {
   const [v, setV] = React.useState(value);
 
   let id_prefix = "savedRecipe"
-  let label = "Saved Recipes"
+  let label = "Saved Formulations"
 
   const [inputWidth, setInputWidth] = React.useState(computeWidth(value))
 
