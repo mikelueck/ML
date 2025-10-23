@@ -17,7 +17,7 @@ func generateProbioticRow(
 	servingSizeGrams int32,
 	numServingsPerContainer int32,
 	grams int32,
-	discountPercent int32,
+	targetMargin int32,
 	overagePercent int32,
 	item *pb.ProbioticIngredient) (*pb.IngredientDetails, error) {
 	// the stock probiotics are more concentrated so need to be diluted
@@ -34,8 +34,9 @@ func generateProbioticRow(
 	cbCostKg := probiotic.GetCostKg()
 	cbTotal := utils.Mult(cbCostKg, total/1000)
 	cbCostPerContainer := utils.Mult(utils.Div(cbCostKg, 1000), float64(numServingsPerContainer)*float64(perserving*overage_factor))
-	markupPercent := probiotic.GetMarkupPercent() - discountPercent
-	clientTotal := utils.Mult(cbTotal, (1.0 + (float64(markupPercent) / float64(100))))
+  margin := float64(100 - targetMargin) / float64(100)
+	clientCostPerContainer := utils.Div(cbCostPerContainer, margin)
+	clientTotal := utils.Div(cbTotal, margin)
 
 	row := &pb.IngredientDetails{
 		Ingredient:         &pb.Ingredient{Item: &pb.Ingredient_Probiotic{Probiotic: probiotic}},
@@ -45,7 +46,7 @@ func generateProbioticRow(
 		TotalGrams:         total,
 		CbCostKg:           cbCostKg,
 		CbCostPerContainer: cbCostPerContainer,
-		MarkupPercent:      markupPercent,
+    ClientCostPerContainer: clientCostPerContainer,
 		CbTotal:            cbTotal,
 		ClientTotal:        clientTotal,
 	}
@@ -57,7 +58,7 @@ func generatePrebioticRow(
 	servingSizeGrams int32,
 	numServingsPerContainer int32,
 	grams int32,
-	discountPercent int32,
+	targetMargin int32,
 	item *pb.PrebioticIngredient) (*pb.IngredientDetails, error) {
 	prebioticDoc, err := db.GetPrebioticsCollection().Get(ctx, item.GetItem())
 	if err != nil {
@@ -71,8 +72,9 @@ func generatePrebioticRow(
 	cbCostKg := prebiotic.GetCostKg()
 	cbTotal := utils.Mult(cbCostKg, total/1000)
 	cbCostPerContainer := utils.Mult(utils.Div(cbCostKg, 1000), float64(numServingsPerContainer)*float64(perserving/1000))
-	markupPercent := prebiotic.GetMarkupPercent() - discountPercent
-	clientTotal := utils.Mult(cbTotal, (1.0 + (float64(markupPercent) / float64(100))))
+  margin := float64(100 - targetMargin) / float64(100)
+	clientCostPerContainer := utils.Div(cbCostPerContainer, margin)
+	clientTotal := utils.Div(cbTotal, margin)
 
 	row := &pb.IngredientDetails{
 		Ingredient:         &pb.Ingredient{Item: &pb.Ingredient_Prebiotic{Prebiotic: prebiotic}},
@@ -81,7 +83,7 @@ func generatePrebioticRow(
 		TotalGrams:         total,
 		CbCostKg:           cbCostKg,
 		CbCostPerContainer: cbCostPerContainer,
-		MarkupPercent:      markupPercent,
+    ClientCostPerContainer: clientCostPerContainer,
 		CbTotal:            cbTotal,
 		ClientTotal:        clientTotal,
 	}
@@ -93,7 +95,7 @@ func generatePostbioticRow(
 	servingSizeGrams int32,
 	numServingsPerContainer int32,
 	grams int32,
-	discountPercent int32,
+	targetMargin int32,
 	item *pb.PostbioticIngredient) (*pb.IngredientDetails, error) {
 	postbioticDoc, err := db.GetPostbioticsCollection().Get(ctx, item.GetItem())
 	if err != nil {
@@ -107,8 +109,9 @@ func generatePostbioticRow(
 	cbCostKg := postbiotic.GetCostKg()
 	cbTotal := utils.Mult(cbCostKg, total/1000)
 	cbCostPerContainer := utils.Mult(utils.Div(cbCostKg, 1000), float64(numServingsPerContainer)*float64(perserving/1000))
-	markupPercent := postbiotic.GetMarkupPercent() - discountPercent
-	clientTotal := utils.Mult(cbTotal, (1.0 + (float64(markupPercent) / float64(100))))
+  margin := float64(100 - targetMargin) / float64(100)
+	clientCostPerContainer := utils.Div(cbCostPerContainer, margin)
+	clientTotal := utils.Div(cbTotal, margin)
 
 	row := &pb.IngredientDetails{
 		Ingredient:         &pb.Ingredient{Item: &pb.Ingredient_Postbiotic{Postbiotic: postbiotic}},
@@ -117,7 +120,7 @@ func generatePostbioticRow(
 		TotalGrams:         total,
 		CbCostKg:           cbCostKg,
 		CbCostPerContainer: cbCostPerContainer,
-		MarkupPercent:      markupPercent,
+    ClientCostPerContainer: clientCostPerContainer,
 		CbTotal:            cbTotal,
 		ClientTotal:        clientTotal,
 	}
@@ -129,7 +132,7 @@ func generatePackagingRow(
 	servingSizeGrams int32,
 	containerSizeGrams int32,
 	grams int32,
-	discountPercent int32,
+	targetMargin int32,
 	packaging *pb.Packaging) (*pb.IngredientDetails, error) {
 	servingsPerContainer := int32(math.Floor(float64(containerSizeGrams) / float64(servingSizeGrams)))
 
@@ -138,15 +141,17 @@ func generatePackagingRow(
 	cbCostPerContainer := utils.Div(totalCost, float64(unitsPerPackage))
 	numContainers := math.Ceil(float64(grams) / float64(servingsPerContainer*servingSizeGrams))
 
-	markupPercent := packaging.GetMarkupPercent() - discountPercent
+	//markupPercent := packaging.GetMarkupPercent() - discountPercent
 	cbTotal := utils.Mult(cbCostPerContainer, numContainers)
-	clientTotal := utils.Mult(cbTotal, (1.0 + (float64(markupPercent) / float64(100))))
+  margin := float64(100 - targetMargin) / float64(100)
+	clientCostPerContainer := utils.Div(cbCostPerContainer, margin)
+	clientTotal := utils.Div(cbTotal, margin)
 
 	row := &pb.IngredientDetails{
 		Ingredient:         &pb.Ingredient{Item: &pb.Ingredient_Packaging{Packaging: packaging}},
 		TotalGrams:         numContainers,
 		CbCostPerContainer: cbCostPerContainer,
-		MarkupPercent:      markupPercent,
+    ClientCostPerContainer: clientCostPerContainer,
 		CbTotal:            cbTotal,
 		ClientTotal:        clientTotal,
 	}
@@ -154,7 +159,7 @@ func generatePackagingRow(
 }
 
 // Given a recipe and number of grams required outputs number of milligrams for each ingredient
-func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams int32, grams int32, container *pb.Container, packaging []*pb.Packaging, containerSizeGrams int32, discountPercent int32, save bool) (*pb.RecipeDetails, error) {
+func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams int32, grams int32, container *pb.Container, packaging []*pb.Packaging, containerSizeGrams int32, targetMargin int32, save bool) (*pb.RecipeDetails, error) {
 	recipe := doc.GetProto().(*pb.Recipe)
 	if recipe == nil {
 		return nil, fmt.Errorf("Error bad recipe: %v\n", doc)
@@ -166,7 +171,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 		TotalGrams:         grams,
 		Container:          container,
 		ContainerSizeGrams: containerSizeGrams,
-		DiscountPercent:    discountPercent}
+		TargetMargin:       targetMargin}
 
 	rows := []*pb.IngredientDetails{}
 
@@ -174,7 +179,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 
 	for _, i := range recipe.GetProbiotics() {
 		row, err := generateProbioticRow(
-			ctx, servingSizeGrams, numServingsPerContainer, grams, discountPercent, recipe.GetProbioticOveragePercent(), i)
+			ctx, servingSizeGrams, numServingsPerContainer, grams, targetMargin, recipe.GetProbioticOveragePercent(), i)
 		if err != nil {
 			return nil, err
 		}
@@ -183,7 +188,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 
 	for _, i := range recipe.GetPrebiotics() {
 		row, err := generatePrebioticRow(
-			ctx, servingSizeGrams, numServingsPerContainer, grams, discountPercent, i)
+			ctx, servingSizeGrams, numServingsPerContainer, grams, targetMargin, i)
 		if err != nil {
 			return nil, err
 		}
@@ -192,7 +197,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 
 	for _, i := range recipe.GetPostbiotics() {
 		row, err := generatePostbioticRow(
-			ctx, servingSizeGrams, numServingsPerContainer, grams, discountPercent, i)
+			ctx, servingSizeGrams, numServingsPerContainer, grams, targetMargin, i)
 		if err != nil {
 			return nil, err
 		}
@@ -202,7 +207,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 	// Handle the packaging
 	if container != nil {
 		row, err := generatePackagingRow(
-			ctx, servingSizeGrams, containerSizeGrams, grams, discountPercent, container.GetPackaging())
+			ctx, servingSizeGrams, containerSizeGrams, grams, targetMargin, container.GetPackaging())
 		if err != nil {
 			return nil, err
 		}
@@ -211,7 +216,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 	if packaging != nil && len(packaging) > 0 {
 		for _, p := range packaging {
 			row, err := generatePackagingRow(
-				ctx, servingSizeGrams, containerSizeGrams, grams, discountPercent, p)
+				ctx, servingSizeGrams, containerSizeGrams, grams, targetMargin, p)
 			if err != nil {
 				return nil, err
 			}

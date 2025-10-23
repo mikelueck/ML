@@ -64,7 +64,7 @@ const commonColumns = [
     },
     flex: 1.5,
     renderHeader: () => (
-      <strong>{'Amount in'}<br/>{'in Blend'}</strong>
+      <strong>{'Amount in'}<br/>{'Blend'}</strong>
     ),
     valueFormatter: (value) => {
       return valueToPrecision(value, precision, " %")
@@ -119,6 +119,25 @@ const commonColumns = [
       return ''
     },
   },
+  { field: 'client_cost_container', 
+    headerName: 'Client Cost Container', 
+    align: 'center',
+    headerAlign: 'center',
+    type: 'number',
+    valueGetter: (value, row) => {
+      return moneyToString(row.clientCostPerContainer, precision, true)
+    },
+    flex: 1.5,
+    renderHeader: () => (
+      <strong>{'Client'}<br/>{'CoGs/Container'}</strong>
+    ),
+    valueFormatter: (value) => {
+      if (value.length > 0) {
+        return '$\u00A0' + value;
+      }
+      return ''
+    },
+  },
   { field: 'cb_total', 
     headerName: 'CB Total', 
     align: 'center',
@@ -137,23 +156,6 @@ const commonColumns = [
       }
       return ''
     },
-  },
-  { field: 'markup', 
-    headerName: 'Markup', 
-    align: 'center',
-    headerAlign: 'center',
-    valueGetter: (value, row) => {
-      return row.markupPercent ?  row.markupPercent : ""
-    },
-    renderCell: (params) => (
-      <>
-      {params.row.markupPercent ? params.row.markupPercent + '%' : ""}
-      </>
-    ),
-    renderHeader: () => (
-      <strong>{'Markup'}</strong>
-    ),
-    flex: 1.5,
   },
   { field: 'client_total', 
     headerName: 'Client Total', 
@@ -272,6 +274,23 @@ const packagingColumns = [
       return ''
     },
   },
+  { field: 'client_cost_container', 
+    headerName: 'Client Cost Container', 
+    type: 'number',
+    valueGetter: (value, row) => {
+      return moneyToString(row.clientCostPerContainer, precision, true)
+    },
+    flex: 1.5,
+    renderHeader: () => (
+      <strong>{'Client'}<br/>{'CoGs/Container'}</strong>
+    ),
+    valueFormatter: (value) => {
+      if (value.length > 0) {
+        return '$\u00A0' + value;
+      }
+      return ''
+    },
+  },
   { field: 'cb_total', 
     headerName: 'CB Total', 
     type: 'number',
@@ -288,21 +307,6 @@ const packagingColumns = [
       }
       return ''
     },
-  },
-  { field: 'markup', 
-    headerName: 'Markup', 
-    valueGetter: (value, row) => {
-      return row.markupPercent ?  row.markupPercent : ""
-    },
-    renderCell: (params) => (
-      <>
-      {params.row.markupPercent ? params.row.markupPercent + '%' : ""}
-      </>
-    ),
-    renderHeader: () => (
-      <strong>{'Markup'}</strong>
-    ),
-    flex: 1.5,
   },
   { field: 'client_total', 
     headerName: 'Client Total', 
@@ -329,6 +333,7 @@ const computeTotals = (ingredients, rows) => {
   let mgServing = 0;
   let totalGrams = 0;
   let cbCostPerContainer = 0;
+  let clientCostPerContainer = 0;
   let cbTotal = 0;
   let clientTotal = 0;
 
@@ -338,6 +343,7 @@ const computeTotals = (ingredients, rows) => {
     mgServing += i.perservingMg
     totalGrams += i.totalGrams
     cbCostPerContainer += moneyToFloat(i.cbCostPerContainer)
+    clientCostPerContainer += moneyToFloat(i.clientCostPerContainer)
     cbTotal += moneyToFloat(i.cbTotal)
     clientTotal += moneyToFloat(i.clientTotal)
   })
@@ -353,8 +359,8 @@ const computeTotals = (ingredients, rows) => {
   perservingMg: mgServing,
   totalGrams: totalGrams,
   cbCostPerContainer: floatToMoney(cbCostPerContainer),
+  clientCostPerContainer: floatToMoney(clientCostPerContainer),
   cbTotal: floatToMoney(cbTotal),
-  markupPercent: markupPercent,
   clientTotal: floatToMoney(clientTotal),
   })
 }
@@ -547,7 +553,7 @@ export default function () {
   const [packagingItems, setPackagingItems] = React.useState([]);
   const [numContainers, setNumContainers] = React.useState(1)
   const [containerSizeG, setContainerSizeG] = React.useState(initSizeG)
-  const [discountPercent, setDiscountPercent] = React.useState(0)
+  const [targetMargin, setTargetMargin] = React.useState(65)
   const [recipe, setRecipe] = React.useState(null)
   const [isSaving, setIsSaving] = React.useState(false)
   const [isDeleting, setIsDeleting] = React.useState(false)
@@ -602,8 +608,8 @@ export default function () {
     updateNumContainers(totalGrams, event.target.value, containerSizeG)
   }
 
-  const handleDiscountPercentChange = (event) => {
-    setDiscountPercent(event.target.value)
+  const handleTargetMarginChange = (event) => {
+    setTargetMargin(event.target.value)
   }
 
   function ContainerFieldOrDropdown({recipe, editable}) {
@@ -911,7 +917,7 @@ export default function () {
     setTotalGrams(r.totalGrams)
     setContainer(r.container)
     setPackagingItems(r.packaging)
-    setDiscountPercent(r.discountPercent)
+    setTargetMargin(r.targetMargin)
     setContainerSizeG(r.containerSizeGrams)
     updateNumContainers(r.totalGrams, r.servingSizeGrams, r.containerSizeGrams)
   }
@@ -1004,7 +1010,7 @@ export default function () {
                  container: container,
                  packaging: packagingItems,
                  containerSizeGrams: containerSizeG,
-                 discountPercent: discountPercent });
+                 targetMargin: targetMargin });
             response.recipeDetails.name = savedRecipeName
             setRecipe(response.recipeDetails)
           }
@@ -1017,7 +1023,7 @@ export default function () {
       }
     };
     fetchData();
-  }, [savedRecipeId, recipeId, editable, servingGrams, totalGrams, container, packagingItems, containerSizeG, discountPercent]);
+  }, [savedRecipeId, recipeId, editable, servingGrams, totalGrams, container, packagingItems, containerSizeG, targetMargin]);
 
   function SaveToolbar() {
     if (!editable) {
@@ -1180,13 +1186,13 @@ export default function () {
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
       <Field
-          id='discount'
-          label='Discount Percent' 
-          value={discountPercent}
+          id='targetMargin'
+          label='Target Margin' 
+          value={targetMargin}
           size="small"
           type="number"
           variant="standard"
-          onChange={handleDiscountPercentChange}
+          onChange={handleTargetMarginChange}
           editable={editable}
           units="%"
       />

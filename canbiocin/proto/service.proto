@@ -110,7 +110,7 @@ message CalculateRecipeRequest {
   Container container = 4;
   repeated Packaging packaging = 7;
   int32 container_size_grams = 6;
-  int32 discount_percent = 5;
+  int32 target_margin = 5;
 }
 
 message CalculateRecipeResponse {
