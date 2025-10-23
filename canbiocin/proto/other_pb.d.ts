@@ -53,11 +53,6 @@ export declare type Packaging = Message<"Packaging"> & {
   amountNeededForOrder: number;
 
   /**
-   * @generated from field: int32 markup_percent = 8;
-   */
-  markupPercent: number;
-
-  /**
    * @generated from field: string notes = 9;
    */
   notes: string;
@@ -102,11 +97,6 @@ export declare type Milling_Blending_Packaging = Message<"Milling_Blending_Packa
    * @generated from field: google.protobuf.Timestamp most_recent_quote_date = 5;
    */
   mostRecentQuoteDate?: Timestamp;
-
-  /**
-   * @generated from field: int32 markup_percent = 6;
-   */
-  markupPercent: number;
 };
 
 /**

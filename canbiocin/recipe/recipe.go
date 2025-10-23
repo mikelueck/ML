@@ -18,6 +18,7 @@ func generateProbioticRow(
 	numServingsPerContainer int32,
 	grams int32,
 	targetMargin int32,
+	currencyRate float64,
 	overagePercent int32,
 	item *pb.ProbioticIngredient) (*pb.IngredientDetails, error) {
 	// the stock probiotics are more concentrated so need to be diluted
@@ -34,21 +35,22 @@ func generateProbioticRow(
 	cbCostKg := probiotic.GetCostKg()
 	cbTotal := utils.Mult(cbCostKg, total/1000)
 	cbCostPerContainer := utils.Mult(utils.Div(cbCostKg, 1000), float64(numServingsPerContainer)*float64(perserving*overage_factor))
-  margin := float64(100 - targetMargin) / float64(100)
+	margin := float64(100-targetMargin) / float64(100)
 	clientCostPerContainer := utils.Div(cbCostPerContainer, margin)
 	clientTotal := utils.Div(cbTotal, margin)
 
 	row := &pb.IngredientDetails{
-		Ingredient:         &pb.Ingredient{Item: &pb.Ingredient_Probiotic{Probiotic: probiotic}},
-		DesiredCfuG:        item.GetCfuG(),
-		Percent:            percent,
-		PerservingMg:       perserving * 1000.0,
-		TotalGrams:         total,
-		CbCostKg:           cbCostKg,
-		CbCostPerContainer: cbCostPerContainer,
-    ClientCostPerContainer: clientCostPerContainer,
-		CbTotal:            cbTotal,
-		ClientTotal:        clientTotal,
+		Ingredient:             &pb.Ingredient{Item: &pb.Ingredient_Probiotic{Probiotic: probiotic}},
+		DesiredCfuG:            item.GetCfuG(),
+		Percent:                percent,
+		PerservingMg:           perserving * 1000.0,
+		TotalGrams:             total,
+		CbCostKg:               cbCostKg,
+		CbCostPerContainer:     cbCostPerContainer,
+		ClientCostPerContainer: clientCostPerContainer,
+		CbTotal:                cbTotal,
+		ClientTotal:            clientTotal,
+		ClientTotalCurrency:    utils.Mult(clientTotal, currencyRate),
 	}
 	return row, nil
 }
@@ -59,6 +61,7 @@ func generatePrebioticRow(
 	numServingsPerContainer int32,
 	grams int32,
 	targetMargin int32,
+	currencyRate float64,
 	item *pb.PrebioticIngredient) (*pb.IngredientDetails, error) {
 	prebioticDoc, err := db.GetPrebioticsCollection().Get(ctx, item.GetItem())
 	if err != nil {
@@ -72,20 +75,21 @@ func generatePrebioticRow(
 	cbCostKg := prebiotic.GetCostKg()
 	cbTotal := utils.Mult(cbCostKg, total/1000)
 	cbCostPerContainer := utils.Mult(utils.Div(cbCostKg, 1000), float64(numServingsPerContainer)*float64(perserving/1000))
-  margin := float64(100 - targetMargin) / float64(100)
+	margin := float64(100-targetMargin) / float64(100)
 	clientCostPerContainer := utils.Div(cbCostPerContainer, margin)
 	clientTotal := utils.Div(cbTotal, margin)
 
 	row := &pb.IngredientDetails{
-		Ingredient:         &pb.Ingredient{Item: &pb.Ingredient_Prebiotic{Prebiotic: prebiotic}},
-		Percent:            percent,
-		PerservingMg:       perserving,
-		TotalGrams:         total,
-		CbCostKg:           cbCostKg,
-		CbCostPerContainer: cbCostPerContainer,
-    ClientCostPerContainer: clientCostPerContainer,
-		CbTotal:            cbTotal,
-		ClientTotal:        clientTotal,
+		Ingredient:             &pb.Ingredient{Item: &pb.Ingredient_Prebiotic{Prebiotic: prebiotic}},
+		Percent:                percent,
+		PerservingMg:           perserving,
+		TotalGrams:             total,
+		CbCostKg:               cbCostKg,
+		CbCostPerContainer:     cbCostPerContainer,
+		ClientCostPerContainer: clientCostPerContainer,
+		CbTotal:                cbTotal,
+		ClientTotal:            clientTotal,
+		ClientTotalCurrency:    utils.Mult(clientTotal, currencyRate),
 	}
 	return row, nil
 }
@@ -96,6 +100,7 @@ func generatePostbioticRow(
 	numServingsPerContainer int32,
 	grams int32,
 	targetMargin int32,
+	currencyRate float64,
 	item *pb.PostbioticIngredient) (*pb.IngredientDetails, error) {
 	postbioticDoc, err := db.GetPostbioticsCollection().Get(ctx, item.GetItem())
 	if err != nil {
@@ -109,20 +114,21 @@ func generatePostbioticRow(
 	cbCostKg := postbiotic.GetCostKg()
 	cbTotal := utils.Mult(cbCostKg, total/1000)
 	cbCostPerContainer := utils.Mult(utils.Div(cbCostKg, 1000), float64(numServingsPerContainer)*float64(perserving/1000))
-  margin := float64(100 - targetMargin) / float64(100)
+	margin := float64(100-targetMargin) / float64(100)
 	clientCostPerContainer := utils.Div(cbCostPerContainer, margin)
 	clientTotal := utils.Div(cbTotal, margin)
 
 	row := &pb.IngredientDetails{
-		Ingredient:         &pb.Ingredient{Item: &pb.Ingredient_Postbiotic{Postbiotic: postbiotic}},
-		Percent:            percent,
-		PerservingMg:       perserving,
-		TotalGrams:         total,
-		CbCostKg:           cbCostKg,
-		CbCostPerContainer: cbCostPerContainer,
-    ClientCostPerContainer: clientCostPerContainer,
-		CbTotal:            cbTotal,
-		ClientTotal:        clientTotal,
+		Ingredient:             &pb.Ingredient{Item: &pb.Ingredient_Postbiotic{Postbiotic: postbiotic}},
+		Percent:                percent,
+		PerservingMg:           perserving,
+		TotalGrams:             total,
+		CbCostKg:               cbCostKg,
+		CbCostPerContainer:     cbCostPerContainer,
+		ClientCostPerContainer: clientCostPerContainer,
+		CbTotal:                cbTotal,
+		ClientTotal:            clientTotal,
+		ClientTotalCurrency:    utils.Mult(clientTotal, currencyRate),
 	}
 	return row, nil
 }
@@ -133,6 +139,7 @@ func generatePackagingRow(
 	containerSizeGrams int32,
 	grams int32,
 	targetMargin int32,
+	currencyRate float64,
 	packaging *pb.Packaging) (*pb.IngredientDetails, error) {
 	servingsPerContainer := int32(math.Floor(float64(containerSizeGrams) / float64(servingSizeGrams)))
 
@@ -143,23 +150,34 @@ func generatePackagingRow(
 
 	//markupPercent := packaging.GetMarkupPercent() - discountPercent
 	cbTotal := utils.Mult(cbCostPerContainer, numContainers)
-  margin := float64(100 - targetMargin) / float64(100)
+	margin := float64(100-targetMargin) / float64(100)
 	clientCostPerContainer := utils.Div(cbCostPerContainer, margin)
 	clientTotal := utils.Div(cbTotal, margin)
 
 	row := &pb.IngredientDetails{
-		Ingredient:         &pb.Ingredient{Item: &pb.Ingredient_Packaging{Packaging: packaging}},
-		TotalGrams:         numContainers,
-		CbCostPerContainer: cbCostPerContainer,
-    ClientCostPerContainer: clientCostPerContainer,
-		CbTotal:            cbTotal,
-		ClientTotal:        clientTotal,
+		Ingredient:             &pb.Ingredient{Item: &pb.Ingredient_Packaging{Packaging: packaging}},
+		TotalGrams:             numContainers,
+		CbCostPerContainer:     cbCostPerContainer,
+		ClientCostPerContainer: clientCostPerContainer,
+		CbTotal:                cbTotal,
+		ClientTotal:            clientTotal,
+		ClientTotalCurrency:    utils.Mult(clientTotal, currencyRate),
 	}
 	return row, nil
 }
 
 // Given a recipe and number of grams required outputs number of milligrams for each ingredient
-func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams int32, grams int32, container *pb.Container, packaging []*pb.Packaging, containerSizeGrams int32, targetMargin int32, save bool) (*pb.RecipeDetails, error) {
+func ComputeQuantities(
+	ctx context.Context,
+	doc *db.RecipeDoc,
+	servingSizeGrams int32,
+	grams int32,
+	container *pb.Container,
+	packaging []*pb.Packaging,
+	containerSizeGrams int32,
+	targetMargin int32,
+	currencyRate float64,
+	save bool) (*pb.RecipeDetails, error) {
 	recipe := doc.GetProto().(*pb.Recipe)
 	if recipe == nil {
 		return nil, fmt.Errorf("Error bad recipe: %v\n", doc)
@@ -171,7 +189,8 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 		TotalGrams:         grams,
 		Container:          container,
 		ContainerSizeGrams: containerSizeGrams,
-		TargetMargin:       targetMargin}
+		TargetMargin:       targetMargin,
+		CurrencyRate:       currencyRate}
 
 	rows := []*pb.IngredientDetails{}
 
@@ -179,7 +198,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 
 	for _, i := range recipe.GetProbiotics() {
 		row, err := generateProbioticRow(
-			ctx, servingSizeGrams, numServingsPerContainer, grams, targetMargin, recipe.GetProbioticOveragePercent(), i)
+			ctx, servingSizeGrams, numServingsPerContainer, grams, targetMargin, currencyRate, recipe.GetProbioticOveragePercent(), i)
 		if err != nil {
 			return nil, err
 		}
@@ -188,7 +207,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 
 	for _, i := range recipe.GetPrebiotics() {
 		row, err := generatePrebioticRow(
-			ctx, servingSizeGrams, numServingsPerContainer, grams, targetMargin, i)
+			ctx, servingSizeGrams, numServingsPerContainer, grams, targetMargin, currencyRate, i)
 		if err != nil {
 			return nil, err
 		}
@@ -197,7 +216,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 
 	for _, i := range recipe.GetPostbiotics() {
 		row, err := generatePostbioticRow(
-			ctx, servingSizeGrams, numServingsPerContainer, grams, targetMargin, i)
+			ctx, servingSizeGrams, numServingsPerContainer, grams, targetMargin, currencyRate, i)
 		if err != nil {
 			return nil, err
 		}
@@ -207,7 +226,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 	// Handle the packaging
 	if container != nil {
 		row, err := generatePackagingRow(
-			ctx, servingSizeGrams, containerSizeGrams, grams, targetMargin, container.GetPackaging())
+			ctx, servingSizeGrams, containerSizeGrams, grams, targetMargin, currencyRate, container.GetPackaging())
 		if err != nil {
 			return nil, err
 		}
@@ -216,7 +235,7 @@ func ComputeQuantities(ctx context.Context, doc *db.RecipeDoc, servingSizeGrams 
 	if packaging != nil && len(packaging) > 0 {
 		for _, p := range packaging {
 			row, err := generatePackagingRow(
-				ctx, servingSizeGrams, containerSizeGrams, grams, targetMargin, p)
+				ctx, servingSizeGrams, containerSizeGrams, grams, targetMargin, currencyRate, p)
 			if err != nil {
 				return nil, err
 			}
@@ -277,7 +296,7 @@ func PrintRow(row *pb.IngredientDetails) {
 	} else if row.GetIngredient().GetPostbiotic() != nil {
 		name = row.GetIngredient().GetPostbiotic().GetName()
 	}
-	fmt.Printf("| %30s | %12s | %12s | %12s | %12s | %12s | %12s | %12s | %12s |\n",
+	fmt.Printf("| %30s | %12s | %12s | %12s | %12s | %12s | %12s | %12s | %12s | %12s |\n",
 		Shrink(name, 30),
 		stockCfu,
 		fmt.Sprintf("%v%%", RoundToPercision(row.GetPercent()*100, 5)),
@@ -286,7 +305,8 @@ func PrintRow(row *pb.IngredientDetails) {
 		utils.String(row.GetCbCostKg()),
 		utils.String(row.GetCbCostPerContainer()),
 		utils.String(row.GetCbTotal()),
-		utils.String(row.GetClientTotal()))
+		utils.String(row.GetClientTotal()),
+		utils.String(row.GetClientTotalCurrency()))
 }
 
 func PrintTable(recipe *pb.RecipeDetails) {

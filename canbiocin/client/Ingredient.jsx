@@ -39,7 +39,6 @@ const commonFields = {
   "costShippingKg": true,
   // TODO "supplier" : true,
   "mostRecentQuoteDate": true,
-  "markupPercent": true,
 }
 
 const fieldsByType = {
@@ -137,13 +136,6 @@ function Ingredient({ingredientType, ingredient, editable, handleChange}) {
           slotProps:{ textField: { variant: 'standard' } },
           readOnly:!editable,
         }})}
-    </Grid>
-    <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {MyNewFormItem({
-        field:'markupPercent', 
-        label: 'Markup', 
-        type:'number', 
-        units:"%"})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
       {MyNewFormItem({field:'function'})}

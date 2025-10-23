@@ -51,6 +51,7 @@ message RecipeDetails {
   repeated Packaging packaging = 11;
   int32 container_size_grams = 10;
   int32 target_margin = 6;
+  double currency_rate = 12;
 }
 
 message Ingredient {
@@ -71,8 +72,8 @@ message IngredientDetails {
     Money cb_cost_kg = 5;
     Money cb_cost_per_container = 6;
     Money client_cost_per_container = 11;
-    //int32 markup_percent = 10;
     Money cb_total = 7;
     Money client_total = 8;
+    Money client_total_currency = 12;
 }
 

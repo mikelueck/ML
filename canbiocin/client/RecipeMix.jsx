@@ -173,6 +173,22 @@ const commonColumns = [
       return '$\u00A0' + value;
     },
   },
+  { field: 'client_total_currency', 
+    headerName: 'Client Total $US', 
+    align: 'center',
+    headerAlign: 'center',
+    type: 'number',
+    valueGetter: (value, row) => {
+      return moneyToString(row.clientTotalCurrency, precision, true);
+    },
+    flex: 1.5,
+    renderHeader: () => (
+      <strong>{'$US Client'}<br/>{'CoGs/Order'}</strong>
+    ),
+    valueFormatter: (value) => {
+      return '$\u00A0' + value;
+    },
+  },
 ]
 
 const probioticColumns = [
@@ -322,6 +338,22 @@ const packagingColumns = [
       return '$\u00A0' + value;
     },
   },
+  { field: 'client_total_currency', 
+    headerName: 'Client Total $US', 
+    align: 'center',
+    headerAlign: 'center',
+    type: 'number',
+    valueGetter: (value, row) => {
+      return moneyToString(row.clientTotalCurrency, precision, true);
+    },
+    flex: 1.5,
+    renderHeader: () => (
+      <strong>{'$US Client'}<br/>{'CoGs/Order'}</strong>
+    ),
+    valueFormatter: (value) => {
+      return '$\u00A0' + value;
+    },
+  },
 ]
 
 const computeTotals = (ingredients, rows) => {
@@ -336,6 +368,7 @@ const computeTotals = (ingredients, rows) => {
   let clientCostPerContainer = 0;
   let cbTotal = 0;
   let clientTotal = 0;
+  let clientTotalCurrency = 0;
 
   ingredients.map((i) => {
     desiredCfuG += i.desiredCfuG
@@ -346,9 +379,8 @@ const computeTotals = (ingredients, rows) => {
     clientCostPerContainer += moneyToFloat(i.clientCostPerContainer)
     cbTotal += moneyToFloat(i.cbTotal)
     clientTotal += moneyToFloat(i.clientTotal)
+    clientTotalCurrency += moneyToFloat(i.clientTotalCurrency)
   })
-
-  let markupPercent = Math.floor(((clientTotal / cbTotal) - 1)*100)
 
   rows.push(
   {
@@ -362,6 +394,7 @@ const computeTotals = (ingredients, rows) => {
   clientCostPerContainer: floatToMoney(clientCostPerContainer),
   cbTotal: floatToMoney(cbTotal),
   clientTotal: floatToMoney(clientTotal),
+  clientTotalCurrency: floatToMoney(clientTotalCurrency),
   })
 }
 
@@ -554,6 +587,7 @@ export default function () {
   const [numContainers, setNumContainers] = React.useState(1)
   const [containerSizeG, setContainerSizeG] = React.useState(initSizeG)
   const [targetMargin, setTargetMargin] = React.useState(65)
+  const [currencyRate, setCurrencyRate] = React.useState(0.77)
   const [recipe, setRecipe] = React.useState(null)
   const [isSaving, setIsSaving] = React.useState(false)
   const [isDeleting, setIsDeleting] = React.useState(false)
@@ -610,6 +644,10 @@ export default function () {
 
   const handleTargetMarginChange = (event) => {
     setTargetMargin(event.target.value)
+  }
+
+  const handleCurrencyRateChange = (event) => {
+    setCurrencyRate(event.target.value)
   }
 
   function ContainerFieldOrDropdown({recipe, editable}) {
@@ -918,6 +956,7 @@ export default function () {
     setContainer(r.container)
     setPackagingItems(r.packaging)
     setTargetMargin(r.targetMargin)
+    setCurrencyRate(r.currencyRate)
     setContainerSizeG(r.containerSizeGrams)
     updateNumContainers(r.totalGrams, r.servingSizeGrams, r.containerSizeGrams)
   }
@@ -1010,7 +1049,8 @@ export default function () {
                  container: container,
                  packaging: packagingItems,
                  containerSizeGrams: containerSizeG,
-                 targetMargin: targetMargin });
+                 targetMargin: targetMargin,
+                 currencyRate: currencyRate });
             response.recipeDetails.name = savedRecipeName
             setRecipe(response.recipeDetails)
           }
@@ -1023,7 +1063,7 @@ export default function () {
       }
     };
     fetchData();
-  }, [savedRecipeId, recipeId, editable, servingGrams, totalGrams, container, packagingItems, containerSizeG, targetMargin]);
+  }, [savedRecipeId, recipeId, editable, servingGrams, totalGrams, container, packagingItems, containerSizeG, targetMargin, currencyRate]);
 
   function SaveToolbar() {
     if (!editable) {
@@ -1195,6 +1235,16 @@ export default function () {
           onChange={handleTargetMarginChange}
           editable={editable}
           units="%"
+      />
+      <Field
+          id='currencyRate'
+          label='US$ Currency' 
+          value={currencyRate}
+          size="small"
+          type="number"
+          variant="standard"
+          onChange={handleCurrencyRateChange}
+          editable={editable}
       />
     </Grid>
     <RecipeMix recipe={recipe} />

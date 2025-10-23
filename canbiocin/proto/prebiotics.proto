@@ -15,6 +15,5 @@ message Prebiotic {
     Supplier supplier = 6;
     google.protobuf.Timestamp most_recent_quote_date = 7;       
     string function = 8;
-    int32 markup_percent = 9;    
     string notes = 10;
 }

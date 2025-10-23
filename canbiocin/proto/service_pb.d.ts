@@ -433,9 +433,14 @@ export declare type CalculateRecipeRequest = Message<"CalculateRecipeRequest"> &
   containerSizeGrams: number;
 
   /**
-   * @generated from field: int32 discount_percent = 5;
+   * @generated from field: int32 target_margin = 5;
    */
-  discountPercent: number;
+  targetMargin: number;
+
+  /**
+   * @generated from field: double currency_rate = 8;
+   */
+  currencyRate: number;
 };
 
 /**

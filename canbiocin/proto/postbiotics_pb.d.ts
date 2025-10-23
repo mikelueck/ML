@@ -53,11 +53,6 @@ export declare type Postbiotic = Message<"Postbiotic"> & {
   mostRecentQuoteDate?: Timestamp;
 
   /**
-   * @generated from field: int32 markup_percent = 8;
-   */
-  markupPercent: number;
-
-  /**
    * @generated from field: string function = 9;
    */
   function: string;

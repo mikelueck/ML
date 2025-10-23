@@ -108,12 +108,6 @@ func (p *PrebioticParser) parseIngredient(ctx context.Context, row *xlsxreader.R
 				c2 = utils.Mult(c2, m)
 			}
 
-			tmp, err := Float(row, p.columns["markupPercent"])
-			if err != nil {
-				return err
-			}
-			markupPercent := int32(tmp * 100 * getMultiplier())
-
 			ingredient := &pb.Prebiotic{
 				Category:            p.category,
 				Name:                String(row, p.columns["name"]),
@@ -121,7 +115,6 @@ func (p *PrebioticParser) parseIngredient(ctx context.Context, row *xlsxreader.R
 				CostShippingKg:      c2,
 				Supplier:            &pb.Supplier{Name: String(row, p.columns["supplier"])},
 				MostRecentQuoteDate: utils.TimestampProtoStr(String(row, p.columns["mostRecentQuotaDate"])),
-				MarkupPercent:       int32(markupPercent),
 				Function:            String(row, p.columns["function"]),
 				Notes:               String(row, p.columns["notes"]),
 			}

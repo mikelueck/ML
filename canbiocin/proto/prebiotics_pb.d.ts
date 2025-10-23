@@ -58,11 +58,6 @@ export declare type Prebiotic = Message<"Prebiotic"> & {
   function: string;
 
   /**
-   * @generated from field: int32 markup_percent = 9;
-   */
-  markupPercent: number;
-
-  /**
    * @generated from field: string notes = 10;
    */
   notes: string;

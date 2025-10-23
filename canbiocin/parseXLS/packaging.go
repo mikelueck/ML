@@ -107,12 +107,6 @@ func (p *PackagingParser) parseIngredient(ctx context.Context, row *xlsxreader.R
 				c = utils.Mult(c, m)
 			}
 
-			tmp, err := Float(row, p.columns["markupPercent"])
-			if err != nil {
-				return err
-			}
-			markupPercent := int32(tmp * 100 * getMultiplier())
-
 			units, err := Int64(row, p.columns["unitsPerCase"])
 			if err != nil {
 				return err
@@ -132,7 +126,6 @@ func (p *PackagingParser) parseIngredient(ctx context.Context, row *xlsxreader.R
 				AmountNeededForOrder: int32(amountNeededForOrder),
 				Supplier:             &pb.Supplier{Name: String(row, p.columns["supplier"])},
 				MostRecentQuoteDate:  utils.TimestampProtoStr(String(row, p.columns["mostRecentQuotaDate"])),
-				MarkupPercent:        int32(markupPercent),
 				Notes:                String(row, p.columns["notes"]),
 			}
 

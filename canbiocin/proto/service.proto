@@ -111,6 +111,7 @@ message CalculateRecipeRequest {
   repeated Packaging packaging = 7;
   int32 container_size_grams = 6;
   int32 target_margin = 5;
+  double currency_rate = 8;
 }
 
 message CalculateRecipeResponse {

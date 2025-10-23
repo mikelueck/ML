@@ -14,7 +14,6 @@ message Postbiotic {
     Money cost_shipping_kg = 5;
     Supplier supplier = 6;
     google.protobuf.Timestamp most_recent_quote_date = 7;       
-    int32 markup_percent = 8;    
     string function = 9;
     string notes = 10;
 }

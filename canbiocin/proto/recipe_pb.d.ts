@@ -202,9 +202,14 @@ export declare type RecipeDetails = Message<"RecipeDetails"> & {
   containerSizeGrams: number;
 
   /**
-   * @generated from field: int32 discount_percent = 6;
+   * @generated from field: int32 target_margin = 6;
    */
-  discountPercent: number;
+  targetMargin: number;
+
+  /**
+   * @generated from field: double currency_rate = 12;
+   */
+  currencyRate: number;
 };
 
 /**
@@ -293,9 +298,9 @@ export declare type IngredientDetails = Message<"IngredientDetails"> & {
   cbCostPerContainer?: Money;
 
   /**
-   * @generated from field: int32 markup_percent = 10;
+   * @generated from field: Money client_cost_per_container = 11;
    */
-  markupPercent: number;
+  clientCostPerContainer?: Money;
 
   /**
    * @generated from field: Money cb_total = 7;
@@ -306,6 +311,11 @@ export declare type IngredientDetails = Message<"IngredientDetails"> & {
    * @generated from field: Money client_total = 8;
    */
   clientTotal?: Money;
+
+  /**
+   * @generated from field: Money client_total_currency = 12;
+   */
+  clientTotalCurrency?: Money;
 };
 
 /**

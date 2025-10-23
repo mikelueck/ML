@@ -265,6 +265,7 @@ func (s *server) CalculateRecipe(ctx context.Context, req *pb.CalculateRecipeReq
 		req.GetPackaging(),
 		req.GetContainerSizeGrams(),
 		req.GetTargetMargin(),
+		req.GetCurrencyRate(),
 		false) // Don't save
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
