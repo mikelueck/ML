@@ -5,6 +5,8 @@ import { createRoot } from 'react-dom/client';
 
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material"
 
+import logo from "./public/CanBiocinLogo.avif"
+
 const pb = require('../proto/probiotics_pb.js');
 const supplier = require('../proto/supplier_pb.js');
 const money = require('../proto/money_pb.js');
@@ -12,6 +14,8 @@ const { create, toBinary, fromBinary} = require('@bufbuild/protobuf')
 const timestamp = require('@bufbuild/protobuf/wkt')
 
 import { App } from './App';
+
+import { Auth0Provider } from '@auth0/auth0-react';
 
 import logger from './logger.js';
 
@@ -33,7 +37,14 @@ const root = createRoot(document.getElementById('root'));
 root.render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
-    <App/>
+      <Auth0Provider
+        domain="dev-1utgu7vgaanrc6i1.us.auth0.com"
+        clientId="oap7jeVwl5rHZYMynkLfZIQ1uhpQINdu"
+        authorizationParams={{
+          redirect_uri: window.location.origin
+        }}>
+        <App/>
+      </Auth0Provider>
   </ThemeProvider>
 );
 

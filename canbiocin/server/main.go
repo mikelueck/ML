@@ -4,15 +4,34 @@ import (
 	"flag"
 	"log"
 	"net"
+	"os"
 
 	"github.com/ML/canbiocin/parseXLS"
 	pb "github.com/ML/canbiocin/proto"
+	"github.com/ML/canbiocin/secrets"
 
 	"google.golang.org/grpc"
 
 	"google.golang.org/grpc/health"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
+
+func InitEnv() {
+	secret_list := []string{
+		"AUTH0_CLIENT_ID",
+		"AUTH0_CLIENT_SECRET",
+		"AUTH0_DOMAIN"}
+
+	projectid := flag.Lookup("projectid")
+
+	for _, i := range secret_list {
+		val, err := secrets.AccessSecretVersion(projectid.Value.String(), i, "")
+		if err != nil {
+			log.Printf("Error : %v\n", string(val))
+		}
+		os.Setenv(i, string(val))
+	}
+}
 
 func main() {
 	_ = parseXLS.REFER_TO_LOAD_LIBRARY
@@ -22,6 +41,8 @@ func main() {
 		flag.Usage()
 		log.Fatalf("missing -grpcport flag (:50051)")
 	}
+
+	InitEnv()
 
 	lis, err := net.Listen("tcp", *grpcport)
 	if err != nil {

@@ -51,14 +51,22 @@ load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 
 rules_pkg_dependencies()
 
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies", "go_repository")
+
 # load Bazel and Gazelle rules
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
-load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+
+go_repository(
+    name = "com_google_cloud_go_bigtable",
+    importpath = "cloud.google.com/go/bigtable",
+    sum = "h1:k8HfpUOvn7sQwc6oNKqjvD/yjkwynf4qBuyKwh5cU08=",
+    version = "v1.40.1",
+)
 
 go_rules_dependencies()
 
 # We define the version of go that this project uses
-go_register_toolchains(version = "1.23.0")
+go_register_toolchains(version = "1.23.1")
 
 ############################################################
 # Define your own dependencies here using go_repository.
@@ -117,7 +125,7 @@ oci_pull(
     ],
     registry = "us-central1-docker.pkg.dev",
     repository = "canbiocin-474014/canbiocin-dev/my-certs",
-    tag = "latest"
+    tag = "latest",
 )
 
 _envoy_version = "v1.29.2"
@@ -146,25 +154,24 @@ http_archive(
 # Update the SHA and VERSION to the lastest version available here:
 # https://github.com/bazelbuild/rules_python/releases.
 
-SHA="4912ced70dc1a2a8e4b86cec233b192ca053e82bc72d877b98e126156e8f228d"
+SHA = "4912ced70dc1a2a8e4b86cec233b192ca053e82bc72d877b98e126156e8f228d"
 
-VERSION="0.32.2"
+VERSION = "0.32.2"
 
 http_archive(
     name = "rules_python",
     sha256 = SHA,
     strip_prefix = "rules_python-{}".format(VERSION),
-    url = "https://github.com/bazelbuild/rules_python/releases/download/{}/rules_python-{}.tar.gz".format(VERSION,VERSION),
+    url = "https://github.com/bazelbuild/rules_python/releases/download/{}/rules_python-{}.tar.gz".format(VERSION, VERSION),
 )
 
-load("@rules_python//python:repositories.bzl", "py_repositories")
+load("@rules_python//python:repositories.bzl", "py_repositories", "python_register_toolchains")
 
 py_repositories()
 
-load("@rules_python//python:repositories.bzl", "python_register_toolchains")
+PYTHON_MAJOR_VERSION = "3"
 
-PYTHON_MAJOR_VERSION="3"
-PYTHON_MINOR_VERSION="12"
+PYTHON_MINOR_VERSION = "12"
 
 python_register_toolchains(
     name = "python_{}_{}".format(PYTHON_MAJOR_VERSION, PYTHON_MINOR_VERSION),
@@ -174,13 +181,12 @@ python_register_toolchains(
 )
 
 load("@python_3_12//:defs.bzl", "interpreter")
-
 load("@rules_python//python:pip.bzl", "pip_parse")
 
 pip_parse(
     name = "pip_deps",
     python_interpreter_target = interpreter,
-    requirements_lock = "//ml_python:requirements_lock.txt"
+    requirements_lock = "//ml_python:requirements_lock.txt",
 )
 
 load("@pip_deps//:requirements.bzl", "install_deps")

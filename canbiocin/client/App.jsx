@@ -6,7 +6,26 @@ const RecipeMixDialog = lazy(() =>  import('./RecipeMix'));
 const IngredientDialog = lazy(() =>  import('./Ingredient'));
 const TabLayout = lazy(() =>  import('./Tabs'));
 
+import { useAuth0 } from "@auth0/auth0-react";
+
+import Loading from "./Loading";
+import LoginButton from "./Login";
+
 export function App() {
+  const { user, isAuthenticated, isLoading, error } = useAuth0();
+
+  const useAuth = false
+
+  if (useAuth && isLoading) {
+    return ( <Loading /> )
+  }
+
+  if (useAuth && !isLoading && !isAuthenticated) {
+    return (
+      <LoginButton />
+    )
+  }
+
   return (
     <Router>
       <Suspense fallback={<div>Loading...</div>}>

@@ -52,6 +52,7 @@
     "@mui/x-date-pickers": "^8.5.0",
     "@connectrpc/connect-web": "^2.0.2",
     "@connectrpc/connect": "^2.0.2",
-    "prop-types": "^15.8.1"
+    "prop-types": "^15.8.1",
+    "@auth0/auth0-react": "^2.8.0"
   }
 }

@@ -44,6 +44,10 @@ module.exports = {
         issuer: /\.[jt]sx?$/,
         use: ['@svgr/webpack'],
       },
+      {
+        test: /\.(png|avif|jpg|jpeg)$/i,
+        type: 'asset/resource',
+      },
     ],
   },
   optimization: {
@@ -53,6 +57,6 @@ module.exports = {
   },
   // pass all js files through Babel
   resolve: {
-    extensions: ["*", ".js", ".jsx"],
+    extensions: ["*", ".js", ".jsx", ".avif"],
   },
 };

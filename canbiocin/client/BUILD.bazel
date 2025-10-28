@@ -30,12 +30,17 @@ webpack_bundle(
       "timestamp.js",
       "money.js",
       "logger.js",
+      "Loading.jsx",
+      "Login.jsx",
+      "Logout.jsx",
+      "Profile.jsx",
       "Ingredient.jsx",
       "Ingredients.jsx",
       "Formulations.jsx",
       "Formulation.jsx",
       "RecipeMix.jsx",
       "public/index.html",
+      "public/CanBiocinLogo.avif",
       "Tabs.jsx",
       "utils.js",
     ],
@@ -67,6 +72,7 @@ webpack_bundle(
         "//:node_modules/@mui/x-date-pickers",
         "//:node_modules/@mui/icons-material",
         "//:node_modules/prop-types",
+        "//:node_modules/@auth0/auth0-react",
     ],
 )
 
@@ -75,6 +81,7 @@ js_library(
     srcs = [
         "public/index.html",
     ],
+    data = glob(["public/*.avif"]),
     deps = [
         ":bundle",
     ],
