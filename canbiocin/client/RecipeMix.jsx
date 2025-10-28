@@ -298,9 +298,6 @@ const probioticColumns = (columnsToShow, currencyRate) => { return [
     valueGetter: (value, row) => {
       return row.desiredBCfuG
     },
-    valueFormatter: ({value}) => {
-      return value.toFixed(3)
-    },
     flex: 1,
     renderHeader: () => (
       <strong>{'Desired'}<br/>{'B CFU/g'}</strong>

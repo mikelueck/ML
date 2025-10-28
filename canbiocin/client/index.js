@@ -34,6 +34,7 @@ const theme = createTheme({
 
 const root = createRoot(document.getElementById('root'));
 
+/*
 root.render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
@@ -45,6 +46,14 @@ root.render(
         }}>
         <App/>
       </Auth0Provider>
+  </ThemeProvider>
+);
+*/
+
+root.render(
+  <ThemeProvider theme={theme}>
+    <CssBaseline />
+        <App/>
   </ThemeProvider>
 );
 
