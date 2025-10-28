@@ -11,7 +11,7 @@ import "google/protobuf/timestamp.proto";
 
 message ProbioticIngredient {
   string item = 1;
-  int32 cfu_g = 2; // * 10^6
+  double b_cfu_g = 3;
 }
 
 message PrebioticIngredient {
@@ -66,7 +66,7 @@ message Ingredient {
 
 message IngredientDetails {
     Ingredient ingredient = 1;
-    int32 desired_cfu_g = 9; // * 10^6
+    double desired_b_cfu_g = 13;
     double percent = 2;
     double perserving_mg = 3;
     double total_grams = 4;

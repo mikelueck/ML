@@ -28,7 +28,7 @@ func generateProbioticRow(
 	}
 	probiotic := probioticDoc.GetProto().(*pb.Probiotic)
 
-	percent := float64(item.GetCfuG()) / float64(probiotic.GetStockCfuG())
+	percent := float64(item.GetBCfuG()) / float64(probiotic.GetStockBCfuG())
 	perserving := float64(servingSizeGrams) * percent
 	overage_factor := (1 + float64(overagePercent)/100)
 	total := float64(grams) * percent * overage_factor
@@ -41,7 +41,7 @@ func generateProbioticRow(
 
 	row := &pb.IngredientDetails{
 		Ingredient:             &pb.Ingredient{Item: &pb.Ingredient_Probiotic{Probiotic: probiotic}},
-		DesiredCfuG:            item.GetCfuG(),
+		DesiredBCfuG:           item.GetBCfuG(),
 		Percent:                percent,
 		PerservingMg:           perserving * 1000.0,
 		TotalGrams:             total,
@@ -366,10 +366,10 @@ func PrintRow(row *pb.IngredientDetails) {
 	fmt.Printf("| %30s | %12s | %12s | %12s | %12s | %12s | %12s | %12s | %12s |\n", padding, padding, padding, padding, padding, padding, padding, padding, padding)
 
 	var name string
-	var stockCfu string
+	var stockBCfu string
 	if row.GetIngredient().GetProbiotic() != nil {
 		name = row.GetIngredient().GetProbiotic().GetStrain()
-		stockCfu = fmt.Sprintf("%v", row.GetIngredient().GetProbiotic().GetStockCfuG())
+		stockBCfu = fmt.Sprintf("%v", row.GetIngredient().GetProbiotic().GetStockBCfuG())
 	} else if row.GetIngredient().GetPrebiotic() != nil {
 		name = row.GetIngredient().GetPrebiotic().GetName()
 	} else if row.GetIngredient().GetPostbiotic() != nil {
@@ -381,7 +381,7 @@ func PrintRow(row *pb.IngredientDetails) {
 	}
 	fmt.Printf("| %30s | %12s | %12s | %12s | %12s | %12s | %12s | %12s | %12s | %12s |\n",
 		Shrink(name, 30),
-		stockCfu,
+		stockBCfu,
 		fmt.Sprintf("%v%%", RoundToPercision(row.GetPercent()*100, 5)),
 		fmt.Sprintf("%v", RoundToPercision(row.GetPerservingMg(), 5)),
 		fmt.Sprintf("%f", row.GetTotalGrams()/1000),

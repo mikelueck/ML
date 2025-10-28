@@ -193,14 +193,14 @@ func (p *RecipeParser) parseRecipe(ctx context.Context, row *xlsxreader.Row) err
 				if err != nil {
 					return err
 				}
-				desiredCfuG := int32(toobig / 1000000) // convert to MCFU/g
+				desiredBCfuG := float64(float64(toobig) / float64(1000000000)) // convert to BCFU/g
 
 				lookup, err := db.GetProbioticsCollection().QueryByName(ctx, ingredient)
 				if len(lookup) != 1 {
 					return fmt.Errorf("Tried to lookup %s but found %d entries\n", ingredient, len(lookup))
 				}
 
-				p.probiotics = append(p.probiotics, &pb.ProbioticIngredient{Item: lookup[0].GetID(), CfuG: desiredCfuG})
+				p.probiotics = append(p.probiotics, &pb.ProbioticIngredient{Item: lookup[0].GetID(), BCfuG: desiredBCfuG})
 			case (p.ingredientSection == "Prebiotics" ||
 				p.ingredientSection == "Postbiotics"):
 				mgServing, err := Float(row, p.columns["mgServing"])

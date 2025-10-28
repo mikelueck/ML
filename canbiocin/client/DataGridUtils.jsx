@@ -64,7 +64,7 @@ export function IngredientCellRender({params, itemGetter}) {
 
     if (item.case == "probiotic") {
       let cols = [{
-        field: "stockCfuG",
+        field: "stockBCfuG",
         headerName:"stock",
       },
       {
@@ -76,7 +76,7 @@ export function IngredientCellRender({params, itemGetter}) {
       data = {columns: cols,
               rows: [
                 {id: 1,
-                stockCfuG: value.stockCfuG + " M CFU/g", 
+                stockBCfuG: value.stockBCfuG + " B CFU/g", 
                 costKg: value.costKg ? moneyToString(value.costKg, 2) + " / kg" : ""
               }]}
     } else if (item.case == "prebiotic" || item.case == "postbiotic") {

@@ -79,7 +79,7 @@ func (p *ProbioticParser) parseIngredient(ctx context.Context, row *xlsxreader.R
 			if err != nil {
 				return err
 			}
-			stockCfuG := int32(toobig / 1000000) // convert to MCFU/g
+			stockBCfuG := float64(toobig / 1000000000) // convert to BCFU/g
 
 			c1, err := Money(row, p.columns["costKg"])
 			if err != nil {
@@ -102,7 +102,7 @@ func (p *ProbioticParser) parseIngredient(ctx context.Context, row *xlsxreader.R
 			ingredient := &pb.Probiotic{
 				Spp:                 p.spp,
 				Strain:              String(row, p.columns["strain"]),
-				StockCfuG:           stockCfuG,
+				StockBCfuG:          stockBCfuG,
 				CostKg:              c1,
 				CostShippingKg:      c2,
 				Supplier:            &pb.Supplier{Name: String(row, p.columns["supplier"])},

@@ -93,13 +93,13 @@ export default function () {
         </Link>
       ),
     },
-    { field: 'stockCfuG', 
-      headerName: 'Stock M CFU/g', 
+    { field: 'stockBCfuG', 
+      headerName: 'Stock B CFU/g', 
       editable: true,
       flex : 1.5,
       type: 'number',
       valueGetter: (value, row) => {
-        return getItemValue(row).stockCfuG;
+        return getItemValue(row).stockBCfuG;
       },
     },
     { field: 'costKg', 

@@ -291,16 +291,19 @@ const probioticColumns = (columnsToShow, currencyRate) => { return [
                                   return row.ingredient.item
                                 }}/>)
   },
-  { field: 'desiredCfuG', 
-    headerName: 'Desired M CFU/g', 
+  { field: 'desiredBCfuG', 
+    headerName: 'Desired B CFU/g', 
     align: 'center',
     headerAlign: 'center',
     valueGetter: (value, row) => {
-      return row.desiredCfuG
+      return row.desiredBCfuG
+    },
+    valueFormatter: ({value}) => {
+      return value.toFixed(3)
     },
     flex: 1,
     renderHeader: () => (
-      <strong>{'Desired'}<br/>{'M CFU/g'}</strong>
+      <strong>{'Desired'}<br/>{'B CFU/g'}</strong>
     ),
   },
   ...commonColumns(columnsToShow, currencyRate),
@@ -363,7 +366,7 @@ const computeTotals = (ingredients, rows) => {
   if (ingredients.length == 0) {
     return
   }
-  let desiredCfuG = 0;
+  let desiredBCfuG = 0;
   let percent = 0;
   let mgServing = 0;
   let totalGrams = 0;
@@ -374,7 +377,7 @@ const computeTotals = (ingredients, rows) => {
   let clientTotalCurrency = 0;
 
   ingredients.map((i) => {
-    desiredCfuG += i.desiredCfuG
+    desiredBCfuG += i.desiredBCfuG
     percent += i.percent
     mgServing += i.perservingMg
     totalGrams += i.totalGrams
@@ -389,7 +392,7 @@ const computeTotals = (ingredients, rows) => {
   {
   // This is mimicing the shape of a pb.IngredientDetails
   ingredient: {item: {value: {id: "Total", strain: "Total", name: "Total"}}},
-  desiredCfuG: desiredCfuG,
+  desiredBCfuG: desiredBCfuG,
   percent: percent,
   perservingMg: mgServing,
   totalGrams: totalGrams,

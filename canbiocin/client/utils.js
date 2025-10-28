@@ -74,11 +74,11 @@ export const verifyIngredient = (i, field, newValue) => {
 
   switch (type) {
     case 'probiotic':
-      let cfuG = i.cfuG;
-      if (field == "cfuG" && newValue) {
-        cfuG = newValue
+      let bCfuG = i.bCfuG;
+      if (field == "bCfuG" && newValue) {
+        bCfuG = newValue
       }
-      if ( i.item.value.stockCfuG < cfuG) {
+      if ( i.item.value.stockBCfuG < bCfuG) {
         return `Your desired CFU/g is too high for "${name}".`
       }
       break;

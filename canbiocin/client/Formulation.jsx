@@ -126,18 +126,18 @@ const probioticColumns = (editable, nameOptions) => {return [
     ),
     renderCell:(params) => (<IngredientCellRender params={params} />)
   },
-  { field: 'cfuG', 
-    headerName: 'Desired M CFU/g', 
+  { field: 'bCfuG', 
+    headerName: 'Desired B CFU/g', 
     editable: editable,
     valueGetter: (value, row) => {
-      return row.cfuG
+      return row.bCfuG
     },
-    preProcessEditCellProps: validateNumber('cfuG'),
+    preProcessEditCellProps: validateNumber('bCfuG'),
     renderEditCell: renderEditCell,
     flex: 1,
     type: 'number',
     renderHeader: () => (
-      <strong>{'Desired'}<br/>{'M CFU/g'}</strong>
+      <strong>{'Desired'}<br/>{'B CFU/g'}</strong>
     ),
   },
 ]};
@@ -287,7 +287,7 @@ function FormulationHelper({recipe, editable}) {
     let rows = recipe.probiotics;
     let multiplier = includeOverage ? (1 + recipe.probioticOveragePercent / 100) : 1;
     for (let i = 0; i < rows.length; i++) {
-      weight += (multiplier * rows[i].cfuG) / getItemValue(rows[i]).stockCfuG * servingSize;
+      weight += (multiplier * rows[i].bCfuG) / getItemValue(rows[i]).stockBCfuG * servingSize;
     }
 
     rows = recipe.prebiotics;

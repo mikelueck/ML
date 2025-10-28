@@ -42,7 +42,7 @@ const commonFields = {
 }
 
 const fieldsByType = {
-  "probiotic": {...commonFields, "spp": true, "strain": true, "stockCfuG": true, "notes": true},
+  "probiotic": {...commonFields, "spp": true, "strain": true, "stockBCfuG": true, "notes": true},
   "prebiotic": {...commonFields, "category": true, "name": true, "function": true, "notes": true},
   "postbiotic": {...commonFields, "name": true, "bagSizeKg": true, "function": true, "notes": true},
 }
@@ -119,7 +119,7 @@ function Ingredient({ingredientType, ingredient, editable, handleChange}) {
     </Grid>
     {/* Probiotics */}
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {MyNewFormItem({field:'stockCfuG', label: 'Stock M CFU/g', type:'number', units:'M CFU/g'})}
+      {MyNewFormItem({field:'stockBCfuG', label: 'Stock B CFU/g', type:'number', units:'B CFU/g'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
       {MyNewFormItem({field:'bagSizeKg', label: 'Bag Size (kg)', type:'number'})}

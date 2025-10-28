@@ -10,7 +10,7 @@ message Probiotic {
     string id = 1;
     string spp = 2;
     string strain = 3;
-    int32 stock_cfu_g = 4; // * 10^6
+    double stock_b_cfu_g = 9;
     Money cost_kg = 5;
     Money cost_shipping_kg = 6;
     Supplier supplier = 7;
