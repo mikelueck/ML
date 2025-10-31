@@ -25,6 +25,10 @@ import (
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
 
+var (
+	enforce_auth = flag.String("enforce_auth", true, "should auth be enforced")
+)
+
 func InitEnv() {
 	secret_list := []string{
 		"AUTH0_CLIENT_ID",
@@ -155,9 +159,13 @@ func main() {
 	ip, err := getOutboundIP()
 	log.Printf("Current IP Address: %s, Error: %v\n", ip.String(), err)
 
-	sopts := []grpc.ServerOption{
-		grpc.UnaryInterceptor(AuthInterceptor),
-	}
+	sopts := []grpc.ServerOption{}
+
+	if *enforce_auth {
+    sopts = []grpc.ServerOption{
+      grpc.UnaryInterceptor(AuthInterceptor),
+    }
+  }
 
 	s := grpc.NewServer(sopts...)
 	pb.RegisterCanbiocinServiceServer(s, &server{})
