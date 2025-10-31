@@ -14,7 +14,8 @@ import { IngredientCellRender } from './DataGridUtils';
 
 import { EditToolbar } from './DataGridEditToolbar';
 
-import { getGrpcClient } from './grpc.js';
+import { useGrpc } from './GrpcContext';
+import { scopes } from './scopes.js';
 
 import { Field } from './Field';
 
@@ -655,6 +656,7 @@ export default function () {
 
   const [errorOpen, setErrorOpen] = React.useState(false)
   const [error, setError] = React.useState("")
+  const { grpcRequest } = useGrpc();
 
   const handleErrorClose = () => {
     setErrorOpen(false)
@@ -972,7 +974,7 @@ export default function () {
       let isError = false
       setIsLoading(true);
       try {
-        const response = await getGrpcClient().listPackaging({});
+        const response = await grpcRequest("listPackaging", {});
         let packagingList = []
         let nameMap = new Map()
         for (let i = 0; i < response.packaging.length; i++) {
@@ -1025,11 +1027,11 @@ export default function () {
         try {
           recipe.packaging = packagingItems
           if (isAdd) {
-            const response = await getGrpcClient().createSavedRecipe({recipe: recipe});
+            const response = await grpcRequest("createSavedRecipe", {recipe: recipe});
             recipe.id = response.id
           } else {
             recipe.id = savedRecipeId
-            const response = await getGrpcClient().updateSavedRecipe({recipe: recipe});
+            const response = await grpcRequest("updateSavedRecipe", {recipe: recipe});
           }
         } catch (e) {
           isError = true
@@ -1066,7 +1068,7 @@ export default function () {
       if (isDeleting) {
         let isError = false
         try {
-            const response = await getGrpcClient().deleteSavedRecipe({savedRecipeId: savedRecipeId});
+            const response = await grpcRequest("deleteSavedRecipe", {savedRecipeId: savedRecipeId});
         } catch (e) {
           isError = true
           setError(e.message);
@@ -1093,12 +1095,12 @@ export default function () {
         // If we have a savedRecipeId we load it here
         if (editable || !recipe) {
           if (savedRecipeId && !editable) {
-            const response = await getGrpcClient().getSavedRecipe(
+            const response = await grpcRequest("getSavedRecipe",
                 {savedRecipeId: savedRecipeId});
             let r = response.recipe
             updateNewRecipeFields(r)
           } else if (containerSizeG > 0) {
-            const response = await getGrpcClient().calculateRecipe(
+            const response = await grpcRequest("calculateRecipe",
                 {recipeId: recipe && recipe.recipe.id ? recipe.recipe.id : recipeId, 
                  servingSizeGrams: servingGrams, 
                  totalGrams: totalGrams,
@@ -1122,6 +1124,12 @@ export default function () {
   }, [savedRecipeId, recipeId, editable, servingGrams, totalGrams, container, packagingItems, containerSizeG, targetMargin, currencyRate]);
 
   function SaveToolbar() {
+    const { hasScope } = useGrpc();
+
+    if (!hasScope(scopes.SAVE_RECIPE)) {
+      return ""
+    }
+    
     if (!editable) {
       return (<></>)
     }
@@ -1138,6 +1146,12 @@ export default function () {
   }
 
   function DeleteToolbar() {
+    const { hasScope } = useGrpc();
+
+    if (!hasScope(scopes.SAVE_RECIPE)) {
+      return ""
+    }
+
     if (editable) {
       return (<></>)
     }

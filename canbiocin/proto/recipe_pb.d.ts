@@ -27,9 +27,9 @@ export declare type ProbioticIngredient = Message<"ProbioticIngredient"> & {
   item: string;
 
   /**
-   * @generated from field: int32 cfu_g = 2;
+   * @generated from field: double b_cfu_g = 3;
    */
-  cfuG: number;
+  bCfuG: number;
 };
 
 /**
@@ -274,9 +274,9 @@ export declare type IngredientDetails = Message<"IngredientDetails"> & {
   ingredient?: Ingredient;
 
   /**
-   * @generated from field: int32 desired_cfu_g = 9;
+   * @generated from field: double desired_b_cfu_g = 13;
    */
-  desiredCfuG: number;
+  desiredBCfuG: number;
 
   /**
    * @generated from field: double percent = 2;

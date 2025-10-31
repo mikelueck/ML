@@ -33,9 +33,9 @@ export declare type Probiotic = Message<"Probiotic"> & {
   strain: string;
 
   /**
-   * @generated from field: int32 stock_cfu_g = 4;
+   * @generated from field: double stock_b_cfu_g = 9;
    */
-  stockCfuG: number;
+  stockBCfuG: number;
 
   /**
    * @generated from field: Money cost_kg = 5;

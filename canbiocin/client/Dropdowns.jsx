@@ -4,7 +4,8 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { timestampToDateTimeString } from './timestamp.js';
 
-import { getGrpcClient } from './grpc.js';
+import { useGrpc } from './GrpcContext';
+import { scopes } from './scopes.js';
 
 const FONT_SIZE=9;
 const WIDTH_PADDING=50;
@@ -66,6 +67,7 @@ const computeWidth = (v) => {
 export function SppDropdown({value, onChange}) {
   const [options, setOptions] = React.useState([]);
   const [v, setV] = React.useState(value);
+  const { grpcRequest, hasScope } = useGrpc();
 
   let id_prefix = "spp"
   let label = "Spp"
@@ -79,7 +81,7 @@ export function SppDropdown({value, onChange}) {
   React.useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const response = await getGrpcClient().listProbioticSpp({});
+        const response = await grpcRequest("listProbioticSpp", {});
         setOptions(response.spps)
       } catch (error) {
         console.log(error);
@@ -95,6 +97,10 @@ export function SppDropdown({value, onChange}) {
     }
     setV(newValue)
     updateWidth(newValue)
+  }
+
+  if (!hasScope(scopes.READ_INGREDIENT)) {
+    return ""
   }
 
   return (
@@ -117,6 +123,7 @@ export function SppDropdown({value, onChange}) {
 export function CategoryDropdown({value, onChange}) {
   const [options, setOptions] = React.useState([]);
   const [v, setV] = React.useState(value);
+  const { grpcRequest, hasScope } = useGrpc();
 
   let id_prefix = "category"
   let label = "Category"
@@ -130,7 +137,7 @@ export function CategoryDropdown({value, onChange}) {
   React.useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const response = await getGrpcClient().listPrebioticCategory({});
+        const response = await grpcRequest("listPrebioticCategory", {});
         setOptions(response.categories)
       } catch (error) {
         console.log(error);
@@ -146,6 +153,10 @@ export function CategoryDropdown({value, onChange}) {
     }
     setV(newValue)
     updateWidth(newValue)
+  }
+
+  if (!hasScope(scopes.READ_INGREDIENT)) {
+    return ""
   }
 
   return (
@@ -168,6 +179,7 @@ export function CategoryDropdown({value, onChange}) {
 export function ContainerDropdown({value, onChange}) {
   const [options, setOptions] = React.useState([]);
   const [v, setV] = React.useState(value);
+  const { grpcRequest, hasScope } = useGrpc();
 
   let id_prefix = "container"
   let label = "Container"
@@ -195,7 +207,7 @@ export function ContainerDropdown({value, onChange}) {
   React.useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const response = await getGrpcClient().listContainers({});
+        const response = await grpcRequest("listContainers", {});
         setOptions(response.containers)
       } catch (error) {
         console.log(error);
@@ -211,6 +223,10 @@ export function ContainerDropdown({value, onChange}) {
     }
     setV(newValue)
     updateWidth(newValue)
+  }
+
+  if (!hasScope(scopes.READ_OTHER)) {
+    return ""
   }
 
   return (
@@ -236,6 +252,7 @@ export function ContainerDropdown({value, onChange}) {
 export function SavedRecipeDropdown({recipeId, value, onChange}) {
   const [options, setOptions] = React.useState([]);
   const [v, setV] = React.useState(value);
+  const { grpcRequest, hasScope } = useGrpc();
 
   let id_prefix = "savedRecipe"
   let label = "Saved Formulations"
@@ -253,7 +270,7 @@ export function SavedRecipeDropdown({recipeId, value, onChange}) {
   React.useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const response = await getGrpcClient().listSavedRecipes({recipeId: recipeId});
+        const response = await grpcRequest("listSavedRecipes", {recipeId: recipeId});
         setOptions(response.recipes)
       } catch (error) {
         console.log(error);
@@ -276,6 +293,10 @@ export function SavedRecipeDropdown({recipeId, value, onChange}) {
         <>
         </>
     )
+  }
+
+  if (!hasScope(scopes.READ_RECIPE)) {
+    return ""
   }
 
   return (

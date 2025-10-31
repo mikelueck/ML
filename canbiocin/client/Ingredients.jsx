@@ -16,7 +16,7 @@ import { OptionDialog } from './Dialog';
 
 import { Link } from 'react-router';
 
-import { getGrpcClient } from './grpc.js';
+import { useGrpc } from './GrpcContext';
 
 import { DataGrid,
          GridRowModes,
@@ -41,6 +41,7 @@ function getRowId(row) {
 export default function () {
   const [isLoading, setIsLoading] = React.useState(true)
   const [rows, setRows] = React.useState([]);
+  const { grpcRequest } = useGrpc();
 
   const navigate = useNavigate();
 
@@ -54,7 +55,7 @@ export default function () {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await getGrpcClient().listIngredients({});
+        const response = await grpcRequest("listIngredients", {});
         setRows(response.ingredients);
       } catch (error) {
         //setError(error);

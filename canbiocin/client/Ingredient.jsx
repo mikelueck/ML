@@ -8,7 +8,7 @@ import { SppDropdown } from './Dropdowns';
 import { CategoryDropdown } from './Dropdowns';
 import { emptyIngredient } from './utils.js';
 
-import { getGrpcClient } from './grpc.js';
+import { useGrpc } from './GrpcContext';
 
 import { AppBar,
          Box, 
@@ -154,6 +154,7 @@ function Delete({ingredientId, ingredientType}) {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false)
   const [isDeleting, setIsDeleting] = React.useState(false)
   const navigate = useNavigate();
+  const { grpcRequest } = useGrpc();
 
   const handleDeleteClick = () => {
     setDeleteConfirmOpen(true);
@@ -171,7 +172,7 @@ function Delete({ingredientId, ingredientType}) {
       if (isDeleting) {
         let isError = false
         try {
-          const response = await getGrpcClient().deleteIngredient({id: ingredientId, type: ingredientType});
+          const response = await grpcRequest("deleteIngredient", {id: ingredientId, type: ingredientType});
         } catch (e) {
           isError = true
           setError(e.message);
@@ -279,12 +280,12 @@ export default function () {
         let isError = false
         try {
           if (isAdd) {
-            const response = await getGrpcClient().createIngredient({ingredient: updatedIngredient});
+            const response = await grpcRequest("createIngredient", {ingredient: updatedIngredient});
             setIngredientId(response.id)
             navigate(`/ingredient?type=${ingredientType}&ingredientId=${response.id}`, { replace: true });
             setIsAdd(false)
           } else {
-            const response = await getGrpcClient().updateIngredient({ingredient: updatedIngredient});
+            const response = await grpcRequest("updateIngredient", {ingredient: updatedIngredient});
           }
         } catch (e) {
           isError = true
@@ -323,7 +324,7 @@ export default function () {
       }
       setIsLoading(true);
       try {
-        const response = await getGrpcClient().getIngredient({type: ingredientType, id: ingredientId});
+        const response = await grpcRequest("getIngredient", {type: ingredientType, id: ingredientId});
         let i = response.ingredient
 
         setIngredient(i);

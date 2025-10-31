@@ -11,6 +11,9 @@ import { Box,
 const Ingredients = lazy(() => import('./Ingredients'));
 const Formulations = lazy(() => import('./Formulations'));
 
+import { useGrpc } from './GrpcContext';
+import { scopes } from './scopes.js';
+
 function CustomTabPanel(props) {
   const { children, value, index, ... other } = props
 
@@ -55,6 +58,7 @@ function getTabFromHash(hash) {
 
 export default function () {
   const [value, setValue] = React.useState(getTabFromHash(window.location.hash));
+  const { hasScope } = useGrpc();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -65,8 +69,8 @@ export default function () {
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Formulations" {...a11yProps(0)} />
-          <Tab label="Ingredients" {...a11yProps(1)} />
+          {hasScope(scopes.READ_RECIPE) ? <Tab label="Formulations" {...a11yProps(0)} /> : "" }
+          {hasScope(scopes.READ_INGREDIENT) ? <Tab label="Ingredients" {...a11yProps(1)} /> : "" }
           <Tab label="Suppliers" {...a11yProps(2)} />
         </Tabs>
       </Box>

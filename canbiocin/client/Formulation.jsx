@@ -16,7 +16,8 @@ import { valueToPrecision } from './utils.js';
 import { styled } from '@mui/material/styles';
 import { SavedRecipeDropdown } from './Dropdowns';
 
-import { getGrpcClient } from './grpc.js';
+import { useGrpc } from './GrpcContext';
+import { scopes } from './scopes.js';
 
 import { Field } from './Field';
 
@@ -494,6 +495,7 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
 function Delete({recipeId, setError, setErrorOpen}) {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false)
   const [isDeleting, setIsDeleting] = React.useState(false)
+  const { grpcRequest, hasScope } = useGrpc();
 
   const navigate = useNavigate();
 
@@ -502,7 +504,7 @@ function Delete({recipeId, setError, setErrorOpen}) {
       if (isDeleting) {
         let isError = false
         try {
-          const response = await getGrpcClient().deleteRecipe({id: recipeId});
+          const response = await grpcRequest("deleteRecipe", {id: recipeId});
         } catch (e) {
           isError = true
           setError(e.message);
@@ -532,6 +534,10 @@ function Delete({recipeId, setError, setErrorOpen}) {
 
   const handleDeleteConfirmClose = () => {
     setDeleteConfirmOpen(false);
+  }
+
+  if (!hasScope(scopes.DEL_RECIPE)) {
+    return ""
   }
 
   return (
@@ -570,6 +576,7 @@ export default function () {
 
   const [ingredientsByType, setIngredientsByType] = React.useState(new Map());
   const [ingredientsByName, setIngredientsByName] = React.useState(new Map());
+  const { grpcRequest, hasScope } = useGrpc();
 
   React.useEffect(() => {
     const triggerAddEdit = async () => {
@@ -585,7 +592,7 @@ export default function () {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await getGrpcClient().listIngredients({});
+        const response = await grpcRequest("listIngredients", {});
         let typeMap = new Map()
         let nameMap = new Map()
         for (let i = 0; i < response.ingredients.length; i++) {
@@ -885,7 +892,7 @@ export default function () {
       }
       setIsLoading(true);
       try {
-        const response = await getGrpcClient().getRecipe({id: recipeId});
+        const response = await grpcRequest("getRecipe", {id: recipeId});
         let r = response.recipe
 
         // replace all the "items" with their full specification
@@ -1006,12 +1013,12 @@ export default function () {
           }
           
           if (isAdd) {
-            const response = await getGrpcClient().createRecipe({recipe: clone});
+            const response = await grpcRequest("createRecipe", {recipe: clone});
             setRecipeId(response.id)
             navigate(`/recipe?&recipeId=${response.id}`, { replace: true });
             setIsAdd(false)
           } else {
-            const response = await getGrpcClient().updateRecipe({recipe: clone});
+            const response = await grpcRequest("updateRecipe", {recipe: clone});
           }
         } catch (e) {
           isError = true
@@ -1060,22 +1067,24 @@ export default function () {
           <CloseIcon />
         </IconButton>
         <Box sx={{ flexGrow: 1}} />
-        <IconButton
-          edge="end"
-          color="inherit"
-          onClick={editable ? handleCancelRecipe : handleCreateRecipe}
-          aria-label={editable ? "cancel" : "mix"}
-        >
-        {editable ? <CancelIcon /> : <BlenderIcon />}
-        </IconButton>
-        <IconButton
-          edge="end"
-          color="inherit"
-          onClick={editable ? handleSaveClick() : handleEditClick() }
-          aria-label={editable ? "save" : "edit"}
-        >
-          {editable ? <SaveIcon /> : <EditIcon />}
-        </IconButton>
+        {hasScope(scopes.SAVE_RECIPE) ?
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={editable ? handleCancelRecipe : handleCreateRecipe}
+              aria-label={editable ? "cancel" : "mix"}
+            >
+              {editable ? <CancelIcon /> : <BlenderIcon />}
+            </IconButton> : "" }
+        {hasScope(scopes.WRITE_RECIPE) ?
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={editable ? handleSaveClick() : handleEditClick() }
+              aria-label={editable ? "save" : "edit"}
+            >
+              {editable ? <SaveIcon /> : <EditIcon />}
+            </IconButton> : "" }
         <Delete recipeId={recipeId} setError={setError} setErrorOpen={setErrorOpen}/>
         <AlertDialog
           title="Error"

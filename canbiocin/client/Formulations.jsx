@@ -19,7 +19,8 @@ import { Link } from 'react-router';
 
 import { FormulationDialog } from './Formulation';
 
-import { getGrpcClient } from './grpc.js';
+import { useGrpc } from './GrpcContext';
+import { scopes } from './scopes.js';
 
 import { DataGrid,
          GridRowModes,
@@ -39,6 +40,7 @@ function IngredientFilterSelect({changeFilterValue, ingredientFilter}) {
   const [isLoading, setIsLoading] = React.useState(false)
   const [ingredients, setIngredients] = React.useState([]);
   const [value, setValue] = React.useState(ingredientFilter);
+  const { grpcRequest, hasScope } = useGrpc();
 
   const handleFilterChange = (event, newValue) => {
     let value = ""
@@ -53,7 +55,7 @@ function IngredientFilterSelect({changeFilterValue, ingredientFilter}) {
     const fetchIngredients = async () => {
       setIsLoading(true);
       try {
-        const response = await getGrpcClient().listIngredients({});
+        const response = await grpcRequest("listIngredients", {});
         response.ingredients.sort((a, b) => {
           if (a && b) {
             let compare = -b.item.case.localeCompare(a.item.case)
@@ -105,6 +107,9 @@ function IngredientFilterSelect({changeFilterValue, ingredientFilter}) {
     }
     return ""
   }
+  if (!hasScope(scopes.READ_INGREDIENT)) {
+    return ""
+  }
 
   return (
     <>
@@ -131,6 +136,7 @@ export default function () {
   const [isLoading, setIsLoading] = React.useState(true)
   const [rows, setRows] = React.useState([]);
   const [ingredientFilter, setIngredientFilter] = React.useState("");
+  const { grpcRequest, hasScope } = useGrpc();
 
   const handleFilterChange = (value) => {
     setIngredientFilter(value)
@@ -146,7 +152,7 @@ export default function () {
     const fetchRecipes = async () => {
       setIsLoading(true);
       try {
-        const response = await getGrpcClient().listRecipes({ingredientId: ingredientFilter });
+        const response = await grpcRequest("listRecipes", {ingredientId: ingredientFilter });
         setRows(response.recipes);
       } catch (error) {
         //setError(error);
@@ -187,9 +193,9 @@ export default function () {
   return (
     <>
     <Box sx={{ m:1 }}>
-    <IngredientFilterSelect
-      changeFilterValue={handleFilterChange}
-      ingredientFilter={ingredientFilter} />
+      <IngredientFilterSelect
+        changeFilterValue={handleFilterChange}
+        ingredientFilter={ingredientFilter} />
     </Box>
     <Box sx={{ height: 800, width: '100%' }}>
       <DataGrid
@@ -210,12 +216,13 @@ export default function () {
         pageSizeOptions={[20]}
       />
     </Box>
-    <Fab 
-      color='primary' 
-      sx={{position:'absolute', bottom: 16, right: 16,}}
-      onClick={onClickAdd}>
-      <AddIcon />
-    </Fab>
+    {hasScope(scopes.WRITE_RECIPE) ?
+      <Fab 
+        color='primary' 
+        sx={{position:'absolute', bottom: 16, right: 16,}}
+        onClick={onClickAdd}>
+        <AddIcon />
+      </Fab> : "" }
     </>
   )
 }

@@ -14,6 +14,12 @@ def go_dependencies():
         version = "v0.0.0-20200229204646-b08ebf1105e0",
     )
     go_repository(
+        name = "com_github_auth0_go_jwt_middleware_v2",
+        importpath = "github.com/auth0/go-jwt-middleware/v2",
+        sum = "h1:4QREj6cS3d8dS05bEm443jhnqQF97FX9sMBeWqnNRzE=",
+        version = "v2.3.0",
+    )
+    go_repository(
         name = "com_github_boj_redistore",
         importpath = "github.com/boj/redistore",
         sum = "h1:RmdPFa+slIr4SCBg4st/l/vZWVe9QJKMXGO60Bxbe04=",
@@ -204,6 +210,12 @@ def go_dependencies():
         importpath = "github.com/golang/groupcache",
         sum = "h1:oI5xCqsCo564l8iNU+DwB5epxmsaqB+rhGL0m5jtYqE=",
         version = "v0.0.0-20210331224755-41bb18bfe9da",
+    )
+    go_repository(
+        name = "com_github_golang_jwt_jwt_v5",
+        importpath = "github.com/golang-jwt/jwt/v5",
+        sum = "h1:pv4AsKCKKZuqlgs5sUmn4x8UlGa0kEVt/puTpKx9vvo=",
+        version = "v5.3.0",
     )
     go_repository(
         name = "com_github_golang_mock",
@@ -1239,6 +1251,12 @@ def go_dependencies():
         importpath = "gopkg.in/check.v1",
         sum = "h1:Hei/4ADfdWqJk1ZMxUNpqntNwaWcugrBjAiHlqqRiVk=",
         version = "v1.0.0-20201130134442-10cb98267c6c",
+    )
+    go_repository(
+        name = "in_gopkg_go_jose_go_jose_v2",
+        importpath = "gopkg.in/go-jose/go-jose.v2",
+        sum = "h1:nt80fvSDlhKWQgSWyHyy5CfmlQr+asih51R8PTWNKKs=",
+        version = "v2.6.3",
     )
     go_repository(
         name = "in_gopkg_yaml_v2",

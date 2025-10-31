@@ -14,7 +14,7 @@ import LoginButton from "./Login";
 export function App() {
   const { user, isAuthenticated, isLoading, error } = useAuth0();
 
-  const useAuth = false
+  const useAuth = true
 
   if (useAuth && isLoading) {
     return ( <Loading /> )
