@@ -15,7 +15,8 @@ const timestamp = require('@bufbuild/protobuf/wkt')
 
 import { App } from './App';
 
-import { Auth0Provider } from '@auth0/auth0-react';
+import { Auth0Provider } from './auth.js';
+
 import { GrpcProvider } from './GrpcContext';
 import { allScopes } from './scopes.js';
 

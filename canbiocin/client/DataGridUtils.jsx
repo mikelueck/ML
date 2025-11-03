@@ -16,6 +16,9 @@ function NestedDataGrid({ data }) {
     slots={{
       columnHeaders: () => null,
     }}
+    autosizeOptions={{
+      includeHeaders: false,
+    }}
     sx={{
       '.MuiDataGrid-filler': {
         display: 'none',

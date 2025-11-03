@@ -19,6 +19,7 @@ webpack_bundle(
     name = "bundle",
     srcs = [
       ".babelrc",
+      "auth.js",
       "App.jsx",
       "DataGridEditToolbar.jsx",
       "DataGridUtils.jsx",
@@ -30,6 +31,7 @@ webpack_bundle(
       "GrpcContext.jsx",
       "timestamp.js",
       "money.js",
+      "mockAuth0.js",
       "logger.js",
       "Loading.jsx",
       "Login.jsx",

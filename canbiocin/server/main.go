@@ -26,7 +26,7 @@ import (
 )
 
 var (
-	enforce_auth = flag.String("enforce_auth", true, "should auth be enforced")
+	enforce_auth = flag.Bool("enforce_auth", false, "should auth be enforced")
 )
 
 func InitEnv() {

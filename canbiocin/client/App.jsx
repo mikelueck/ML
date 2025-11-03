@@ -6,7 +6,7 @@ const RecipeMixDialog = lazy(() =>  import('./RecipeMix'));
 const IngredientDialog = lazy(() =>  import('./Ingredient'));
 const TabLayout = lazy(() =>  import('./Tabs'));
 
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "./auth.js"
 
 import Loading from "./Loading";
 import LoginButton from "./Login";

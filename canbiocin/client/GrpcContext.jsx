@@ -4,7 +4,7 @@ import { createClient } from "@connectrpc/connect"
 import { createGrpcWebTransport } from "@connectrpc/connect-web"
 import { CanbiocinService } from "../proto/service_pb.js";
 
-import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import { useAuth0, requiresAuth } from "./auth.js";
 
 import { getGrpcClient } from './grpc.js';
 import { scope } from './scopes.js';
@@ -41,27 +41,35 @@ export function GrpcProvider({children}) {
   }, [token])
 
   const getToken = async (s) => {
-    const t = await getAccessTokenSilently({ 
-      ignoreCache: true,
-      authorizationParams: {
-        audience: "canbiocin",
-      },
-    });
-    if (token != t) {
-      setToken(t)
+    if (requiresAuth) {
+      const t = await getAccessTokenSilently({ 
+        ignoreCache: true,
+        authorizationParams: {
+          audience: "canbiocin",
+        },
+      });
+      if (token != t) {
+        setToken(t)
+      }
+      return t
     }
-    return t
+    return ""
   }
 
   const hasScope = (requiredScope) => {
-    return scopes.has(requiredScope)
+    if (requiresAuth) {
+      return scopes.has(requiredScope)
+    }
+    return true
   }
 
   const callApi = async (method, req) => {
-    const token = await getToken(scope(method))
+    let headers = new Headers();
+    if (requiresAuth) {
+      const token = await getToken(scope(method))
 
-    const headers = new Headers();
-    headers.set("Authorization", `Bearer ${token}`);
+      headers.set("Authorization", `Bearer ${token}`);
+    }
 
     return await getGrpcClient()[method](req, {headers: headers})
   }
