@@ -25,10 +25,6 @@ import (
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
 
-var (
-	enforce_auth = flag.Bool("enforce_auth", false, "should auth be enforced")
-)
-
 func InitEnv() {
 	secret_list := []string{
 		"AUTH0_CLIENT_ID",
@@ -49,25 +45,6 @@ func InitEnv() {
 
 type CustomClaims struct {
 	Scope string `json:"scope"`
-}
-
-// Validate does nothing for this example, but we need
-// it to satisfy validator.CustomClaims interface.
-func (c CustomClaims) Validate(ctx context.Context) error {
-	log.Printf("Scopes: %v\n", c.Scope)
-	return nil
-}
-
-// HasScope checks whether our claims have a specific scope.
-func (c CustomClaims) HasScope(expectedScope string) bool {
-	result := strings.Split(c.Scope, " ")
-	for i := range result {
-		if result[i] == expectedScope {
-			return true
-		}
-	}
-
-	return false
 }
 
 func verifyToken(ctx context.Context, tokenString string) (*validator.ValidatedClaims, error) {
@@ -134,7 +111,7 @@ func AuthInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServe
 	}
 
 	// 4. Authentication successful, proceed with the RPC call
-	ctx = context.WithValue(ctx, "claims", claims)
+	ctx = context.WithValue(ctx, CLAIMS_CTX, claims)
 
 	// Call the next handler in the chain (which is our SayHello implementation)
 	return handler(ctx, req)

@@ -24,6 +24,12 @@ type server struct{}
 func (s *server) CreateIngredient(ctx context.Context, req *pb.CreateIngredientRequest) (*pb.CreateIngredientResponse, error) {
 	var err error
 	var id string
+
+  err = checkClaimsForMethod(ctx, "CreateIngredient")
+  if err != nil {
+    return nil, err
+  }
+
 	if req.GetIngredient().GetProbiotic() != nil {
 		id, err = db.GetProbioticsCollection().Create(ctx, req.GetIngredient().GetProbiotic())
 	}
@@ -42,6 +48,12 @@ func (s *server) CreateIngredient(ctx context.Context, req *pb.CreateIngredientR
 func (s *server) GetIngredient(ctx context.Context, req *pb.GetIngredientRequest) (*pb.GetIngredientResponse, error) {
 	var reterr error
 	var i *pb.Ingredient
+
+  err := checkClaimsForMethod(ctx, "GetIngredient")
+  if err != nil {
+    return nil, err
+  }
+
 	if req.GetType() == "probiotic" {
 		doc, err := db.GetProbioticsCollection().Get(ctx, req.GetId())
 		if err == nil {
@@ -74,6 +86,12 @@ func (s *server) GetIngredient(ctx context.Context, req *pb.GetIngredientRequest
 
 func (s *server) UpdateIngredient(ctx context.Context, req *pb.UpdateIngredientRequest) (*pb.UpdateIngredientResponse, error) {
 	var err error
+
+  err = checkClaimsForMethod(ctx, "UpdateIngredient")
+  if err != nil {
+    return nil, err
+  }
+
 	if req.GetIngredient().GetProbiotic() != nil {
 		err = db.GetProbioticsCollection().Update(ctx, req.GetIngredient().GetProbiotic())
 	}
@@ -91,6 +109,12 @@ func (s *server) UpdateIngredient(ctx context.Context, req *pb.UpdateIngredientR
 
 func (s *server) DeleteIngredient(ctx context.Context, req *pb.DeleteIngredientRequest) (*pb.DeleteIngredientResponse, error) {
 	var err error
+
+  err = checkClaimsForMethod(ctx, "DeleteIngredient")
+  if err != nil {
+    return nil, err
+  }
+
 	recipes, err := db.GetRecipesCollection().QueryByIngredient(ctx, req.GetId())
 	if err == nil && len(recipes) == 0 {
 		if req.GetType() == "probiotic" {
@@ -113,6 +137,12 @@ func (s *server) DeleteIngredient(ctx context.Context, req *pb.DeleteIngredientR
 }
 
 func (s *server) ListIngredients(ctx context.Context, req *pb.ListIngredientsRequest) (*pb.ListIngredientsResponse, error) {
+
+  err := checkClaimsForMethod(ctx, "ListIngredients")
+  if err != nil {
+    return nil, err
+  }
+
 	ingredients := []*pb.Ingredient{}
 
 	probioticsList, err := db.GetProbioticsCollection().List(ctx)
@@ -155,16 +185,31 @@ func (s *server) ListIngredients(ctx context.Context, req *pb.ListIngredientsReq
 }
 
 func (s *server) ListProbioticSpp(ctx context.Context, req *pb.ListProbioticSppRequest) (*pb.ListProbioticSppResponse, error) {
+  err := checkClaimsForMethod(ctx, "ListProbioticSpp")
+  if err != nil {
+    return nil, err
+  }
+
 	spp, err := db.GetProbioticsCollection().GetSppList(ctx)
 	return &pb.ListProbioticSppResponse{Spps: spp}, err
 }
 
 func (s *server) ListPrebioticCategory(ctx context.Context, req *pb.ListPrebioticCategoryRequest) (*pb.ListPrebioticCategoryResponse, error) {
+  err := checkClaimsForMethod(ctx, "ListPrebioticCategory")
+  if err != nil {
+    return nil, err
+  }
+
 	category, err := db.GetPrebioticsCollection().GetCategoryList(ctx)
 	return &pb.ListPrebioticCategoryResponse{Categories: category}, err
 }
 
 func (s *server) CreateRecipe(ctx context.Context, req *pb.CreateRecipeRequest) (*pb.CreateRecipeResponse, error) {
+  err := checkClaimsForMethod(ctx, "CreateRecipe")
+  if err != nil {
+    return nil, err
+  }
+
 	id, err := db.GetRecipesCollection().Create(ctx, req.GetRecipe())
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
@@ -173,6 +218,11 @@ func (s *server) CreateRecipe(ctx context.Context, req *pb.CreateRecipeRequest) 
 }
 
 func (s *server) GetRecipe(ctx context.Context, req *pb.GetRecipeRequest) (*pb.GetRecipeResponse, error) {
+  err := checkClaimsForMethod(ctx, "GetRecipe")
+  if err != nil {
+    return nil, err
+  }
+
 	r, err := db.GetRecipesCollection().Get(ctx, req.GetId())
 	if err != nil {
 		return nil, status.Error(codes.NotFound, err.Error())
@@ -211,7 +261,12 @@ func (s *server) GetRecipe(ctx context.Context, req *pb.GetRecipeRequest) (*pb.G
 }
 
 func (s *server) UpdateRecipe(ctx context.Context, req *pb.UpdateRecipeRequest) (*pb.UpdateRecipeResponse, error) {
-	err := db.GetRecipesCollection().Update(ctx, req.GetRecipe())
+  err := checkClaimsForMethod(ctx, "UpdateRecipe")
+  if err != nil {
+    return nil, err
+  }
+
+	err = db.GetRecipesCollection().Update(ctx, req.GetRecipe())
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
 	}
@@ -221,6 +276,12 @@ func (s *server) UpdateRecipe(ctx context.Context, req *pb.UpdateRecipeRequest) 
 func (s *server) ListRecipes(ctx context.Context, req *pb.ListRecipesRequest) (*pb.ListRecipesResponse, error) {
 	var recipeList []*db.RecipeDoc
 	var err error
+
+  err = checkClaimsForMethod(ctx, "ListRecipes")
+  if err != nil {
+    return nil, err
+  }
+
 	if req.GetIngredientId() == "" {
 		recipeList, err = db.GetRecipesCollection().List(ctx)
 	} else {
@@ -242,7 +303,12 @@ func (s *server) ListRecipes(ctx context.Context, req *pb.ListRecipesRequest) (*
 }
 
 func (s *server) DeleteRecipe(ctx context.Context, req *pb.DeleteRecipeRequest) (*pb.DeleteRecipeResponse, error) {
-	err := db.GetRecipesCollection().Delete(ctx, req.GetId())
+  err := checkClaimsForMethod(ctx, "DeleteRecipe")
+  if err != nil {
+    return nil, err
+  }
+
+	err = db.GetRecipesCollection().Delete(ctx, req.GetId())
 
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
@@ -252,6 +318,11 @@ func (s *server) DeleteRecipe(ctx context.Context, req *pb.DeleteRecipeRequest) 
 }
 
 func (s *server) CalculateRecipe(ctx context.Context, req *pb.CalculateRecipeRequest) (*pb.CalculateRecipeResponse, error) {
+  err := checkClaimsForMethod(ctx, "CalculateRecipe")
+  if err != nil {
+    return nil, err
+  }
+
 	recipe, err := db.GetRecipesCollection().Get(ctx, req.GetRecipeId())
 	if err != nil {
 		return nil, status.Error(codes.NotFound, err.Error())
@@ -276,6 +347,12 @@ func (s *server) CalculateRecipe(ctx context.Context, req *pb.CalculateRecipeReq
 func (s *server) CreateContainer(ctx context.Context, req *pb.CreateContainerRequest) (*pb.CreateContainerResponse, error) {
 	var err error
 	var id string
+
+  err = checkClaimsForMethod(ctx, "CreateContainer")
+  if err != nil {
+    return nil, err
+  }
+
 	id, err = db.GetContainersCollection().Create(ctx, req.GetContainer())
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
@@ -284,7 +361,13 @@ func (s *server) CreateContainer(ctx context.Context, req *pb.CreateContainerReq
 }
 
 func (s *server) DeleteContainer(ctx context.Context, req *pb.DeleteContainerRequest) (*pb.DeleteContainerResponse, error) {
-	err := db.GetContainersCollection().Delete(ctx, req.GetId())
+
+  err := checkClaimsForMethod(ctx, "DeleteContainer")
+  if err != nil {
+    return nil, err
+  }
+
+	err = db.GetContainersCollection().Delete(ctx, req.GetId())
 
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
@@ -294,7 +377,12 @@ func (s *server) DeleteContainer(ctx context.Context, req *pb.DeleteContainerReq
 }
 
 func (s *server) UpdateContainer(ctx context.Context, req *pb.UpdateContainerRequest) (*pb.UpdateContainerResponse, error) {
-	err := db.GetContainersCollection().Update(ctx, req.GetContainer())
+  err := checkClaimsForMethod(ctx, "UpdateContainer")
+  if err != nil {
+    return nil, err
+  }
+
+	err = db.GetContainersCollection().Update(ctx, req.GetContainer())
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
 	}
@@ -304,6 +392,12 @@ func (s *server) UpdateContainer(ctx context.Context, req *pb.UpdateContainerReq
 func (s *server) ListContainers(ctx context.Context, req *pb.ListContainersRequest) (*pb.ListContainersResponse, error) {
 	var containerList []*db.ContainerDoc
 	var err error
+
+  err = checkClaimsForMethod(ctx, "ListContainers")
+  if err != nil {
+    return nil, err
+  }
+
 	containerList, err = db.GetContainersCollection().List(ctx)
 	containers := []*pb.Container{}
 	if err != nil {
@@ -321,6 +415,11 @@ func (s *server) ListContainers(ctx context.Context, req *pb.ListContainersReque
 }
 
 func (s *server) CreateSavedRecipe(ctx context.Context, req *pb.CreateSavedRecipeRequest) (*pb.CreateSavedRecipeResponse, error) {
+  err := checkClaimsForMethod(ctx, "CreateSavedRecipe")
+  if err != nil {
+    return nil, err
+  }
+
 	recipe := req.GetRecipe()
 	t, _ := ptypes.TimestampProto(time.Now())
 	recipe.Time = t
@@ -335,6 +434,11 @@ func (s *server) CreateSavedRecipe(ctx context.Context, req *pb.CreateSavedRecip
 }
 
 func (s *server) GetSavedRecipe(ctx context.Context, req *pb.GetSavedRecipeRequest) (*pb.GetSavedRecipeResponse, error) {
+  err := checkClaimsForMethod(ctx, "GetSavedRecipe")
+  if err != nil {
+    return nil, err
+  }
+
 	r, err := db.GetSavedRecipesCollection().Get(ctx, req.GetSavedRecipeId())
 	if err != nil {
 		return nil, status.Error(codes.NotFound, err.Error())
@@ -346,10 +450,15 @@ func (s *server) GetSavedRecipe(ctx context.Context, req *pb.GetSavedRecipeReque
 }
 
 func (s *server) UpdateSavedRecipe(ctx context.Context, req *pb.UpdateSavedRecipeRequest) (*pb.UpdateSavedRecipeResponse, error) {
+  err := checkClaimsForMethod(ctx, "UpdateSavedRecipe")
+  if err != nil {
+    return nil, err
+  }
+
 	recipe := req.GetRecipe()
 	t, _ := ptypes.TimestampProto(time.Now())
 	recipe.Time = t
-	err := db.GetSavedRecipesCollection().Update(ctx, recipe)
+	err = db.GetSavedRecipesCollection().Update(ctx, recipe)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
 	}
@@ -361,6 +470,12 @@ func (s *server) UpdateSavedRecipe(ctx context.Context, req *pb.UpdateSavedRecip
 func (s *server) ListSavedRecipes(ctx context.Context, req *pb.ListSavedRecipesRequest) (*pb.ListSavedRecipesResponse, error) {
 	var recipeList []*db.SavedRecipeDoc
 	var err error
+
+  err = checkClaimsForMethod(ctx, "ListSavedRecipes")
+  if err != nil {
+    return nil, err
+  }
+
 	if req.GetRecipeId() == "" {
 		recipeList, err = db.GetSavedRecipesCollection().List(ctx)
 	} else {
@@ -383,6 +498,12 @@ func (s *server) ListSavedRecipes(ctx context.Context, req *pb.ListSavedRecipesR
 
 func (s *server) DeleteSavedRecipe(ctx context.Context, req *pb.DeleteSavedRecipeRequest) (*pb.DeleteSavedRecipeResponse, error) {
 	var err error = nil
+
+  err = checkClaimsForMethod(ctx, "DeleteSavedRecipe")
+  if err != nil {
+    return nil, err
+  }
+
 	if req.GetSavedRecipeId() != "" {
 		err = db.GetSavedRecipesCollection().Delete(ctx, req.GetSavedRecipeId())
 	} else if req.GetRecipeId() != "" {
@@ -399,6 +520,12 @@ func (s *server) DeleteSavedRecipe(ctx context.Context, req *pb.DeleteSavedRecip
 func (s *server) CreatePackaging(ctx context.Context, req *pb.CreatePackagingRequest) (*pb.CreatePackagingResponse, error) {
 	var err error
 	var id string
+
+  err = checkClaimsForMethod(ctx, "CreatePackaging")
+  if err != nil {
+    return nil, err
+  }
+
 	id, err = db.GetPackagingCollection().Create(ctx, req.GetPackaging())
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
@@ -407,7 +534,12 @@ func (s *server) CreatePackaging(ctx context.Context, req *pb.CreatePackagingReq
 }
 
 func (s *server) DeletePackaging(ctx context.Context, req *pb.DeletePackagingRequest) (*pb.DeletePackagingResponse, error) {
-	err := db.GetPackagingCollection().Delete(ctx, req.GetId())
+  err := checkClaimsForMethod(ctx, "DeletePackaging")
+  if err != nil {
+    return nil, err
+  }
+
+	err = db.GetPackagingCollection().Delete(ctx, req.GetId())
 
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
@@ -417,7 +549,12 @@ func (s *server) DeletePackaging(ctx context.Context, req *pb.DeletePackagingReq
 }
 
 func (s *server) UpdatePackaging(ctx context.Context, req *pb.UpdatePackagingRequest) (*pb.UpdatePackagingResponse, error) {
-	err := db.GetPackagingCollection().Update(ctx, req.GetPackaging())
+  err := checkClaimsForMethod(ctx, "UpdatePackaging")
+  if err != nil {
+    return nil, err
+  }
+
+	err = db.GetPackagingCollection().Update(ctx, req.GetPackaging())
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
 	}
@@ -427,6 +564,12 @@ func (s *server) UpdatePackaging(ctx context.Context, req *pb.UpdatePackagingReq
 func (s *server) ListPackaging(ctx context.Context, req *pb.ListPackagingRequest) (*pb.ListPackagingResponse, error) {
 	var packagingList []*db.PackagingDoc
 	var err error
+
+  err = checkClaimsForMethod(ctx, "ListPackaging")
+  if err != nil {
+    return nil, err
+  }
+
 	packagingList, err = db.GetPackagingCollection().List(ctx)
 	packaging := []*pb.Packaging{}
 	if err != nil {

@@ -269,6 +269,9 @@ export function SavedRecipeDropdown({recipeId, value, onChange}) {
 
   React.useEffect(() => {
     const fetchOptions = async () => {
+      if (hasScope(scopes.READ_RECIPE)) {
+        return
+      }
       try {
         const response = await grpcRequest("listSavedRecipes", {recipeId: recipeId});
         setOptions(response.recipes)

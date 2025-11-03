@@ -27,6 +27,7 @@ go_library(
     name = "go_default_library",
     srcs = [
         "main.go",
+        "scopes.go",
         "server.go",
     ],
     importpath = "main",
@@ -110,6 +111,7 @@ go_library(
     name = "server_lib",
     srcs = [
         "main.go",
+        "scopes.go",
         "server.go",
     ],
     importpath = "github.com/ML/canbiocin/server",
