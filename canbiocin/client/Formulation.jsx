@@ -1067,15 +1067,14 @@ export default function () {
           <CloseIcon />
         </IconButton>
         <Box sx={{ flexGrow: 1}} />
-        {hasScope(scopes.SAVE_RECIPE) ?
-            <IconButton
-              edge="end"
-              color="inherit"
-              onClick={editable ? handleCancelRecipe : handleCreateRecipe}
-              aria-label={editable ? "cancel" : "mix"}
-            >
-              {editable ? <CancelIcon /> : <BlenderIcon />}
-            </IconButton> : "" }
+          <IconButton
+            edge="end"
+            color="inherit"
+            onClick={editable ? handleCancelRecipe : handleCreateRecipe}
+            aria-label={editable ? "cancel" : "mix"}
+          >
+            {editable ? <CancelIcon /> : <BlenderIcon />}
+          </IconButton>
         {hasScope(scopes.WRITE_RECIPE) ?
             <IconButton
               edge="end"

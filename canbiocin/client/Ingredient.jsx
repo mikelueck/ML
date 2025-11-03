@@ -9,6 +9,7 @@ import { CategoryDropdown } from './Dropdowns';
 import { emptyIngredient } from './utils.js';
 
 import { useGrpc } from './GrpcContext';
+import { scopes } from './scopes.js';
 
 import { AppBar,
          Box, 
@@ -154,7 +155,7 @@ function Delete({ingredientId, ingredientType}) {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false)
   const [isDeleting, setIsDeleting] = React.useState(false)
   const navigate = useNavigate();
-  const { grpcRequest } = useGrpc();
+  const { grpcRequest, hasScope } = useGrpc();
 
   const handleDeleteClick = () => {
     setDeleteConfirmOpen(true);
@@ -223,6 +224,9 @@ export default function () {
   const [ingredientId, setIngredientId] = React.useState(searchParams.get('ingredientId'))
 
   const [isAdd, setIsAdd] = React.useState(searchParams.get('add'))
+
+  const { grpcRequest, hasScope } = useGrpc();
+
   const ingredientType = searchParams.get('type')
   const navigate = useNavigate();
 

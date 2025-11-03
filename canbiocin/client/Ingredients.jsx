@@ -17,6 +17,7 @@ import { OptionDialog } from './Dialog';
 import { Link } from 'react-router';
 
 import { useGrpc } from './GrpcContext';
+import { scopes } from './scopes.js';
 
 import { DataGrid,
          GridRowModes,
@@ -41,7 +42,7 @@ function getRowId(row) {
 export default function () {
   const [isLoading, setIsLoading] = React.useState(true)
   const [rows, setRows] = React.useState([]);
-  const { grpcRequest } = useGrpc();
+  const { grpcRequest, hasScope } = useGrpc();
 
   const navigate = useNavigate();
 
@@ -205,12 +206,13 @@ export default function () {
       onSelect={TypeSelect}
       onConfirm={DoAdd}
     />
+    {hasScope(scopes.WRITE_INGREDIENT) ?
     <Fab 
       color='primary' 
       sx={{position:'absolute', bottom: 16, right: 16,}}
       onClick={onClickAdd}>
       <AddIcon />
-    </Fab>
+    </Fab> : "" }
     </>
   )
 }
