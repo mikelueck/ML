@@ -12,6 +12,23 @@ import (
 	"github.com/golang/protobuf/ptypes"
 )
 
+func getStock(p *pb.Probiotic, isMe bool) float64 {
+  if isMe {
+    return p.GetMeBCfuG() 
+  } else {
+    return p.GetStockBCfuG()
+  }
+}
+
+func getCost(p *pb.Probiotic, isMe bool) *pb.Money {
+  if isMe {
+    return utils.Add(utils.Mult(p.GetCostKg(), p.GetKgPerMeKg()), p.GetCostOfMe())
+  } else {
+    return p.GetCostKg()
+  }
+
+}
+
 func generateProbioticRow(
 	ctx context.Context,
 	servingSizeGrams int32,
@@ -28,11 +45,13 @@ func generateProbioticRow(
 	}
 	probiotic := probioticDoc.GetProto().(*pb.Probiotic)
 
-	percent := float64(item.GetBCfuG()) / float64(probiotic.GetStockBCfuG())
+  isMe := item.GetIsMe()
+
+	percent := float64(item.GetBCfuG()) / getStock(probiotic, isMe)
 	perserving := float64(servingSizeGrams) * percent
 	overage_factor := (1 + float64(overagePercent)/100)
 	total := float64(grams) * percent * overage_factor
-	cbCostKg := probiotic.GetCostKg()
+	cbCostKg := getCost(probiotic, isMe)
 	cbTotal := utils.Mult(cbCostKg, total/1000)
 	cbCostPerContainer := utils.Mult(utils.Div(cbCostKg, 1000), float64(numServingsPerContainer)*float64(perserving*overage_factor))
 	margin := float64(100-targetMargin) / float64(100)
@@ -42,6 +61,7 @@ func generateProbioticRow(
 	row := &pb.IngredientDetails{
 		Ingredient:             &pb.Ingredient{Item: &pb.Ingredient_Probiotic{Probiotic: probiotic}},
 		DesiredBCfuG:           item.GetBCfuG(),
+    IsMe:                   isMe,
 		Percent:                percent,
 		PerservingMg:           perserving * 1000.0,
 		TotalGrams:             total,

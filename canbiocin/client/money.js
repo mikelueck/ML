@@ -43,6 +43,15 @@ export function moneyToString(m, precision, justNum) {
   let shift = Math.pow(10, nanos_pow - precision)
   let cents = Math.round(m.nanos / shift) 
 
+  // It's possible cents > max in which case we have to move digits over to
+  // dollars
+  let units = m.units
+
+  while (cents >= max) {
+    cents = cents - max 
+    units += 1
+  }
+
   // We need to figure out a prefix when it is single digit (or less) cents
   let prefix = "";
   let tmp = `${cents}`;
@@ -53,7 +62,7 @@ export function moneyToString(m, precision, justNum) {
   let centsStr = `${prefix}${cents}`.padEnd(precision, "0");
   centsStr = centsStr.slice(0,precision);
   
-  let moneyStr = `${m.units}.${centsStr}`
+  let moneyStr = `${units}.${centsStr}`
   if (!justNum) {
     return `\$${moneyStr}`
   }

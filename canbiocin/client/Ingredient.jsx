@@ -43,7 +43,7 @@ const commonFields = {
 }
 
 const fieldsByType = {
-  "probiotic": {...commonFields, "spp": true, "strain": true, "stockBCfuG": true, "notes": true},
+  "probiotic": {...commonFields, "spp": true, "strain": true, "stockBCfuG": true, kgPerMeKg: true, meBCfuG: true, costOfMe:true , "notes": true},
   "prebiotic": {...commonFields, "category": true, "name": true, "function": true, "notes": true},
   "postbiotic": {...commonFields, "name": true, "bagSizeKg": true, "function": true, "notes": true},
 }
@@ -121,11 +121,14 @@ function Ingredient({ingredientType, ingredient, editable, handleChange}) {
     {/* Probiotics */}
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
       {MyNewFormItem({field:'stockBCfuG', label: 'Stock B CFU/g', type:'number', units:'B CFU/g'})}
+      {MyNewFormItem({field:'meBCfuG', label: 'ME B CFU/g', type:'number', units:'B CFU/g'})}
+      {MyNewFormItem({field:'kgPerMeKg', label: 'FD per kg ME', type:'number', units:'kg'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
       {MyNewFormItem({field:'bagSizeKg', label: 'Bag Size (kg)', type:'number'})}
       {MyNewFormItem({field:'costKg', label: 'Cost / kg', type:'money'})}
       {MyNewFormItem({field:'costShippingKg', label: 'Cost+Shipping / kg', type:'money'})}
+      {MyNewFormItem({field:'costOfMe', label: 'Cost of ME / kg', type:'money'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
       {MyNewFormItem({

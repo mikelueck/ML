@@ -127,6 +127,18 @@ const probioticColumns = (editable, nameOptions) => {return [
     ),
     renderCell:(params) => (<IngredientCellRender params={params} />)
   },
+  { field: 'isMe', 
+    headerName: 'ME', 
+    editable: editable,
+    valueGetter: (value, row) => {
+      return row.isMe
+    },
+    flex: 1,
+    type: 'boolean',
+    renderHeader: () => (
+      <strong>{'Is ME'}</strong>
+    ),
+  },
   { field: 'bCfuG', 
     headerName: 'Desired B CFU/g', 
     editable: editable,

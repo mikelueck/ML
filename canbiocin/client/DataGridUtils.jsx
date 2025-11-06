@@ -1,7 +1,7 @@
 const React = require('React');
 
 import { Typography } from '@mui/material';
-import { moneyToString } from './money.js';
+import { moneyToString, moneyToFloat, floatToMoney } from './money.js';
 
 import { DataGrid } from '@mui/x-data-grid';
 
@@ -76,11 +76,15 @@ export function IngredientCellRender({params, itemGetter}) {
       }]
 
       name = value.strain
+      let stock = params.row.isMe ? value.meBCfuG : value.stockBCfuG
+    
+      let cost = params.row.isMe && value.costKg && value.kgPerMeKg && value.costOfMe ? 
+          floatToMoney(moneyToFloat(value.costKg) * value.kgPerMeKg + moneyToFloat(value.costOfMe)) : value.costKg
       data = {columns: cols,
               rows: [
                 {id: 1,
-                stockBCfuG: value.stockBCfuG + " B CFU/g", 
-                costKg: value.costKg ? moneyToString(value.costKg, 2) + " / kg" : ""
+                stockBCfuG: stock + " B CFU/g", 
+                costKg: cost ? moneyToString(cost, 2) + " / kg" : ""
               }]}
     } else if (item.case == "prebiotic" || item.case == "postbiotic") {
       let cols = [{

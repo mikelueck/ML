@@ -15,4 +15,8 @@ message Probiotic {
     Money cost_shipping_kg = 6;
     Supplier supplier = 7;
     google.protobuf.Timestamp most_recent_quote_date = 8;       
+    double kg_per_me_kg = 10;
+    double me_b_cfu_g = 11;
+    Money cost_of_me = 12;
+    string notes = 13;
 }

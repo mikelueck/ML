@@ -292,6 +292,19 @@ const probioticColumns = (columnsToShow, currencyRate) => { return [
                                   return row.ingredient.item
                                 }}/>)
   },
+  { field: 'isMe', 
+    headerName: 'Is ME?', 
+    align: 'center',
+    headerAlign: 'center',
+    valueGetter: (value, row) => {
+      return row.isMe
+    },
+    flex: 1,
+    type: 'boolean',
+    renderHeader: () => (
+      <strong>{'Is Me?'}</strong>
+    ),
+  },
   { field: 'desiredBCfuG', 
     headerName: 'Desired B CFU/g', 
     align: 'center',
@@ -300,6 +313,7 @@ const probioticColumns = (columnsToShow, currencyRate) => { return [
       return row.desiredBCfuG
     },
     flex: 1,
+    type: 'number',
     renderHeader: () => (
       <strong>{'Desired'}<br/>{'B CFU/g'}</strong>
     ),
