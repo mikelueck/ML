@@ -89,9 +89,11 @@ export const NewFormItem = ({field, label, type, units, renderItem, props_provid
         itemType = type
       }
 
-      let validater
+      let validater = null
       if (type == 'number' || type == 'money' || type == DATEPICKER ) {
         validater=(obj, newValue) => {return Boolean(newValue && (newValue > 0))}
+      } else if (extra_params && extra_params.multiline) {
+        validater=null
       } else {
         validater=(obj, newValue) => {return Boolean(newValue && (newValue.length > 0))}
       }
@@ -131,8 +133,11 @@ export function FormItem({
   params,
 }) {
   const isValid = () => {
-    let v = validater(obj, getter(obj))
-    return validater(obj, getter(obj))
+    if (validater) {
+      let v = validater(obj, getter(obj))
+      return validater(obj, getter(obj))
+    }
+    return true
   }
 
   const [error, setError] = React.useState(!isValid())

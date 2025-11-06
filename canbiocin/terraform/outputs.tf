@@ -35,6 +35,11 @@ output "artifact_registry_repository_id" {
   value       = google_artifact_registry_repository.canbiocin_repo.repository_id
 }
 
+output "static_ip" {
+  description = "Static IP address"
+  value       = google_compute_global_address.static_ip_address.address
+}
+
 # Load Balancer outputs
 output "load_balancer_ip_http" {
   description = "IP address of the load balancer"

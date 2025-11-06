@@ -90,12 +90,18 @@ resource "google_compute_region_instance_group_manager" "canbiocin_migs" {
   }
 }
 
+resource "google_compute_global_address" "static_ip_address" {
+  name = "canbiocin-static-loadbalancer-ip"
+  address_type = "EXTERNAL"
+}
+
 # Load balancer for external access
 resource "google_compute_global_forwarding_rule" "canbiocin_lb_https" {
   name       = "canbiocin-lb-https-${var.environment}"
   target     = google_compute_target_https_proxy.canbiocin_https_proxy.id
   port_range = "443"
   project    = var.project_id
+  ip_address = google_compute_global_address.static_ip_address.id
 }
 
 resource "google_compute_global_forwarding_rule" "canbiocin_lb_http" {
@@ -103,6 +109,7 @@ resource "google_compute_global_forwarding_rule" "canbiocin_lb_http" {
   target     = google_compute_target_http_proxy.canbiocin_http_proxy.id
   port_range = "80"
   project    = var.project_id
+  ip_address = google_compute_global_address.static_ip_address.id
 }
 
 # HTTPS proxy for load balancer
