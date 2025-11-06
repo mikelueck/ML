@@ -5,6 +5,8 @@ import { moneyToString, moneyToFloat, floatToMoney } from './money.js';
 
 import { DataGrid } from '@mui/x-data-grid';
 
+import { Link } from 'react-router';
+
 function NestedDataGrid({ data }) {
   if (!data) {
     return ""
@@ -132,7 +134,12 @@ export function IngredientCellRender({params, itemGetter}) {
     return (
     <div>
       <Typography fontWeight="bold" variant="body1" component="span">
+        <Link to={{
+          pathname: "/ingredient",
+          search: `?type=${item.case}&ingredientId=${value.id}`, 
+        }}>
       {name}
+        </Link>
       </Typography>
       <br />
       <NestedDataGrid data={data} />
