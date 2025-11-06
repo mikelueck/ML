@@ -300,7 +300,8 @@ function FormulationHelper({recipe, editable}) {
     let rows = recipe.probiotics;
     let multiplier = includeOverage ? (1 + recipe.probioticOveragePercent / 100) : 1;
     for (let i = 0; i < rows.length; i++) {
-      weight += (multiplier * rows[i].bCfuG) / getItemValue(rows[i]).stockBCfuG * servingSize;
+      let stockBCfuG = rows[i].isMe ? getItemValue(rows[i]).meBCfuG : getItemValue(rows[i]).stockBCfuG
+      weight += (multiplier * rows[i].bCfuG) / stockBCfuG * servingSize;
     }
 
     rows = recipe.prebiotics;
