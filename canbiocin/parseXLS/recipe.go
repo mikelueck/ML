@@ -200,7 +200,7 @@ func (p *RecipeParser) parseRecipe(ctx context.Context, row *xlsxreader.Row) err
 					return fmt.Errorf("Tried to lookup %s but found %d entries\n", ingredient, len(lookup))
 				}
 
-				p.probiotics = append(p.probiotics, &pb.ProbioticIngredient{Item: lookup[0].GetID(), IsMe: true, BCfuG: desiredBCfuG})
+				p.probiotics = append(p.probiotics, &pb.ProbioticIngredient{Item: lookup[0].GetID(), IsMe: false, BCfuG: desiredBCfuG})
 			case (p.ingredientSection == "Prebiotics" ||
 				p.ingredientSection == "Postbiotics"):
 				mgServing, err := Float(row, p.columns["mgServing"])
