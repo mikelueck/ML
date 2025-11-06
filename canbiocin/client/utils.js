@@ -8,6 +8,7 @@ const supplier_pb = require('../proto/supplier_pb.js');
 const money_pb = require('../proto/money_pb.js');
 import { timestampToDate } from './timestamp.js';
 import { dateToTimestamp } from './timestamp.js';
+import { floatToMoney } from './money.js';
 
 export const valueToPrecision = (n, p, suffix, prefix) => {
     if (n == null) {
@@ -120,6 +121,8 @@ export const emptyProbiotic = () => {
       costShippingKg: emptyMoney(),
       supplier: emptySupplier(),
       mostRecentQuoteDate: emptyTS(),
+      kgPerMeKg: 0.22,
+      costOfMe: floatToMoney(118.91),
       })
 }
 
