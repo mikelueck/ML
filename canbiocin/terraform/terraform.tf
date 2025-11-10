@@ -5,6 +5,11 @@ terraform {
       source  = "hashicorp/google"
       version = ">= 5.27.0"
     }
+
+    auth0 = {
+      source = "auth0/auth0"
+      version = ">=1.32.0"
+    }
   }
 }
 
