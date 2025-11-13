@@ -75,7 +75,7 @@ export const NewFormItem = ({field, label, type, units, renderItem, props_provid
 
         renderItem = (params) => (
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker {...params} />
+          <DatePicker sx={{width:150}}{...params} />
           </LocalizationProvider>
         );
       }
