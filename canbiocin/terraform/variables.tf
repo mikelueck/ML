@@ -75,7 +75,7 @@ variable "firestore_type" {
 variable "machine_type" {
   description = "Machine type for MIG instances"
   type        = string
-  default     = "t2a-standard-2"
+  default     = "t2a-standard-1"
 }
 
 variable "instance_count_per_zone" {
