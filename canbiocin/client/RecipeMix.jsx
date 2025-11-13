@@ -1103,38 +1103,44 @@ export default function () {
 
 
   React.useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        // If we have a savedRecipeId we load it here
-        if (editable || !recipe) {
-          if (savedRecipeId && !editable) {
-            const response = await grpcRequest("getSavedRecipe",
-                {savedRecipeId: savedRecipeId});
-            let r = response.recipe
-            updateNewRecipeFields(r)
-          } else if (containerSizeG > 0) {
-            const response = await grpcRequest("calculateRecipe",
-                {recipeId: recipe && recipe.recipe.id ? recipe.recipe.id : recipeId, 
-                 servingSizeGrams: servingGrams, 
-                 totalGrams: totalGrams,
-                 container: container,
-                 packaging: packagingItems,
-                 containerSizeGrams: containerSizeG,
-                 targetMargin: targetMargin,
-                 currencyRate: currencyRate });
-            response.recipeDetails.name = savedRecipeName
-            setRecipe(response.recipeDetails)
+    const handler = setTimeout(() => {
+      const fetchData = async () => {
+        setIsLoading(true);
+        try {
+          // If we have a savedRecipeId we load it here
+          if (editable || !recipe) {
+            if (savedRecipeId && !editable) {
+              const response = await grpcRequest("getSavedRecipe",
+                  {savedRecipeId: savedRecipeId});
+              let r = response.recipe
+              updateNewRecipeFields(r)
+            } else if (containerSizeG > 0) {
+              const response = await grpcRequest("calculateRecipe",
+                  {recipeId: recipe && recipe.recipe.id ? recipe.recipe.id : recipeId, 
+                   servingSizeGrams: servingGrams, 
+                   totalGrams: totalGrams,
+                   container: container,
+                   packaging: packagingItems,
+                   containerSizeGrams: containerSizeG,
+                   targetMargin: targetMargin,
+                   currencyRate: currencyRate });
+              response.recipeDetails.name = savedRecipeName
+              setRecipe(response.recipeDetails)
+            }
           }
+        } catch (error) {
+          //setError(error);
+          console.log(error);
+        } finally {
+          setIsLoading(false)
         }
-      } catch (error) {
-        //setError(error);
-        console.log(error);
-      } finally {
-        setIsLoading(false)
-      }
-    };
-    fetchData();
+      };
+      fetchData();
+    }, 500) // 500ms debounce time
+    return () => {
+      clearTimeout(handler)
+    }
+    
   }, [savedRecipeId, recipeId, editable, servingGrams, totalGrams, container, packagingItems, containerSizeG, targetMargin, currencyRate]);
 
   function SaveToolbar() {

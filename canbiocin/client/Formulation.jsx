@@ -203,6 +203,7 @@ const postbioticColumns = (editable, nameOptions) => {return [
     renderHeader: () => (
       <strong>{'Name'}</strong>
     ),
+    renderCell:(params) => (<IngredientCellRender params={params} />)
   },
   { field: 'mgServing', 
     headerName: 'mg / gram in formulation', 
@@ -217,7 +218,6 @@ const postbioticColumns = (editable, nameOptions) => {return [
     renderHeader: () => (
       <strong>{'mg / gram'}<br/>{'in formulation'}</strong>
     ),
-    renderCell:(params) => (<IngredientCellRender params={params} />)
   },
 ]};
 
@@ -366,7 +366,7 @@ function FormulationHelper({recipe, editable}) {
     <Field value={computeWeight(true)} label="Weight (including Overage)" units="g" />
     </CardContentNoPadding>
     <CardContentNoPadding>
-    <Field value={servingSize - computeWeight()} label="Remaining" units="g" />
+    <Field value={valueToPrecision(servingSize - computeWeight(false), 3)} label="Remaining" units="g" />
     </CardContentNoPadding>
     </Box>
     </Collapse>
