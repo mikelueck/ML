@@ -252,7 +252,7 @@ export default function () {
   };
 
   const handleClose = () => {
-    if (editable) {
+    if (!isAdd && editable) {
       setEditable(false)
     } else {
       navigate(-1);
