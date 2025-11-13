@@ -30,6 +30,7 @@ webpack_bundle(
       "grpc.js",
       "GrpcContext.jsx",
       "timestamp.js",
+      "hash_utils.js",
       "money.js",
       "mockAuth0.js",
       "logger.js",

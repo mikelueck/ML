@@ -13,6 +13,8 @@ const Formulations = lazy(() => import('./Formulations'));
 
 import { useGrpc } from './GrpcContext';
 import { scopes } from './scopes.js';
+import { getTabFromHash } from './hash_utils.js';
+import { clearIngredientsGridState } from './hash_utils.js';
 
 function CustomTabPanel(props) {
   const { children, value, index, ... other } = props
@@ -43,24 +45,14 @@ function a11yProps(index) {
   };
 }
 
-const NUMTABS=3;
-
-function getTabFromHash(hash) {
-  if (hash.length > 1) {
-    let tab = hash.substring(1)
-    let index = parseInt(tab)
-    if (!isNaN(index) && index < NUMTABS) {
-      return index;
-    }
-  }
-  return 0;
-}
-
 export default function () {
   const [value, setValue] = React.useState(getTabFromHash(window.location.hash));
   const { hasScope } = useGrpc();
 
   const handleChange = (event, newValue) => {
+    // Changing tabs clears existing state 
+    clearIngredientsGridState()
+
     setValue(newValue);
     window.location.hash="#" + newValue;
   };
