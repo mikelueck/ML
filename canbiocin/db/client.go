@@ -12,13 +12,12 @@ import (
 
 var (
 	projectid = flag.String("projectid", "canbiocin-474014", "projectid")
+  isDev = utils.GetIsDev()
 )
 
 var client *DbClient
 
 var _ ClientInterface = (*DbClient)(nil)
-
-const useMock = false
 
 type DocIterator interface {
 	Next(Document) error
@@ -84,7 +83,7 @@ func (c *DbClient) NewDocument(i interface{}, doc Document) error {
 }
 
 func init() {
-	if !useMock {
+	if !isDev {
 		var err error
 		client, err = newClient(context.Background(), *projectid)
 		if err != nil {

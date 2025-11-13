@@ -130,28 +130,26 @@ export function Grid({gridStateName, columns, rows, addScope, onClickAdd, getRow
 
   return (
     <>
-    <Box sx={{ width: '100%', height: '90vh' }}>
-      <DataGrid
-        autoPageSize
-        apiRef={apiRef}
-        onRowSelectionModelChange={handleSelectionModelChange}
-        selectionModel={selectionModel}
-        paginationModel={paginationModel}
-        onPaginationModelChange={setPaginationModelAndMaybeChangePages}
-        onCellDoubleClick={(params, event) => {
-          if (!event.ctrlKey) {
-            event.defaultMuiPrevented = true;
-          }
-        }}
-        rows={rows}
-        getRowId={getRowId}
-        columns={columns}
-        editMode="row"
-        initialState={{
-          ...initialState,
-        }}
-      />
-    </Box>
+    <DataGrid
+      autoPageSize
+      apiRef={apiRef}
+      onRowSelectionModelChange={handleSelectionModelChange}
+      selectionModel={selectionModel}
+      paginationModel={paginationModel}
+      onPaginationModelChange={setPaginationModelAndMaybeChangePages}
+      onCellDoubleClick={(params, event) => {
+        if (!event.ctrlKey) {
+          event.defaultMuiPrevented = true;
+        }
+      }}
+      rows={rows}
+      getRowId={getRowId}
+      columns={columns}
+      editMode="row"
+      initialState={{
+        ...initialState,
+      }}
+    />
     {onClickAdd && hasScope(addScope) ?
       <Fab 
         color='primary' 

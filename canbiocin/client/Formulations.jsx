@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router';
 import { timestampToDate } from './timestamp.js';
 import { moneyToString } from './money.js';
 
+import { Grid, handleItemClick } from './Grid';
+import { FORMULATIONGRIDSTATE } from './hash_utils.js';
+
 import { Box, Tooltip } from '@mui/material';
 
 import TextField from '@mui/material/TextField';
@@ -21,13 +24,6 @@ import { FormulationDialog } from './Formulation';
 
 import { useGrpc } from './GrpcContext';
 import { scopes } from './scopes.js';
-
-import { DataGrid,
-         GridRowModes,
-         GridRowEditStopReasons,
-         Toolbar,
-         TollbarButton, 
-} from '@mui/x-data-grid';
 
 function getIngredientName(ingredient) {
   if (ingredient) {
@@ -132,11 +128,15 @@ function IngredientFilterSelect({changeFilterValue, ingredientFilter}) {
   )
 }
 
+function getRowId(row) {
+  return row.id
+}
+
 export default function () {
   const [isLoading, setIsLoading] = React.useState(true)
   const [rows, setRows] = React.useState([]);
   const [ingredientFilter, setIngredientFilter] = React.useState("");
-  const { grpcRequest, hasScope } = useGrpc();
+  const { grpcRequest } = useGrpc();
 
   const handleFilterChange = (value) => {
     setIngredientFilter(value)
@@ -183,7 +183,8 @@ export default function () {
         <Link to={{
           pathname: "/recipe",
           search: `?recipeId=${params.row.id}`, 
-        }}>
+        }}
+        onClick={handleItemClick(navigate, params.row.id)}>
         {params.row.name}
         </Link>
       ),
@@ -197,32 +198,15 @@ export default function () {
         changeFilterValue={handleFilterChange}
         ingredientFilter={ingredientFilter} />
     </Box>
-    <Box sx={{ height: 800, width: '100%' }}>
-      <DataGrid
-        onCellDoubleClick={(params, event) => {
-          if (!event.ctrlKey) {
-            event.defaultMuiPrevented = true;
-          }
-        }}
-        rows={rows}
+    <Box sx={{ width: '100%', height: '85vh' }}>
+      <Grid
+        gridStateName={FORMULATIONGRIDSTATE}
         columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 20,
-            },
-          },
-        }}
-        pageSizeOptions={[20]}
-      />
+        rows={rows}
+        addScope={scopes.WRITE_RECIPE}
+        onClickAdd={onClickAdd}
+        getRowId={getRowId} />
     </Box>
-    {hasScope(scopes.WRITE_RECIPE) ?
-      <Fab 
-        color='primary' 
-        sx={{position:'absolute', bottom: 16, right: 16,}}
-        onClick={onClickAdd}>
-        <AddIcon />
-      </Fab> : "" }
     </>
   )
 }

@@ -1,6 +1,7 @@
 const NUMTABS=3;
 const ROWID = "rowId"
 export const INGREDIENTGRIDSTATE = "ingredientGridState"
+export const FORMULATIONGRIDSTATE = "formulationGridState"
 
 export function getTabFromHash(hash) {
   if (hash.length > 1) {
@@ -62,30 +63,6 @@ export function getRowIdFromHash() {
       return json[ROWID]
     }
     return ""
-}
-
-export function setIngredientsGridState(state) {
-    if (localStorage) {
-      const serializedState = JSON.stringify(state, (key, value) => 
-        typeof value === 'bigint' ? value.toString() : value)
-      localStorage.setItem(INGREDIENTGRIDSTATE, serializedState)
-    } else {
-      console.log("localStorage not available")
-    }
-}
-
-export function getIngredientsGridState() {
-    if (localStorage) {
-      const state = localStorage.getItem(INGREDIENTGRIDSTATE)
-      return (state ? JSON.parse(state) : {});
-    } else {
-      console.log("localStorage not available")
-    }
-    return null
-}
-
-export function clearIngredientsGridState() {
-    localStorage.removeItem(INGREDIENTGRIDSTATE)
 }
 
 export function setGridState(name, state) {

@@ -14,7 +14,9 @@ const Formulations = lazy(() => import('./Formulations'));
 import { useGrpc } from './GrpcContext';
 import { scopes } from './scopes.js';
 import { getTabFromHash } from './hash_utils.js';
-import { clearIngredientsGridState } from './hash_utils.js';
+import { clearGridState, 
+         INGREDIENTGRIDSTATE, 
+         FORMULATIONGRIDSTATE } from './hash_utils.js';
 
 function CustomTabPanel(props) {
   const { children, value, index, ... other } = props
@@ -51,7 +53,8 @@ export default function () {
 
   const handleChange = (event, newValue) => {
     // Changing tabs clears existing state 
-    clearIngredientsGridState()
+    clearGridState(INGREDIENTGRIDSTATE)
+    clearGridState(FORMULATIONGRIDSTATE)
 
     setValue(newValue);
     window.location.hash="#" + newValue;

@@ -15,5 +15,6 @@ services:
       - /Users/mikelueck/.gcp/dev.json:/app/credentials.json
     environment:
       GOOGLE_APPLICATION_CREDENTIALS: /app/credentials.json
+      DEV: true
     ports:
       - "8082:8082"
