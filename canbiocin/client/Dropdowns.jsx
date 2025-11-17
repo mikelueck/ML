@@ -205,16 +205,19 @@ export function ContainerDropdown({value, onChange}) {
   }
 
   React.useEffect(() => {
-    const fetchOptions = async () => {
-      try {
-        const response = await grpcRequest("listContainers", {});
-        setOptions(response.containers)
-      } catch (error) {
-        console.log(error);
-      } finally {
-      }
-    };
-    fetchOptions();
+    const handler = setTimeout(() => {
+      const fetchOptions = async () => {
+        try {
+          const response = await grpcRequest("listContainers", {});
+          setOptions(response.containers)
+        } catch (error) {
+          console.log(error);
+        } finally {
+        }
+      };
+      fetchOptions();
+    }, 500);
+    return () => { clearTimeout(handler) }
   }, []);
 
   const handleChange = (event, newValue) => {
