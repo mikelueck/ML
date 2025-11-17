@@ -176,33 +176,27 @@ export function CategoryDropdown({value, onChange}) {
   )
 }
 
-export function ContainerDropdown({value, onChange}) {
+export const ContainerDropdown = React.memo(function ContainerDropdown({value, onChange}) {
   const [options, setOptions] = React.useState([]);
-  const [v, setV] = React.useState(value);
   const { grpcRequest, hasScope } = useGrpc();
 
   let id_prefix = "container"
   let label = "Container"
 
-  const getOptionLabel = (option) => {
+  const getOptionLabel = React.useCallback((option) => {
       return option ? `${option.packaging.name}` : ""
-  }
+  }, []);
 
-  const computeWidth = (v) => {
+  const computeWidth = React.useCallback((v) => {
+    if (!v) return DEFAULT_WIDTH;
     let w = (getOptionLabel(v).length * FONT_SIZE) + WIDTH_PADDING;
     if (w < DEFAULT_WIDTH) return DEFAULT_WIDTH
     return w
-  }
+  }, [getOptionLabel]);
 
-  const [inputWidth, setInputWidth] = React.useState(computeWidth(value))
-
-  const updateWidth = (v) => {
-    let w = computeWidth(v)
-    if (w < DEFAULT_WIDTH) {
-      w = DEFAULT_WIDTH
-    }
-    setInputWidth(w)
-  }
+  const inputWidth = React.useMemo(() => {
+    return computeWidth(value);
+  }, [value, computeWidth]);
 
   React.useEffect(() => {
     const handler = setTimeout(() => {
@@ -218,15 +212,18 @@ export function ContainerDropdown({value, onChange}) {
       fetchOptions();
     }, 1000);
     return () => { clearTimeout(handler) }
-  }, []);
+  }, [grpcRequest]);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = React.useCallback((event, newValue) => {
     if (onChange) {
        onChange(newValue);
     }
-    setV(newValue)
-    updateWidth(newValue)
-  }
+  }, [onChange]);
+
+  const isOptionEqualToValue = React.useCallback((option, selectedValue) => {
+    if (!option || !selectedValue) return false;
+    return option.id == selectedValue.id
+  }, []);
 
   if (!hasScope(scopes.READ_OTHER)) {
     return ""
@@ -241,16 +238,14 @@ export function ContainerDropdown({value, onChange}) {
       value={value}
       renderInput={(params) => <TextField {...params} label={label} variant="outlined" />}
       onChange={handleChange}
-      getOptionLabel={(option) => getOptionLabel(option)}
-      isOptionEqualToValue={(option, selectedValue) => {
-        return option.id == selectedValue.id
-      }}
+      getOptionLabel={getOptionLabel}
+      isOptionEqualToValue={isOptionEqualToValue}
       disableClearable
       blurOnSelect
       size='small'
     />
   )
-}
+});
 
 export function SavedRecipeDropdown({recipeId, value, onChange}) {
   const [options, setOptions] = React.useState([]);

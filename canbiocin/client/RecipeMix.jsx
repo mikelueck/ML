@@ -647,6 +647,55 @@ function RecipeMix({recipe, currencyRate}) {
 
 const editNameField = "edittedName";
 
+const ContainerFieldOrDropdown = React.memo(function ContainerFieldOrDropdown({recipe, editable, onContainerChange}) {
+  const containerValue = React.useMemo(() => {
+    return recipe?.container || null;
+  }, [recipe?.container?.id, recipe?.container?.packaging?.name]);
+
+  if (editable) {
+    return (
+    <ContainerDropdown
+      value={containerValue}
+      onChange={onContainerChange}
+      editable={editable}
+    />
+    )
+  } else {
+    const displayValue = React.useMemo(() => {
+      return recipe?.container?.packaging?.name || "";
+    }, [recipe?.container?.packaging?.name]);
+    
+    return (
+    <Field
+        id='container'
+        label='Container' 
+        value={displayValue}
+        size="small"
+        type="string"
+        variant="standard"
+        editable={false}
+    />
+    )
+  }
+}, (prevProps, nextProps) => {
+  // Custom comparison: only re-render if editable, container, or onChange changes
+  if (prevProps.editable !== nextProps.editable) return false;
+  if (prevProps.onContainerChange !== nextProps.onContainerChange) return false;
+  
+  const prevContainer = prevProps.recipe?.container;
+  const nextContainer = nextProps.recipe?.container;
+  
+  // If both are null/undefined, they're equal
+  if (!prevContainer && !nextContainer) return true;
+  
+  // If one is null and the other isn't, they're different
+  if (!prevContainer || !nextContainer) return false;
+  
+  // Compare by id and packaging name
+  return prevContainer.id === nextContainer.id && 
+         prevContainer.packaging?.name === nextContainer.packaging?.name;
+});
+
 export default function () {
   let initSizeG = 10000
   const [isLoading, setIsLoading] = React.useState(true)
@@ -687,21 +736,21 @@ export default function () {
     navigate(-1);
   }
 
+  const updateNumContainers = React.useCallback((total, servingSize, contSizeG) => {
+    let num_servings_cont = Math.floor(contSizeG / servingSize)
+
+    setNumContainers(Math.ceil(total / (num_servings_cont * servingSize)))
+  }, []);
+
   const handleTotalGramsChange = (event) => {
     setTotalGrams(event.target.value)
     updateNumContainers(event.target.value, servingGrams, containerSizeG)
   }
 
-  const handleContainerChange = (event) => {
+  const handleContainerChange = React.useCallback((event) => {
     setContainer(event)
     updateNumContainers(totalGrams, servingGrams, containerSizeG)
-  }
-
-  const updateNumContainers = (total, servingSize, contSizeG) => {
-    let num_servings_cont = Math.floor(contSizeG / servingSize)
-
-    setNumContainers(Math.ceil(total / (num_servings_cont * servingSize)))
-  }
+  }, [totalGrams, servingGrams, containerSizeG, updateNumContainers])
 
   const handleContainerSizeChange = (event) => {
     setContainerSizeG(event.target.value)
@@ -720,30 +769,6 @@ export default function () {
 
   const handleCurrencyRateChange = (event) => {
     setCurrencyRate(event.target.value)
-  }
-
-  function ContainerFieldOrDropdown({recipe, editable}) {
-    if (editable) {
-      return (
-      <ContainerDropdown
-        value={recipe ? recipe.container : ""}
-        onChange={handleContainerChange}
-        editable={editable}
-      />
-      )
-    } else {
-      return (
-      <Field
-          id='container'
-          label='Container' 
-          value={recipe && recipe.container ? `${recipe.container.packaging.name}` : ""}
-          size="small"
-          type="string"
-          variant="standard"
-          editable={false}
-      />
-      )
-    }
   }
 
   const handleSaveClick = () => {
@@ -1264,7 +1289,8 @@ export default function () {
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
       <ContainerFieldOrDropdown
         recipe={recipe}
-        editable={editable} />
+        editable={editable}
+        onContainerChange={handleContainerChange} />
       <Field
           id='container_size_g'
           label='Container size grams' 
