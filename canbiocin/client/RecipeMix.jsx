@@ -746,8 +746,6 @@ export default function () {
     }
   }
 
-
-
   const handleSaveClick = () => {
     if (recipe) {
       if (recipe.name) {

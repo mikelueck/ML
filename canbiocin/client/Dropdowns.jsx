@@ -216,7 +216,7 @@ export function ContainerDropdown({value, onChange}) {
         }
       };
       fetchOptions();
-    }, 500);
+    }, 1000);
     return () => { clearTimeout(handler) }
   }, []);
 
