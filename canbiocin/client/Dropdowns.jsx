@@ -210,7 +210,7 @@ export const ContainerDropdown = React.memo(function ContainerDropdown({value, o
         }
       };
       fetchOptions();
-    }, 1000);
+    }, 500);
     return () => { clearTimeout(handler) }
   }, [grpcRequest]);
 
