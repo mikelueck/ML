@@ -139,10 +139,10 @@ func main() {
 	sopts := []grpc.ServerOption{}
 
 	if *enforce_auth {
-    sopts = []grpc.ServerOption{
-      grpc.UnaryInterceptor(AuthInterceptor),
-    }
-  }
+		sopts = []grpc.ServerOption{
+			grpc.UnaryInterceptor(AuthInterceptor),
+		}
+	}
 
 	s := grpc.NewServer(sopts...)
 	pb.RegisterCanbiocinServiceServer(s, &server{})

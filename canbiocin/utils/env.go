@@ -9,5 +9,5 @@ func GetCredentialsFile() string {
 }
 
 func GetIsDev() bool {
-  return os.Getenv("DEV") != ""
+	return os.Getenv("DEV") != ""
 }

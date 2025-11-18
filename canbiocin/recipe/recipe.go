@@ -13,19 +13,19 @@ import (
 )
 
 func getStock(p *pb.Probiotic, isMe bool) float64 {
-  if isMe {
-    return p.GetMeBCfuG() 
-  } else {
-    return p.GetStockBCfuG()
-  }
+	if isMe {
+		return p.GetMeBCfuG()
+	} else {
+		return p.GetStockBCfuG()
+	}
 }
 
 func getCost(p *pb.Probiotic, isMe bool) *pb.Money {
-  if isMe {
-    return utils.Add(utils.Mult(p.GetCostKg(), p.GetKgPerMeKg()), p.GetCostOfMe())
-  } else {
-    return p.GetCostKg()
-  }
+	if isMe {
+		return utils.Add(utils.Mult(p.GetCostKg(), p.GetKgPerMeKg()), p.GetCostOfMe())
+	} else {
+		return p.GetCostKg()
+	}
 
 }
 
@@ -45,7 +45,7 @@ func generateProbioticRow(
 	}
 	probiotic := probioticDoc.GetProto().(*pb.Probiotic)
 
-  isMe := item.GetIsMe()
+	isMe := item.GetIsMe()
 
 	percent := float64(item.GetBCfuG()) / getStock(probiotic, isMe)
 	perserving := float64(servingSizeGrams) * percent
@@ -61,7 +61,7 @@ func generateProbioticRow(
 	row := &pb.IngredientDetails{
 		Ingredient:             &pb.Ingredient{Item: &pb.Ingredient_Probiotic{Probiotic: probiotic}},
 		DesiredBCfuG:           item.GetBCfuG(),
-    IsMe:                   isMe,
+		IsMe:                   isMe,
 		Percent:                percent,
 		PerservingMg:           perserving * 1000.0,
 		TotalGrams:             total,

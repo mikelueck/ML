@@ -2,6 +2,11 @@ test --test_output=errors
 build --color=yes
 build --curses=yes
 
+test --enable_bzlmod
+test --enable_runfiles
+build --enable_runfiles
+
+
 # Right now --build_python_zip seems to break "run :requirements.update" so disabling this now
 # build --build_python_zip
 # run --build_python_zip

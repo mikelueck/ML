@@ -133,7 +133,7 @@ export function IngredientCellRender({params, itemGetter}) {
 
     return (
     <div>
-      <Typography fontWeight="bold" variant="body1" component="span">
+      <Typography variant="body1" component="span">
         <Link to={{
           pathname: "/ingredient",
           search: `?type=${item.case}&ingredientId=${value.id}`, 

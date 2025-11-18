@@ -128,7 +128,7 @@ oci_pull(
     tag = "latest",
 )
 
-_envoy_version = "v1.29.2"
+_envoy_version = "v1.35.6"
 
 oci_pull(
     name = "envoy",
@@ -138,7 +138,9 @@ oci_pull(
     ],
     registry = "index.docker.io",
     repository = "envoyproxy/envoy",
-    tag = _envoy_version,
+    #tag = _envoy_version,
+    # Use manifest digest for linux/arm64
+    digest = "sha256:13f972b8d7845c93f62f75af5b80fef944e8aeef0486fcb200ef5e1d4a1cf2dc",
 )
 
 http_archive(

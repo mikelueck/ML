@@ -12,7 +12,7 @@ import (
 
 var (
 	projectid = flag.String("projectid", "canbiocin-474014", "projectid")
-  isDev = utils.GetIsDev()
+	isDev     = utils.GetIsDev()
 )
 
 var client *DbClient

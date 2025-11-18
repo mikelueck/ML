@@ -1,11 +1,11 @@
 package main
 
 import (
-  "context"
+	"context"
 	"flag"
 	"fmt"
-  "log"
-  "strings"
+	"log"
+	"strings"
 
 	pb "github.com/ML/canbiocin/proto"
 	"github.com/auth0/go-jwt-middleware/v2/validator"
@@ -29,48 +29,48 @@ const WRITE_OTHER = "write:other"
 const DEL_OTHER = "delete:other"
 
 var funcAuth = map[string]string{
-  "CreateIngredient": WRITE_INGREDIENT,
-  "GetIngredient": READ_INGREDIENT,
-  "UpdateIngredient": WRITE_INGREDIENT,
-  "DeleteIngredient": DEL_INGREDIENT,
-  "ListIngredients": READ_INGREDIENT,
-  "ListProbioticSpp": READ_INGREDIENT,
-  "ListPrebioticCategory": READ_INGREDIENT,
-  "CreateRecipe": WRITE_RECIPE,
-  "GetRecipe": READ_RECIPE,
-  "UpdateRecipe": WRITE_RECIPE,
-  "DeleteRecipe": DEL_RECIPE,
-  "ListRecipes": READ_RECIPE,
-  "CalculateRecipe": READ_RECIPE,
-  "CreateContainer": WRITE_OTHER,
-  "DeleteContainer": DEL_OTHER,
-  "UpdateContainer": WRITE_OTHER,
-  "ListContainers": READ_OTHER,
-  "CreateSavedRecipe": SAVE_RECIPE,
-  "GetSavedRecipe": READ_RECIPE,
-  "UpdateSavedRecipe": SAVE_RECIPE,
-  "DeleteSavedRecipe": SAVE_RECIPE,
-  "ListSavedRecipes": READ_RECIPE,
-  "CreatePackaging": WRITE_OTHER,
-  "DeletePackaging": DEL_OTHER,
-  "UpdatePackaging": WRITE_OTHER,
-  "ListPackaging": READ_OTHER,
+	"CreateIngredient":      WRITE_INGREDIENT,
+	"GetIngredient":         READ_INGREDIENT,
+	"UpdateIngredient":      WRITE_INGREDIENT,
+	"DeleteIngredient":      DEL_INGREDIENT,
+	"ListIngredients":       READ_INGREDIENT,
+	"ListProbioticSpp":      READ_INGREDIENT,
+	"ListPrebioticCategory": READ_INGREDIENT,
+	"CreateRecipe":          WRITE_RECIPE,
+	"GetRecipe":             READ_RECIPE,
+	"UpdateRecipe":          WRITE_RECIPE,
+	"DeleteRecipe":          DEL_RECIPE,
+	"ListRecipes":           READ_RECIPE,
+	"CalculateRecipe":       READ_RECIPE,
+	"CreateContainer":       WRITE_OTHER,
+	"DeleteContainer":       DEL_OTHER,
+	"UpdateContainer":       WRITE_OTHER,
+	"ListContainers":        READ_OTHER,
+	"CreateSavedRecipe":     SAVE_RECIPE,
+	"GetSavedRecipe":        READ_RECIPE,
+	"UpdateSavedRecipe":     SAVE_RECIPE,
+	"DeleteSavedRecipe":     SAVE_RECIPE,
+	"ListSavedRecipes":      READ_RECIPE,
+	"CreatePackaging":       WRITE_OTHER,
+	"DeletePackaging":       DEL_OTHER,
+	"UpdatePackaging":       WRITE_OTHER,
+	"ListPackaging":         READ_OTHER,
 }
 
 func init() {
-  fd := pb.File_canbiocin_proto_service_proto
+	fd := pb.File_canbiocin_proto_service_proto
 
-  for i := 0; i < fd.Services().Len(); i++ {
-    serviceDesc := fd.Services().Get(i)
+	for i := 0; i < fd.Services().Len(); i++ {
+		serviceDesc := fd.Services().Get(i)
 
-    for j := 0; j < serviceDesc.Methods().Len(); j++ {
-      m := serviceDesc.Methods().Get(j).Name()
-      _, ok := funcAuth[string(m)]
-      if (!ok) {
-        log.Fatalf("need to specify authorization for method '%v'", m)
-      }
-    }
-  }
+		for j := 0; j < serviceDesc.Methods().Len(); j++ {
+			m := serviceDesc.Methods().Get(j).Name()
+			_, ok := funcAuth[string(m)]
+			if !ok {
+				log.Fatalf("need to specify authorization for method '%v'", m)
+			}
+		}
+	}
 }
 
 const CLAIMS_CTX = "claims"
@@ -95,33 +95,33 @@ func (c CustomClaims) HasScope(expectedScope string) bool {
 }
 
 func checkClaimsForMethod(ctx context.Context, method string) error {
-  allowed := false
+	allowed := false
 
-  ctxVal := ctx.Value(CLAIMS_CTX)
-  var claims *validator.ValidatedClaims
-  
-  if ctxVal != nil {
-    claims = ctxVal.(*validator.ValidatedClaims)
-  }
+	ctxVal := ctx.Value(CLAIMS_CTX)
+	var claims *validator.ValidatedClaims
 
-  if claims != nil {
-    customClaims := claims.CustomClaims.(*CustomClaims)
+	if ctxVal != nil {
+		claims = ctxVal.(*validator.ValidatedClaims)
+	}
 
-    req, ok := funcAuth[method]
+	if claims != nil {
+		customClaims := claims.CustomClaims.(*CustomClaims)
 
-    if ok && customClaims.HasScope(req) {
-      allowed = true
-    }
-  }
+		req, ok := funcAuth[method]
 
-  if !allowed {
-    msg := fmt.Sprintf("Missing authorization for '%v'", method)
-    if *enforce_auth {
-      log.Printf("Enforced Auth: True, %s", msg)
-      return status.Error(codes.Unauthenticated, msg)
-    } else {
-      log.Printf("Enforced Auth: False, %s", msg)
-    }
-  }
-  return nil
+		if ok && customClaims.HasScope(req) {
+			allowed = true
+		}
+	}
+
+	if !allowed {
+		msg := fmt.Sprintf("Missing authorization for '%v'", method)
+		if *enforce_auth {
+			log.Printf("Enforced Auth: True, %s", msg)
+			return status.Error(codes.Unauthenticated, msg)
+		} else {
+			log.Printf("Enforced Auth: False, %s", msg)
+		}
+	}
+	return nil
 }

@@ -107,10 +107,10 @@ func (p *ProbioticParser) parseIngredient(ctx context.Context, row *xlsxreader.R
 				CostShippingKg:      c2,
 				Supplier:            &pb.Supplier{Name: String(row, p.columns["supplier"])},
 				MostRecentQuoteDate: utils.TimestampProtoStr(String(row, p.columns["mostRecentQuotaDate"])),
-        // TODO get these values.  0.22 seems to be a constant
-        KgPerMeKg:           0.22,
-        MeBCfuG:             stockBCfuG * .9,
-        CostOfMe:            utils.NewMoney(118, 91), // seems to be constant
+				// TODO get these values.  0.22 seems to be a constant
+				KgPerMeKg: 0.22,
+				MeBCfuG:   stockBCfuG * .9,
+				CostOfMe:  utils.NewMoney(118, 91), // seems to be constant
 			}
 			// Check to see if we already have one of these.
 			lookup, err := p.collection.QueryByName(ctx, ingredient.Strain)
