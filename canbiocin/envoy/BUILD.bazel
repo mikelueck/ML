@@ -1,5 +1,5 @@
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
-load("@rules_oci//oci:defs.bzl", "oci_image", "oci_tarball", "oci_push")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load", "oci_push")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 buildifier(
@@ -25,7 +25,7 @@ oci_image(
     ],
 )
 
-oci_tarball(
+oci_load(
     name = "tar-docker",
     format = "docker",
     image = ":image",

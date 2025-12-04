@@ -1,7 +1,7 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
-load("@rules_oci//oci:defs.bzl", "oci_push", "oci_image", "oci_image_index", "oci_tarball")
+load("@rules_oci//oci:defs.bzl", "oci_push", "oci_image", "oci_image_index", "oci_load")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 load("//rules:gofmt.bzl", "gofmt_test")
 
@@ -86,7 +86,7 @@ oci_push(
     repository = "us-central1-docker.pkg.dev/canbiocin-474014/canbiocin-dev/backend",
 )
 
-oci_tarball(
+oci_load(
     name = "tar-docker",
     format = "docker",
     image = "canbiocin_server_image",
@@ -100,7 +100,7 @@ oci_image_index(
     ],
 )
 
-oci_tarball(
+oci_load(
     name = "tar-oci-index",
     format = "oci",
     image = ":app-index",

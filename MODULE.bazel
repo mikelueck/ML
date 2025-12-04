@@ -5,7 +5,7 @@
 # For more details, please check https://github.com/bazelbuild/bazel/issues/18958
 ###############################################################################
 
-bazel_dep(name = "protobuf", version = "23.1")
+bazel_dep(name = "protobuf", version = "29.1")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 
 bazel_dep(name = "rules_python", version = "0.31.0")
@@ -18,7 +18,12 @@ pip.parse(
 )
 use_repo(pip, "pip")
 
+single_version_override(module_name="aspect_bazel_lib", version = "2.21.2")
+
+bazel_dep(name = "aspect_bazel_lib", version = "2.21.2")
 bazel_dep(name = "aspect_rules_js", version = "2.3.5")
+bazel_dep(name = "aspect_rules_jest", version = "0.24.0")
+
 
 ####### Node.js version #########
 # By default you get the node version from DEFAULT_NODE_VERSION in @rules_nodejs//nodejs:repositories.bzl

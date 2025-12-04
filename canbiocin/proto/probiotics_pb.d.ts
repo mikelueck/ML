@@ -56,6 +56,26 @@ export declare type Probiotic = Message<"Probiotic"> & {
    * @generated from field: google.protobuf.Timestamp most_recent_quote_date = 8;
    */
   mostRecentQuoteDate?: Timestamp;
+
+  /**
+   * @generated from field: double kg_per_me_kg = 10;
+   */
+  kgPerMeKg: number;
+
+  /**
+   * @generated from field: double me_b_cfu_g = 11;
+   */
+  meBCfuG: number;
+
+  /**
+   * @generated from field: Money cost_of_me = 12;
+   */
+  costOfMe?: Money;
+
+  /**
+   * @generated from field: string notes = 13;
+   */
+  notes: string;
 };
 
 /**
