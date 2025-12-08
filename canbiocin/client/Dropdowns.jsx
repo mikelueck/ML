@@ -15,7 +15,7 @@ export function FixedOptionsDropdown({value, options, changeOption}) {
   const [v, setV] = React.useState(value);
 
   let id_prefix = "ingredient-type"
-  let label = "Ingredient Type"
+  let label = "Type"
 
   const computeWidth = (v) => {
     let w = (v.length * FONT_SIZE) + WIDTH_PADDING;

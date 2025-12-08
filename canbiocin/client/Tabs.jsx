@@ -10,13 +10,15 @@ import { Box,
 
 const Ingredients = lazy(() => import('./Ingredients'));
 const Formulations = lazy(() => import('./Formulations'));
+const Packaging = lazy(() => import('./Packaging'));
 
 import { useGrpc } from './GrpcContext';
 import { scopes } from './scopes.js';
 import { getTabFromHash } from './hash_utils.js';
 import { clearGridState, 
          INGREDIENTGRIDSTATE, 
-         FORMULATIONGRIDSTATE } from './hash_utils.js';
+         FORMULATIONGRIDSTATE,
+         PACKAGINGGRIDSTATE } from './hash_utils.js';
 
 function CustomTabPanel(props) {
   const { children, value, index, ... other } = props
@@ -55,6 +57,7 @@ export default function () {
     // Changing tabs clears existing state 
     clearGridState(INGREDIENTGRIDSTATE)
     clearGridState(FORMULATIONGRIDSTATE)
+    clearGridState(PACKAGINGGRIDSTATE)
 
     setValue(newValue);
     window.location.hash="#" + newValue;
@@ -63,10 +66,11 @@ export default function () {
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+        <Tabs value={value} onChange={handleChange} aria-label="">
           {hasScope(scopes.READ_RECIPE) ? <Tab label="Formulations" {...a11yProps(0)} /> : "" }
           {hasScope(scopes.READ_INGREDIENT) ? <Tab label="Ingredients" {...a11yProps(1)} /> : "" }
-          <Tab label="Suppliers" {...a11yProps(2)} />
+          {hasScope(scopes.READ_PACKAGING) ? <Tab label="Packaging" {...a11yProps(2)} /> : "" }
+          <Tab label="Suppliers" {...a11yProps(3)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -76,6 +80,9 @@ export default function () {
         <Ingredients />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
+        <Packaging />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={3}>
         Suppliers
       </CustomTabPanel>
     </Box>

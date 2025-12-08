@@ -416,20 +416,25 @@ resource "auth0_role" "read_only" {
   name        = "Read only"
 }
 
+locals {
+  read_only_perms = ["read:ingredients", "read:recipes", "read:other"]
+  update_ingredients_perms = ["write:ingredients", "read:other"]
+  update_recipes_perms = ["write:recipes"]
+  delete_all_perms = ["delete:ingredients", "delete:recipes", "delete:other"]
+}
+
 resource "auth0_role_permissions" "read_only" {
+
   role_id = auth0_role.read_only.id
-  permissions {
-    name                       = "read:ingredients"
-    resource_server_identifier = "canbiocin"
+
+  dynamic "permissions" {
+    for_each = toset(local.read_only_perms)
+    content {
+      name = permissions.value
+      resource_server_identifier = "canbiocin"
+    }
   }
-  permissions {
-    name                       = "read:other"
-    resource_server_identifier = "canbiocin"
-  }
-  permissions {
-    name                       = "read:recipes"
-    resource_server_identifier = "canbiocin"
-  }
+
   depends_on = [
     auth0_resource_server_scopes.canbiocin
   ]
@@ -440,12 +445,40 @@ resource "auth0_role" "update_ingredients" {
   name        = "Update Ingredients"
 }
 
+resource "auth0_role" "admin" {
+  description = "Do everything"
+  name        = "Create, Update, View, Delete everything"
+}
+
 resource "auth0_role_permissions" "update_ingredients" {
   role_id = auth0_role.update_ingredients.id
-  permissions {
-    name                       = "write:ingredients"
-    resource_server_identifier = "canbiocin"
+
+  dynamic "permissions" {
+    for_each = toset(local.update_ingredients_perms)
+    content {
+      name = permissions.value
+      resource_server_identifier = "canbiocin"
+    }
   }
+  depends_on = [
+    auth0_resource_server_scopes.canbiocin
+  ]
+}
+
+resource "auth0_role_permissions" "admin" {
+  role_id = auth0_role.admin.id
+
+  dynamic "permissions" {
+    for_each = toset(setunion(local.read_only_perms, 
+                              local.update_ingredients_perms, 
+                              local.update_recipes_perms,
+                              local.delete_all_perms))
+    content {
+      name = permissions.value
+      resource_server_identifier = "canbiocin"
+    }
+  }
+
   depends_on = [
     auth0_resource_server_scopes.canbiocin
   ]
@@ -457,10 +490,15 @@ resource "auth0_role" "update_recipe" {
 }
 
 resource "auth0_role_permissions" "update_recipe" {
+  for_each = toset(local.update_recipes_perms)
   role_id = auth0_role.update_recipe.id
-  permissions {
-    name                       = "write:recipes"
-    resource_server_identifier = "canbiocin"
+
+  dynamic "permissions" {
+    for_each = toset(local.update_recipes_perms)
+    content {
+      name = permissions.value
+      resource_server_identifier = "canbiocin"
+    }
   }
   depends_on = [
     auth0_resource_server_scopes.canbiocin
@@ -1476,6 +1514,14 @@ resource "auth0_resource_server_scopes" "canbiocin" {
   scopes {
     description = "Read packaging, etc"
     name        = "read:other"
+  }
+  scopes {
+    description = "Write packaging, etc"
+    name        = "write:other"
+  }
+  scopes {
+    description = "Delete packaging, etc"
+    name        = "delete:other"
   }
   scopes {
     description = "Read recipes"

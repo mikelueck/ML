@@ -17,6 +17,11 @@ message Packaging {
     string notes = 9;    
 }
 
+message Shipping {
+  string id = 1;
+  Packaging packaging = 2;
+}
+
 message Milling_Blending_Packaging {
     string id = 1;
     string name = 2;

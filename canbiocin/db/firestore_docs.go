@@ -258,6 +258,51 @@ func NewContainerDoc(msg *pb.Container) (*ContainerDoc, error) {
 	}, nil
 }
 
+// ShippingDoc wraps a shipping document for Firestore storage
+type ShippingDoc struct {
+	ID         string `firestore:"id"`
+	Name       string `firestore:"name"` // Derived from ID
+	ProtoBytes []byte `firestore:"proto_bytes"`
+}
+
+// GetID returns the document ID
+func (d *ShippingDoc) GetID() string {
+	return d.ID
+}
+
+// GetProtoBytes returns the raw proto bytes
+func (d *ShippingDoc) GetProtoBytes() []byte {
+	return d.ProtoBytes
+}
+
+// GetProto unmarshals and returns the proto message
+func (d *ShippingDoc) GetProto() proto.Message {
+	msg := &pb.Shipping{}
+	if err := proto.Unmarshal(d.ProtoBytes, msg); err != nil {
+		return nil
+	}
+	return msg
+}
+
+// GetName returns the document name
+func (d *ShippingDoc) GetName() string {
+	return d.Name
+}
+
+// NewContainerDoc creates a new ContainerDoc from a proto message
+func NewShippingDoc(msg *pb.Shipping) (*ShippingDoc, error) {
+	bytes, err := proto.Marshal(msg)
+	if err != nil {
+		return nil, err
+	}
+	// Use ID as name since Container has no name field
+	return &ShippingDoc{
+		ID:         msg.GetId(),
+		Name:       msg.GetPackaging().GetName(),
+		ProtoBytes: bytes,
+	}, nil
+}
+
 // SupplierDoc wraps a supplier document for Firestore storage
 type SupplierDoc struct {
 	ID         string `firestore:"id"`

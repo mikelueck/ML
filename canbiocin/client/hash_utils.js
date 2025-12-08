@@ -2,6 +2,7 @@ const NUMTABS=3;
 const ROWID = "rowId"
 export const INGREDIENTGRIDSTATE = "ingredientGridState"
 export const FORMULATIONGRIDSTATE = "formulationGridState"
+export const PACKAGINGGRIDSTATE = "packagingGridState"
 
 export function getTabFromHash(hash) {
   if (hash.length > 1) {

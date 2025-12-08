@@ -26,6 +26,7 @@ go_library(
             "prebiotics.go",
             "probiotics.go",
             "recipes.go",
+            "shipping.go",
             "saved_recipes.go",
             "suppliers.go",
     ],

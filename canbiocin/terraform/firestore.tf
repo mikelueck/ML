@@ -151,6 +151,44 @@ resource "google_firestore_index" "canbiocin_packaging_index" {
   ]
 }
 
+resource "google_firestore_index" "canbiocin_container_index" {
+  collection = "container"
+  project    = var.project_id
+
+  fields {
+    field_path = "id"
+    order      = "ASCENDING"
+  }
+
+  fields {
+    field_path = "name"
+    order      = "ASCENDING"
+  }
+
+  depends_on = [
+    google_firestore_database.canbiocin_firestore
+  ]
+}
+
+resource "google_firestore_index" "canbiocin_shipping_index" {
+  collection = "shipping"
+  project    = var.project_id
+
+  fields {
+    field_path = "id"
+    order      = "ASCENDING"
+  }
+
+  fields {
+    field_path = "name"
+    order      = "ASCENDING"
+  }
+
+  depends_on = [
+    google_firestore_database.canbiocin_firestore
+  ]
+}
+
 resource "google_firestore_index" "canbiocin_blending_index" {
   collection = "blending"
   project    = var.project_id

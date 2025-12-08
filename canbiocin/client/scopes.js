@@ -7,6 +7,8 @@ export const scopes = {
   WRITE_INGREDIENT : "write:ingredients",
   DEL_INGREDIENT : "delete:ingredients",
   READ_OTHER : "read:other",
+  WRITE_OTHER : "write:other",
+  DEL_OTHER : "delete:other",
 }
 
 var funcToScope = new Map()
@@ -34,6 +36,18 @@ funcToScope.set("calculateRecipe", scopes.SAVE_RECIPE)
 
 funcToScope.set("listContainers", scopes.READ_OTHER)
 funcToScope.set("listPackaging", scopes.READ_OTHER)
+funcToScope.set("listShipping", scopes.READ_OTHER)
+funcToScope.set("updateContainer", scopes.WRITE_OTHER)
+funcToScope.set("updatePackaging", scopes.WRITE_OTHER)
+funcToScope.set("updateShipping", scopes.WRITE_OTHER)
+funcToScope.set("createContainer", scopes.WRITE_OTHER)
+funcToScope.set("createPackaging", scopes.WRITE_OTHER)
+funcToScope.set("createShipping", scopes.WRITE_OTHER)
+funcToScope.set("deleteContainer", scopes.DEL_OTHER)
+funcToScope.set("deletePackaging", scopes.DEL_OTHER)
+funcToScope.set("deleteShipping", scopes.DEL_OTHER)
+
+funcToScope.set("listAllPackaging", scopes.READ_OTHER)
 
 
 export function scope(f) {

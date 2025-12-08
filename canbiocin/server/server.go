@@ -585,3 +585,57 @@ func (s *server) ListPackaging(ctx context.Context, req *pb.ListPackagingRequest
 	}
 	return &pb.ListPackagingResponse{Packaging: packaging}, nil
 }
+
+func (s *server) ListAllPackaging(ctx context.Context, req *pb.ListAllPackagingRequest) (*pb.ListAllPackagingResponse, error) {
+	var packagingList []*db.PackagingDoc
+	var err error
+
+	err = checkClaimsForMethod(ctx, "ListPackaging")
+	if err != nil {
+		return nil, err
+	}
+
+
+	packaging := []*pb.AllPackaging{}
+
+	packagingList, err = db.GetPackagingCollection().List(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	for _, item := range packagingList {
+		proto := item.GetProto()
+		if proto == nil {
+			continue
+		}
+		p := proto.(*pb.Packaging)
+		packaging = append(packaging, &pb.AllPackaging{Item: &pb.AllPackaging_Packaging{Packaging: p}})
+	}
+
+	containerList, err := db.GetContainersCollection().List(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	for _, item := range containerList {
+		proto := item.GetProto()
+		if proto == nil {
+			continue
+		}
+		c := proto.(*pb.Container)
+		packaging = append(packaging, &pb.AllPackaging{Item: &pb.AllPackaging_Container{Container: c}})
+	}
+
+	shippingList, err := db.GetShippingCollection().List(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	for _, item := range shippingList {
+		proto := item.GetProto()
+		if proto == nil {
+			continue
+		}
+		s := proto.(*pb.Shipping)
+		packaging = append(packaging, &pb.AllPackaging{Item: &pb.AllPackaging_Shipping{Shipping: s}})
+	}
+
+	return &pb.ListAllPackagingResponse{Packaging: packaging}, nil
+}

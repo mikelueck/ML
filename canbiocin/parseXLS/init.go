@@ -41,6 +41,20 @@ func init() {
 			})
 	}
 
+	sc := db.GetShippingCollection()
+  shippingItems, err := sc.List(ctx)
+  if len(shippingItems) == 0 || err != nil {
+		sc.Create(ctx,
+			&pb.Shipping{
+        Packaging: &pb.Packaging{
+          Name:                "Test Shipping Box",
+          TotalCost:           utils.NewMoney(100, 0),
+          UnitsPackage:        100,
+          MostRecentQuoteDate: now,
+        },
+			})
+  }
+
 	items, _ = bc.QueryByName(ctx, "Milling >10kg")
 	if len(items) == 0 {
 		db.GetBlendingCollection().Create(ctx,
