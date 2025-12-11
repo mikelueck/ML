@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/ML/canbiocin/db"
@@ -758,12 +759,52 @@ func (s *server) DeletePackagingItem(ctx context.Context, req *pb.DeletePackagin
 		return nil, err
 	}
 
-	// TODO when deleting a shipping item we should go and update the containers that reference it
 	if req.GetType() == "container" {
 		err = db.GetContainersCollection().Delete(ctx, req.GetId())
 	} else if req.GetType() == "packaging" {
 		err = db.GetPackagingCollection().Delete(ctx, req.GetId())
 	} else if req.GetType() == "shipping" {
+    // When deleting a shipping item we have to remove it from any of the
+    // containers that reference it
+    // loop through all the containers and their shipping options
+    containers, err := db.GetContainersCollection().List(ctx)
+  
+    if err != nil {
+      log.Printf("Error encountered cleaning up containers when deleting a shipping item :%s", req.GetId())
+      return nil, status.Error(codes.Internal, err.Error())
+    }
+
+    for _, item := range containers {
+      proto := item.GetProto()
+      if proto == nil {
+        continue
+      }
+      c := proto.(*pb.Container)
+      log.Printf("Fixing %s:" ,c.GetPackaging().GetName()) 
+      indexToDelete := []int{}
+      for i, shippingOption := range c.GetShippingOptions() {
+        if shippingOption.GetShippingId() == req.GetId() {
+          log.Printf("Found it")
+          indexToDelete = append(indexToDelete, i)
+        }
+      }
+
+      // There really shouldn't be more than one entry so log if we see more than one
+      if len(indexToDelete) > 1 {
+        log.Printf("We found a container %s, with more than one shippingOption of %s", c.GetId(), req.GetId())
+      }
+
+      if len(indexToDelete) > 0 {
+        newOptions := append(c.GetShippingOptions()[:indexToDelete[0]], c.GetShippingOptions()[indexToDelete[0]+1:]...)
+        c.ShippingOptions = newOptions
+        err := db.GetContainersCollection().Update(ctx, c)
+        if err != nil {
+          log.Printf("Error encountered updating a container when deleting a shipping item :%s", req.GetId())
+          return nil, status.Error(codes.Internal, err.Error())
+        }
+      }
+    }
+
 		err = db.GetShippingCollection().Delete(ctx, req.GetId())
 	}
 

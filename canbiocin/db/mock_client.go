@@ -83,13 +83,14 @@ func (c *MockClient) Get(ctx context.Context, folder string, id string, doc Docu
 }
 
 func (c *MockClient) Update(ctx context.Context, folder string, doc Document) error {
+  
 	docs, ok := c.collections[folder]
 	if !ok {
 		return fmt.Errorf("Not Found")
 	}
 
 	_, err := docs.Get(doc.GetID())
-	if !ok {
+	if err != nil {
 		return err
 	}
 
