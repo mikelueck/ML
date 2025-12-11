@@ -217,6 +217,13 @@ message ListPackagingResponse {
     repeated Packaging packaging = 1;
 }
 
+message ListShippingRequest {
+}
+
+message ListShippingResponse {
+    repeated Shipping shipping = 1;
+}
+
 message AllPackaging {
     oneof item {
       Container container = 1;
@@ -230,6 +237,37 @@ message ListAllPackagingRequest {
 
 message ListAllPackagingResponse {
     repeated AllPackaging packaging = 1;
+}
+
+message CreatePackagingItemRequest {
+    AllPackaging packaging = 1;
+}
+
+message CreatePackagingItemResponse {
+    string id = 1;
+}
+
+message GetPackagingItemRequest {
+    string id = 1;
+    string type = 2;
+}
+message GetPackagingItemResponse {
+    AllPackaging packaging = 1;
+}
+
+message UpdatePackagingItemRequest {
+    AllPackaging packaging = 1;
+}
+
+message UpdatePackagingItemResponse {
+}
+
+message DeletePackagingItemRequest {
+    string id = 1;
+    string type = 2;
+}
+
+message DeletePackagingItemResponse {
 }
 
 service CanbiocinService {
@@ -260,7 +298,12 @@ service CanbiocinService {
   rpc DeletePackaging(DeletePackagingRequest) returns (DeletePackagingResponse) {}
   rpc UpdatePackaging(UpdatePackagingRequest) returns (UpdatePackagingResponse) {}
   rpc ListPackaging(ListPackagingRequest) returns (ListPackagingResponse) {}
+  rpc ListShipping(ListShippingRequest) returns (ListShippingResponse) {}
   rpc ListAllPackaging(ListAllPackagingRequest) returns (ListAllPackagingResponse) {}
+  rpc CreatePackagingItem(CreatePackagingItemRequest) returns (CreatePackagingItemResponse) {}
+  rpc GetPackagingItem(GetPackagingItemRequest) returns (GetPackagingItemResponse) {}
+  rpc UpdatePackagingItem(UpdatePackagingItemRequest) returns (UpdatePackagingItemResponse) {}
+  rpc DeletePackagingItem(DeletePackagingItemRequest) returns (DeletePackagingItemResponse) {}
 
 
 }

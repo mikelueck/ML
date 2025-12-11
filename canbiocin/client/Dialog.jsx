@@ -187,7 +187,7 @@ export function InputDialog({obj, title, content, input_props, open, onClose, on
         {content}
       </Typography>
       <Box>
-      <Field editable="true" onChange={onUpdate} />
+      <Field fullWidth editable="true" onChange={onUpdate} />
       </Box>
     </DialogContent>
     <DialogActions>

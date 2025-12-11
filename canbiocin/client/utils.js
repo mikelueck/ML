@@ -3,7 +3,9 @@ const recipe_pb = require('../proto/recipe_pb.js');
 const probiotic_pb = require('../proto/probiotics_pb.js');
 const prebiotic_pb = require('../proto/prebiotics_pb.js');
 const postbiotic_pb = require('../proto/postbiotics_pb.js');
+const container_pb = require('../proto/container_pb.js');
 const other_pb = require('../proto/other_pb.js');
+const service_pb = require('../proto/service_pb.js');
 const supplier_pb = require('../proto/supplier_pb.js');
 const money_pb = require('../proto/money_pb.js');
 import { timestampToDate } from './timestamp.js';
@@ -144,12 +146,36 @@ export const emptyPostbiotic = (p) => {
       })
 }
 
-export const emptyPackagingIngredient = (p) => {
-  return create(other_pb.PackagingSchema, {
+export const emptyPackaging = (type) => {
+  let retval = create(service_pb.AllPackagingSchema, {})
+  retval.item.case = type
+
+  let packaging = create(other_pb.PackagingSchema, {
       totalCost: emptyMoney(),
       supplier: emptySupplier(),
       mostRecentQuoteDate: emptyTS(),
+  })
+
+  switch (type) {
+    case "container":
+      retval.item.value = create(container_pb.ContainerSchema, {
+        packaging: packaging,
+        shippingOptions: [],
       })
+      break
+    case "packaging":
+      retval.item.value = packaging
+      break
+    case "shipping":
+      retval.item.value = create(other_pb.ShippingSchema, {
+        packaging: packaging,
+      })
+      break
+    default:
+      alert(`Unknown type '${type}'`)
+  }
+
+  return retval
 }
 
 export const emptyIngredient = (type) => {
@@ -180,6 +206,13 @@ export const emptyIngredientForType = (type) => {
   } else {  
     alert(`TODO emptyIngredient ${type}`)
   }
+}
+
+export const emptyShippingOption = () => {
+  return create(container_pb.ShippingOptionSchema, {
+      shippingId: "",
+      numContainers: 0,
+      })
 }
 
 export const emptyProbioticIngredient = () => {

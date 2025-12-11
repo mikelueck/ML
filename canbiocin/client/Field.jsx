@@ -42,7 +42,7 @@ export function Field(props) {
 
     if (!props.sx && !props.multiline) {
       let width = DEFAULT_INPUT_WIDTH
-      if (props.value.length * FONT_SIZE > DEFAULT_INPUT_WIDTH) {
+      if (props.value && props.value.toString().length * FONT_SIZE > DEFAULT_INPUT_WIDTH) {
         width = ((props.value.length + 1) * FONT_SIZE)
       }
       textProps.inputProps.style.width = `${width}px`

@@ -527,7 +527,7 @@ function PackagingSelect({columnDef, newRowFn, editable, packaging, apiRef, setP
         toolbar: { label: "Add Packaging",
                    fieldToFocus: fieldToFocus,
                    newRowFn: newRowFn,
-                   setIngredients: setPackaging, 
+                   setRows: setPackaging, 
                    setRowModesModel: setRowModesModel, 
                    editable: editable },
       }}
@@ -652,6 +652,10 @@ const ContainerFieldOrDropdown = React.memo(function ContainerFieldOrDropdown({r
     return recipe?.container || null;
   }, [recipe?.container?.id, recipe?.container?.packaging?.name]);
 
+  const displayValue = React.useMemo(() => {
+    return recipe?.container?.packaging?.name || "";
+  }, [recipe?.container?.packaging?.name]);
+    
   if (editable) {
     return (
     <ContainerDropdown
@@ -661,10 +665,6 @@ const ContainerFieldOrDropdown = React.memo(function ContainerFieldOrDropdown({r
     />
     )
   } else {
-    const displayValue = React.useMemo(() => {
-      return recipe?.container?.packaging?.name || "";
-    }, [recipe?.container?.packaging?.name]);
-    
     return (
     <Field
         id='container'
@@ -911,8 +911,6 @@ export default function () {
       let newPackaging = rowsOrFn(packagingItems)
       setPackagingItems(newPackaging)
     } else {
-      console.log("setPackaging")
-      alert("setPackaging called without a function")
       setPackagingItems(rowsOrFn)
     }     
   }

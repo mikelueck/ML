@@ -39,6 +39,7 @@ webpack_bundle(
       "Login.jsx",
       "Logout.jsx",
       "Packaging.jsx",
+      "PackagingItem.jsx",
       "Profile.jsx",
       "Ingredient.jsx",
       "Ingredients.jsx",

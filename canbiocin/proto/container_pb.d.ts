@@ -12,6 +12,27 @@ import type { Packaging } from "./other_pb.js";
 export declare const file_canbiocin_proto_container: GenFile;
 
 /**
+ * @generated from message ShippingOption
+ */
+export declare type ShippingOption = Message<"ShippingOption"> & {
+  /**
+   * @generated from field: string shipping_id = 1;
+   */
+  shippingId: string;
+
+  /**
+   * @generated from field: int32 num_containers = 2;
+   */
+  numContainers: number;
+};
+
+/**
+ * Describes the message ShippingOption.
+ * Use `create(ShippingOptionSchema)` to create a new message.
+ */
+export declare const ShippingOptionSchema: GenMessage<ShippingOption>;
+
+/**
  * @generated from message Container
  */
 export declare type Container = Message<"Container"> & {
@@ -29,6 +50,11 @@ export declare type Container = Message<"Container"> & {
    * @generated from field: int32 size_g = 3;
    */
   sizeG: number;
+
+  /**
+   * @generated from field: repeated ShippingOption shipping_options = 4;
+   */
+  shippingOptions: ShippingOption[];
 };
 
 /**

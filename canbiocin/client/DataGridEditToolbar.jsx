@@ -11,25 +11,25 @@ import { Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
 export function EditToolbar(props) {
-  const { label, fieldToFocus, newRowFn, setIngredients, setRowModesModel, editable } = props;
+  const { label, fieldToFocus, newRowFn, setRows, setRowModesModel, editable } = props;
 
   const handleClick = () => {
     
-    let newIngredient = newRowFn();
+    let newRow = newRowFn();
 
-    setIngredients((oldRows) => {
+    setRows((oldRows) => {
       return [
         ...oldRows, 
-        newIngredient,
+        newRow,
       ]
     });
 
     let id = ""
 
-    if (newIngredient.id) {
-      id = newIngredient.id
-    } else if (newIngredient.item && newIngredient.item.value) {
-      id = newIngredient.item.value.id
+    if (newRow.id) {
+      id = newRow.id
+    } else if (newRow.item && newRow.item.value) {
+      id = newRow.item.value.id
     }
 
     setRowModesModel((oldModel) => ({

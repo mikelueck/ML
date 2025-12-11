@@ -55,7 +55,12 @@ var funcAuth = map[string]string{
 	"DeletePackaging":       DEL_OTHER,
 	"UpdatePackaging":       WRITE_OTHER,
 	"ListPackaging":         READ_OTHER,
+	"ListShipping":          READ_OTHER,
 	"ListAllPackaging":      READ_OTHER,
+	"CreatePackagingItem":   WRITE_OTHER,
+	"GetPackagingItem":      READ_OTHER,
+	"UpdatePackagingItem":   WRITE_OTHER,
+	"DeletePackagingItem":   DEL_OTHER,
 }
 
 func init() {

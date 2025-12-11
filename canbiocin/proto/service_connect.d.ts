@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CalculateRecipeRequest, CalculateRecipeResponse, CreateContainerRequest, CreateContainerResponse, CreateIngredientRequest, CreateIngredientResponse, CreatePackagingRequest, CreatePackagingResponse, CreateRecipeRequest, CreateRecipeResponse, CreateSavedRecipeRequest, CreateSavedRecipeResponse, DeleteContainerRequest, DeleteContainerResponse, DeleteIngredientRequest, DeleteIngredientResponse, DeletePackagingRequest, DeletePackagingResponse, DeleteRecipeRequest, DeleteRecipeResponse, DeleteSavedRecipeRequest, DeleteSavedRecipeResponse, GetIngredientRequest, GetIngredientResponse, GetRecipeRequest, GetRecipeResponse, GetSavedRecipeRequest, GetSavedRecipeResponse, ListContainersRequest, ListContainersResponse, ListIngredientsRequest, ListIngredientsResponse, ListPackagingRequest, ListPackagingResponse, ListPrebioticCategoryRequest, ListPrebioticCategoryResponse, ListProbioticSppRequest, ListProbioticSppResponse, ListRecipesRequest, ListRecipesResponse, ListSavedRecipesRequest, ListSavedRecipesResponse, UpdateContainerRequest, UpdateContainerResponse, UpdateIngredientRequest, UpdateIngredientResponse, UpdatePackagingRequest, UpdatePackagingResponse, UpdateRecipeRequest, UpdateRecipeResponse, UpdateSavedRecipeRequest, UpdateSavedRecipeResponse } from "./service_pbjs";
+import { CalculateRecipeRequest, CalculateRecipeResponse, CreateContainerRequest, CreateContainerResponse, CreateIngredientRequest, CreateIngredientResponse, CreatePackagingItemRequest, CreatePackagingItemResponse, CreatePackagingRequest, CreatePackagingResponse, CreateRecipeRequest, CreateRecipeResponse, CreateSavedRecipeRequest, CreateSavedRecipeResponse, DeleteContainerRequest, DeleteContainerResponse, DeleteIngredientRequest, DeleteIngredientResponse, DeletePackagingItemRequest, DeletePackagingItemResponse, DeletePackagingRequest, DeletePackagingResponse, DeleteRecipeRequest, DeleteRecipeResponse, DeleteSavedRecipeRequest, DeleteSavedRecipeResponse, GetIngredientRequest, GetIngredientResponse, GetPackagingItemRequest, GetPackagingItemResponse, GetRecipeRequest, GetRecipeResponse, GetSavedRecipeRequest, GetSavedRecipeResponse, ListAllPackagingRequest, ListAllPackagingResponse, ListContainersRequest, ListContainersResponse, ListIngredientsRequest, ListIngredientsResponse, ListPackagingRequest, ListPackagingResponse, ListPrebioticCategoryRequest, ListPrebioticCategoryResponse, ListProbioticSppRequest, ListProbioticSppResponse, ListRecipesRequest, ListRecipesResponse, ListSavedRecipesRequest, ListSavedRecipesResponse, ListShippingRequest, ListShippingResponse, UpdateContainerRequest, UpdateContainerResponse, UpdateIngredientRequest, UpdateIngredientResponse, UpdatePackagingItemRequest, UpdatePackagingItemResponse, UpdatePackagingRequest, UpdatePackagingResponse, UpdateRecipeRequest, UpdateRecipeResponse, UpdateSavedRecipeRequest, UpdateSavedRecipeResponse } from "./service_pbjs";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -244,6 +244,60 @@ export declare const CanbiocinService: {
       readonly name: "ListPackaging",
       readonly I: typeof ListPackagingRequest,
       readonly O: typeof ListPackagingResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.ListShipping
+     */
+    readonly listShipping: {
+      readonly name: "ListShipping",
+      readonly I: typeof ListShippingRequest,
+      readonly O: typeof ListShippingResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.ListAllPackaging
+     */
+    readonly listAllPackaging: {
+      readonly name: "ListAllPackaging",
+      readonly I: typeof ListAllPackagingRequest,
+      readonly O: typeof ListAllPackagingResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.CreatePackagingItem
+     */
+    readonly createPackagingItem: {
+      readonly name: "CreatePackagingItem",
+      readonly I: typeof CreatePackagingItemRequest,
+      readonly O: typeof CreatePackagingItemResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.GetPackagingItem
+     */
+    readonly getPackagingItem: {
+      readonly name: "GetPackagingItem",
+      readonly I: typeof GetPackagingItemRequest,
+      readonly O: typeof GetPackagingItemResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.UpdatePackagingItem
+     */
+    readonly updatePackagingItem: {
+      readonly name: "UpdatePackagingItem",
+      readonly I: typeof UpdatePackagingItemRequest,
+      readonly O: typeof UpdatePackagingItemResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc CanbiocinService.DeletePackagingItem
+     */
+    readonly deletePackagingItem: {
+      readonly name: "DeletePackagingItem",
+      readonly I: typeof DeletePackagingItemRequest,
+      readonly O: typeof DeletePackagingItemResponse,
       readonly kind: MethodKind.Unary,
     },
   }

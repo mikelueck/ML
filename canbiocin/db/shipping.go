@@ -72,3 +72,36 @@ func (pc *ShippingCollection) QueryByName(ctx context.Context, name string) ([]*
 	}
 	return docs, nil
 }
+
+func (pc *ShippingCollection) QueryByContainer(ctx context.Context, c *pb.Container) ([]*ShippingDoc, error) {
+	var docs []*ShippingDoc
+
+	iter, err := client.List(ctx, pc.collectionName, pc.defaultOrderBy, pc.defaultLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer iter.Stop()
+
+	options := make(map[string]int)
+
+	for _, option := range c.GetShippingOptions() {
+		options[option.GetShippingId()] = 1
+	}
+
+	for {
+		docWrapper := pc.getWrapper()
+		err := iter.Next(docWrapper)
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+
+		_, ok := options[docWrapper.GetID()]
+		if ok {
+			docs = append(docs, docWrapper)
+		}
+	}
+	return docs, nil
+}

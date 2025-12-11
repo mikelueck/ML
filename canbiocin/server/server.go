@@ -586,6 +586,31 @@ func (s *server) ListPackaging(ctx context.Context, req *pb.ListPackagingRequest
 	return &pb.ListPackagingResponse{Packaging: packaging}, nil
 }
 
+func (s *server) ListShipping(ctx context.Context, req *pb.ListShippingRequest) (*pb.ListShippingResponse, error) {
+	var shippingList []*db.ShippingDoc
+	var err error
+
+	err = checkClaimsForMethod(ctx, "ListShipping")
+	if err != nil {
+		return nil, err
+	}
+
+	shippingList, err = db.GetShippingCollection().List(ctx)
+	shipping := []*pb.Shipping{}
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	for _, item := range shippingList {
+		proto := item.GetProto()
+		if proto == nil {
+			continue
+		}
+		s := proto.(*pb.Shipping)
+		shipping = append(shipping, s)
+	}
+	return &pb.ListShippingResponse{Shipping: shipping}, nil
+}
+
 func (s *server) ListAllPackaging(ctx context.Context, req *pb.ListAllPackagingRequest) (*pb.ListAllPackagingResponse, error) {
 	var packagingList []*db.PackagingDoc
 	var err error
@@ -594,7 +619,6 @@ func (s *server) ListAllPackaging(ctx context.Context, req *pb.ListAllPackagingR
 	if err != nil {
 		return nil, err
 	}
-
 
 	packaging := []*pb.AllPackaging{}
 
@@ -638,4 +662,114 @@ func (s *server) ListAllPackaging(ctx context.Context, req *pb.ListAllPackagingR
 	}
 
 	return &pb.ListAllPackagingResponse{Packaging: packaging}, nil
+}
+
+func (s *server) CreatePackagingItem(ctx context.Context, req *pb.CreatePackagingItemRequest) (*pb.CreatePackagingItemResponse, error) {
+	var err error
+	var id string
+
+	err = checkClaimsForMethod(ctx, "CreatePackagingItem")
+	if err != nil {
+		return nil, err
+	}
+
+	if req.GetPackaging().GetContainer() != nil {
+		id, err = db.GetContainersCollection().Create(ctx, req.GetPackaging().GetContainer())
+	}
+	if req.GetPackaging().GetPackaging() != nil {
+		id, err = db.GetPackagingCollection().Create(ctx, req.GetPackaging().GetPackaging())
+	}
+	if req.GetPackaging().GetShipping() != nil {
+		id, err = db.GetShippingCollection().Create(ctx, req.GetPackaging().GetShipping())
+	}
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	return &pb.CreatePackagingItemResponse{Id: id}, nil
+}
+
+func (s *server) GetPackagingItem(ctx context.Context, req *pb.GetPackagingItemRequest) (*pb.GetPackagingItemResponse, error) {
+	var reterr error
+	var i *pb.AllPackaging
+
+	err := checkClaimsForMethod(ctx, "GetPackagingItem")
+	if err != nil {
+		return nil, err
+	}
+
+	if req.GetType() == "packaging" {
+		doc, err := db.GetPackagingCollection().Get(ctx, req.GetId())
+		if err == nil {
+			i = &pb.AllPackaging{Item: &pb.AllPackaging_Packaging{Packaging: doc.GetProto().(*pb.Packaging)}}
+		} else {
+			reterr = status.Error(codes.NotFound, err.Error())
+		}
+	} else if req.GetType() == "container" {
+		doc, err := db.GetContainersCollection().Get(ctx, req.GetId())
+		if err == nil {
+			i = &pb.AllPackaging{Item: &pb.AllPackaging_Container{Container: doc.GetProto().(*pb.Container)}}
+		} else {
+			reterr = status.Error(codes.NotFound, err.Error())
+		}
+	} else if req.GetType() == "shipping" {
+		doc, err := db.GetShippingCollection().Get(ctx, req.GetId())
+		if err == nil {
+			i = &pb.AllPackaging{Item: &pb.AllPackaging_Shipping{Shipping: doc.GetProto().(*pb.Shipping)}}
+		} else {
+			reterr = status.Error(codes.NotFound, err.Error())
+		}
+	}
+
+	if i != nil {
+		return &pb.GetPackagingItemResponse{Packaging: i}, nil
+	}
+	return nil, reterr
+}
+
+func (s *server) UpdatePackagingItem(ctx context.Context, req *pb.UpdatePackagingItemRequest) (*pb.UpdatePackagingItemResponse, error) {
+	var err error
+
+	err = checkClaimsForMethod(ctx, "UpdatePackagingItem")
+	if err != nil {
+		return nil, err
+	}
+
+	if req.GetPackaging().GetContainer() != nil {
+		err = db.GetContainersCollection().Update(ctx, req.GetPackaging().GetContainer())
+	}
+	if req.GetPackaging().GetPackaging() != nil {
+		err = db.GetPackagingCollection().Update(ctx, req.GetPackaging().GetPackaging())
+	}
+	if req.GetPackaging().GetShipping() != nil {
+		err = db.GetShippingCollection().Update(ctx, req.GetPackaging().GetShipping())
+	}
+
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+	return nil, nil
+}
+
+func (s *server) DeletePackagingItem(ctx context.Context, req *pb.DeletePackagingItemRequest) (*pb.DeletePackagingItemResponse, error) {
+	var err error
+
+	err = checkClaimsForMethod(ctx, "DeletePackagingItem")
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO when deleting a shipping item we should go and update the containers that reference it
+	if req.GetType() == "container" {
+		err = db.GetContainersCollection().Delete(ctx, req.GetId())
+	} else if req.GetType() == "packaging" {
+		err = db.GetPackagingCollection().Delete(ctx, req.GetId())
+	} else if req.GetType() == "shipping" {
+		err = db.GetShippingCollection().Delete(ctx, req.GetId())
+	}
+
+	if err != nil {
+		return nil, status.Error(codes.Unknown, err.Error())
+	}
+
+	return &pb.DeletePackagingItemResponse{}, nil
 }

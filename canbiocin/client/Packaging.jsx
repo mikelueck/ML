@@ -65,7 +65,7 @@ export default function () {
       renderCell: (params) => (
         <Link to={{
           pathname: "/packaging",
-          search: `?type=${getItemCase(params.row)}&packagingId=${getItemValue(params.row).id}`, 
+          search: `?type=${getItemCase(params.row)}&packagingId=${getRowId(params.row)}`, 
         }}
         onClick={handleItemClick(navigate, getItemValue(params.row).id)}>
         {getItemValue(params.row).name}
@@ -202,7 +202,7 @@ export default function () {
       options={[
         {label: "Container", id:"container"},
         {label: "Packaging", id:"packaging"},
-        {label: "Shipping", id:"Shipping"},
+        {label: "Shipping", id:"shipping"},
         ]}
       open={openAdd}
       onClose={CloseAdd}

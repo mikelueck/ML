@@ -267,7 +267,7 @@ export function SavedRecipeDropdown({recipeId, value, onChange}) {
 
   React.useEffect(() => {
     const fetchOptions = async () => {
-      if (hasScope(scopes.READ_RECIPE)) {
+      if (!hasScope(scopes.READ_RECIPE)) {
         return
       }
       try {
@@ -319,3 +319,75 @@ export function SavedRecipeDropdown({recipeId, value, onChange}) {
     />
   )
 }
+
+export const ShippingDropdown = React.memo(function ShippingDropdown({value, onChange}) {
+  const [options, setOptions] = React.useState([]);
+  const { grpcRequest, hasScope } = useGrpc();
+
+  let id_prefix = "shipping"
+  let label = "Shipping"
+
+  const getOptionLabel = React.useCallback((option) => {
+      return option ? `${option.packaging.name}` : ""
+  }, []);
+
+  const computeWidth = React.useCallback((v) => {
+    if (!v) return DEFAULT_WIDTH;
+    let w = (getOptionLabel(v).length * FONT_SIZE) + WIDTH_PADDING;
+    if (w < DEFAULT_WIDTH) return DEFAULT_WIDTH
+    return w
+  }, [getOptionLabel]);
+
+  const inputWidth = React.useMemo(() => {
+    return computeWidth(value);
+  }, [value, computeWidth]);
+
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      const fetchOptions = async () => {
+        try {
+          const response = await grpcRequest("listShipping", {});
+          setOptions(response.shipping)
+        } catch (error) {
+          console.log(error);
+        } finally {
+        }
+      };
+      fetchOptions();
+    }, 500);
+    return () => { clearTimeout(handler) }
+  }, [grpcRequest]);
+
+  const handleChange = React.useCallback((event, newValue) => {
+    if (onChange) {
+       onChange(newValue);
+    }
+  }, [onChange]);
+
+  const isOptionEqualToValue = React.useCallback((option, selectedValue) => {
+    if (!option || !selectedValue) return false;
+    return option.id == selectedValue.id
+  }, []);
+
+  if (!hasScope(scopes.READ_OTHER)) {
+    return ""
+  }
+
+  return (
+    <Autocomplete
+      componentsProps={{ popper: { style: { width: 'fit-content' } } }}
+      sx={{ width: `${inputWidth}px` }}
+      options={options}
+      filterOptions={(options, state) => options}
+      value={value}
+      renderInput={(params) => <TextField {...params} label={label} variant="outlined" />}
+      onChange={handleChange}
+      getOptionLabel={getOptionLabel}
+      isOptionEqualToValue={isOptionEqualToValue}
+      disableClearable
+      blurOnSelect
+      size='small'
+    />
+  )
+});
+

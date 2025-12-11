@@ -221,7 +221,7 @@ const postbioticColumns = (editable, nameOptions) => {return [
   },
 ]};
 
-function IngredientRows({title, newRowFn, columnDef, editable, ingredients, apiRef, setIngredients, rowModesModel, setRowModesModel, onRowModesModelChange, onRowEditStop, processRowUpdate, fieldToFocus}) {
+function IngredientRows({title, newRowFn, columnDef, editable, ingredients, apiRef, setRows, rowModesModel, setRowModesModel, onRowModesModelChange, onRowEditStop, processRowUpdate, fieldToFocus}) {
   if (!editable && ingredients.length == 0) {
     return "" 
   }
@@ -254,7 +254,7 @@ function IngredientRows({title, newRowFn, columnDef, editable, ingredients, apiR
             label: "Add Ingredient",
             fieldToFocus: fieldToFocus,
             newRowFn: newRowFn, 
-            setIngredients: setIngredients, 
+            setRows: setRows, 
             setRowModesModel: setRowModesModel, 
             editable: editable },
         }}
@@ -394,13 +394,13 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
       return NewFormItem({field, label, type, units, renderItem, props_provider, extra_params});
   }
 
-  const setIngredients = (recipe, field) => (rowsOrFn) => {
+  const setRows = (recipe, field) => (rowsOrFn) => {
     if (typeof rowsOrFn === 'function') {
       let newIngredients = rowsOrFn(recipe[field])
       recipe[field] = newIngredients
     } else {
-      console.log("setIngredients")
-      alert("setIngredients called without a function")
+      console.log("setRows")
+      alert("setRows called without a function")
       recipe[field] = rowsOrFn
     }
   }
@@ -457,7 +457,7 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
           columnDef={probioticColumns(editable, getNamesForType('probiotic')).concat(actionColumns(editable, rowModels.probiotics.rowModesModel))} 
           editable={editable}
           ingredients={recipe.probiotics}
-          setIngredients={setIngredients(recipe, "probiotics")}
+          setRows={setRows(recipe, "probiotics")}
           apiRef={rowModels.probiotics.apiRef}
           rowModesModel={rowModels.probiotics.rowModesModel}
           setRowModesModel={rowModels.probiotics.setRowModesModel}
@@ -474,7 +474,7 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
           columnDef={prebioticColumns(editable, getNamesForType('prebiotic')).concat(actionColumns(editable, rowModels.prebiotics.rowModesModel))} 
           editable={editable}
           ingredients={recipe.prebiotics}
-          setIngredients={setIngredients(recipe, "prebiotics")}
+          setRows={setRows(recipe, "prebiotics")}
           apiRef={rowModels.prebiotics.apiRef}
           rowModesModel={rowModels.prebiotics.rowModesModel}
           setRowModesModel={rowModels.prebiotics.setRowModesModel}
@@ -492,7 +492,7 @@ function Formulation({recipe, editable, ingredientsByType, actionColumns, rowMod
           editable={editable}
           ingredients={recipe.postbiotics}
           apiRef={rowModels.postbiotics.apiRef}
-          setIngredients={setIngredients(recipe, "postbiotics")}
+          setRows={setRows(recipe, "postbiotics")}
           rowModesModel={rowModels.postbiotics.rowModesModel}
           setRowModesModel={rowModels.postbiotics.setRowModesModel}
           onRowModesModelChange={rowModels.postbiotics.onModesModelChange}

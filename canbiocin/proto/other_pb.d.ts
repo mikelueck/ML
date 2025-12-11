@@ -65,6 +65,27 @@ export declare type Packaging = Message<"Packaging"> & {
 export declare const PackagingSchema: GenMessage<Packaging>;
 
 /**
+ * @generated from message Shipping
+ */
+export declare type Shipping = Message<"Shipping"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: Packaging packaging = 2;
+   */
+  packaging?: Packaging;
+};
+
+/**
+ * Describes the message Shipping.
+ * Use `create(ShippingSchema)` to create a new message.
+ */
+export declare const ShippingSchema: GenMessage<Shipping>;
+
+/**
  * @generated from message Milling_Blending_Packaging
  */
 export declare type Milling_Blending_Packaging = Message<"Milling_Blending_Packaging"> & {
