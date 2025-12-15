@@ -65,12 +65,10 @@ const precision = 2;
 const renderDualCell = (params) => {
   return (
     <>
-    <Grid>
+    <Grid container>
     <Typography variant="span">
       {`(${params.value.cb})\u00A0/\u00A0`}
     </Typography>
-    </Grid>
-    <Grid>
     <Typography fontWeight="bold" color="primary" variant="span">
       {`${params.value.client}`}
     </Typography>
