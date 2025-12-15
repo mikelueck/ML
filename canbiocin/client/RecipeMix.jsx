@@ -65,12 +65,16 @@ const precision = 2;
 const renderDualCell = (params) => {
   return (
     <>
+    <Grid>
     <Typography variant="span">
       {`(${params.value.cb})\u00A0/\u00A0`}
     </Typography>
+    </Grid>
+    <Grid>
     <Typography fontWeight="bold" color="primary" variant="span">
       {`${params.value.client}`}
     </Typography>
+    </Grid>
     </>
   )
 }
@@ -85,7 +89,14 @@ const commonColumns = (columnsToShow, currencyRate) => { return [
     },
     flex: 1.5,
     renderHeader: () => (
-      <strong>{'Amount in'}<br/>{'Blend'}</strong>
+      <Grid container>
+      <Typography fontWeight="bold" variant="span">
+       {'Amount\u00A0in\u00A0'} 
+      </Typography>
+      <Typography fontWeight="bold" variant="span">
+        {'Blend'}
+      </Typography>
+      </Grid>
     ),
     valueFormatter: (value) => {
       return valueToPrecision(value, precision, " %")
@@ -115,7 +126,17 @@ const commonColumns = (columnsToShow, currencyRate) => { return [
     },
     flex: 1.5,
     renderHeader: () => (
-      <strong>{'Amount'}<br/>{'Needed (kg)'}</strong>
+      <Grid container>
+      <Typography fontWeight="bold" variant="span">
+       {'Amount\u00A0'} 
+      </Typography>
+      <Typography fontWeight="bold" variant="span">
+        {'Needed\u00A0'}
+      </Typography>
+      <Typography fontWeight="bold" variant="span">
+        {'(kg)'}
+      </Typography>
+      </Grid>
     ),
     valueFormatter: (value) => {
       return valueToPrecision(value, precision)
@@ -130,9 +151,16 @@ const commonColumns = (columnsToShow, currencyRate) => { return [
       return {cb: moneyToString(row.cbCostPerContainer, precision, false),
               client: moneyToString(row.clientCostPerContainer, precision, false),           }
     },
-    flex: 3,
+    flex: 2,
     renderHeader: () => (
-      <strong>{'Cost / Container'}</strong>
+      <Grid container>
+      <Typography fontWeight="bold" variant="span">
+       {'Cost\u00A0/\u00A0'} 
+      </Typography>
+      <Typography fontWeight="bold" variant="span">
+        {'Container'}
+      </Typography>
+      </Grid>
     ),
     renderCell: renderDualCell,
   }] : []),
@@ -146,7 +174,14 @@ const commonColumns = (columnsToShow, currencyRate) => { return [
     },
     flex: 1.5,
     renderHeader: () => (
-      <strong>{'CanBiocin'}<br/>{'CoGs/Container'}</strong>
+      <Grid container>
+      <Typography fontWeight="bold" variant="span">
+       {'CanBiocin\u00A0'} 
+      </Typography>
+      <Typography fontWeight="bold" variant="span">
+        {'CoGs/Container'}
+      </Typography>
+      </Grid>
     ),
     valueFormatter: (value) => {
       if (value.length > 0) {
@@ -164,9 +199,16 @@ const commonColumns = (columnsToShow, currencyRate) => { return [
       return {cb: moneyToString(row.cbCostPerServing, 4, false),
               client: moneyToString(row.clientCostPerServing, 4, false),           }
     },
-    flex: 3,
+    flex: 2,
     renderHeader: () => (
-      <strong>{'Cost / Serving'}</strong>
+      <Grid container>
+      <Typography fontWeight="bold" variant="span">
+       {'Cost\u00A0/\u00A0'} 
+      </Typography>
+      <Typography fontWeight="bold" variant="span">
+        {'Serving'}
+      </Typography>
+      </Grid>
     ),
     renderCell: renderDualCell,
   }] : []),
@@ -217,7 +259,7 @@ const commonColumns = (columnsToShow, currencyRate) => { return [
       return {cb: moneyToString(row.cbTotal, precision, false),
               client: moneyToString(row.clientTotal, precision, false),           }
     },
-    flex: 3,
+    flex: 2,
     renderHeader: () => (
       <strong>{'Order Total'}</strong>
     ),
@@ -233,7 +275,17 @@ const commonColumns = (columnsToShow, currencyRate) => { return [
     },
     flex: 1.5,
     renderHeader: () => (
-      <strong>{'Total'}<br/>{'CanBiocin'}<br/>{'CoGs/Order'}</strong>
+      <Grid container>
+      <Typography fontWeight="bold" variant="span">
+       {'Total\u00A0'} 
+      </Typography>
+      <Typography fontWeight="bold" variant="span">
+        {'CanBiocin\u00A0'}
+      </Typography>
+      <Typography fontWeight="bold" variant="span">
+        {'CoGs/Order'}
+      </Typography>
+      </Grid>
     ),
     valueFormatter: (value) => {
       if (value.length > 0) {
@@ -252,7 +304,14 @@ const commonColumns = (columnsToShow, currencyRate) => { return [
     },
     flex: 1.5,
     renderHeader: () => (
-      <strong>{'Total Client'}<br/>{'CoGs/Order'}</strong>
+      <Grid container>
+      <Typography fontWeight="bold" variant="span">
+       {'Total Client\u00A0'} 
+      </Typography>
+      <Typography fontWeight="bold" variant="span">
+        {'CoGs/Order'}
+      </Typography>
+      </Grid>
     ),
     valueFormatter: (value) => {
       return '$\u00A0' + value;
@@ -268,7 +327,14 @@ const commonColumns = (columnsToShow, currencyRate) => { return [
     },
     flex: 1.5,
     renderHeader: () => (
-      <strong>{'$US Client'}<br/>{'CoGs/Order'}</strong>
+      <Grid container>
+      <Typography fontWeight="bold" variant="span">
+       {'$US Client\u00A0'} 
+      </Typography>
+      <Typography fontWeight="bold" variant="span">
+        {'CoGs/Order'}
+      </Typography>
+      </Grid>
     ),
     renderCell: (params) => {
       return (
@@ -322,7 +388,14 @@ const probioticColumns = (columnsToShow, currencyRate) => { return [
     flex: 1,
     type: 'number',
     renderHeader: () => (
-      <strong>{'Desired'}<br/>{'B CFU/g'}</strong>
+      <Grid container>
+      <Typography fontWeight="bold" variant="span">
+       {'Desired\u00A0'} 
+      </Typography>
+      <Typography fontWeight="bold" variant="span">
+        {'B\u00A0BCFU/g'}
+      </Typography>
+      </Grid>
     ),
   },
   ...commonColumns(columnsToShow, currencyRate),
@@ -372,7 +445,14 @@ const packagingColumns = (columnsToShow, currencyRate) => { return [
     },
     flex: 1.5,
     renderHeader: () => (
-      <strong>{'Number'}<br/>{'Needed'}</strong>
+      <Grid container>
+      <Typography fontWeight="bold" variant="span">
+       {'Number\u00A0'} 
+      </Typography>
+      <Typography fontWeight="bold" variant="span">
+        {'Needed'}
+      </Typography>
+      </Grid>
     ),
     valueFormatter: (value) => {
       return valueToPrecision(value, precision)
@@ -1457,7 +1537,7 @@ export default function () {
           onChange={handleContainerSizeChange}
       />
       </Grid>
-      <Grid container size={6} rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p:2 }} >
+      <Grid container size={12} rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p:2 }} >
       <ShippingFieldOrDropdown
           recipe={recipe}
           editable={editable}
