@@ -334,6 +334,7 @@ func (s *server) CalculateRecipe(ctx context.Context, req *pb.CalculateRecipeReq
 		req.GetServingSizeGrams(),
 		req.GetTotalGrams(),
 		req.GetContainer(),
+		req.GetShipping(),
 		req.GetPackaging(),
 		req.GetContainerSizeGrams(),
 		req.GetTargetMargin(),
@@ -484,8 +485,13 @@ func (s *server) ListSavedRecipes(ctx context.Context, req *pb.ListSavedRecipesR
 	}
 	recipes := []*pb.RecipeDetails{}
 	if err != nil {
-		return nil, status.Error(codes.Unknown, err.Error())
+		if status.Code(err) != codes.NotFound {
+			return nil, status.Error(codes.Unknown, err.Error())
+		} else {
+			return nil, err
+		}
 	}
+
 	for _, item := range recipeList {
 		proto := item.GetProto()
 		if proto == nil {
@@ -596,7 +602,15 @@ func (s *server) ListShipping(ctx context.Context, req *pb.ListShippingRequest) 
 		return nil, err
 	}
 
-	shippingList, err = db.GetShippingCollection().List(ctx)
+	if len(req.GetContainerId()) > 0 {
+		c, err := db.GetContainersCollection().Get(ctx, req.GetContainerId())
+		if err != nil {
+			return nil, status.Error(codes.NotFound, err.Error())
+		}
+		shippingList, err = db.GetShippingCollection().QueryByContainer(ctx, c.GetProto().(*pb.Container))
+	} else {
+		shippingList, err = db.GetShippingCollection().List(ctx)
+	}
 	shipping := []*pb.Shipping{}
 	if err != nil {
 		return nil, status.Error(codes.Unknown, err.Error())
@@ -764,46 +778,44 @@ func (s *server) DeletePackagingItem(ctx context.Context, req *pb.DeletePackagin
 	} else if req.GetType() == "packaging" {
 		err = db.GetPackagingCollection().Delete(ctx, req.GetId())
 	} else if req.GetType() == "shipping" {
-    // When deleting a shipping item we have to remove it from any of the
-    // containers that reference it
-    // loop through all the containers and their shipping options
-    containers, err := db.GetContainersCollection().List(ctx)
-  
-    if err != nil {
-      log.Printf("Error encountered cleaning up containers when deleting a shipping item :%s", req.GetId())
-      return nil, status.Error(codes.Internal, err.Error())
-    }
+		// When deleting a shipping item we have to remove it from any of the
+		// containers that reference it
+		// loop through all the containers and their shipping options
+		containers, err := db.GetContainersCollection().List(ctx)
 
-    for _, item := range containers {
-      proto := item.GetProto()
-      if proto == nil {
-        continue
-      }
-      c := proto.(*pb.Container)
-      log.Printf("Fixing %s:" ,c.GetPackaging().GetName()) 
-      indexToDelete := []int{}
-      for i, shippingOption := range c.GetShippingOptions() {
-        if shippingOption.GetShippingId() == req.GetId() {
-          log.Printf("Found it")
-          indexToDelete = append(indexToDelete, i)
-        }
-      }
+		if err != nil {
+			log.Printf("Error encountered cleaning up containers when deleting a shipping item :%s", req.GetId())
+			return nil, status.Error(codes.Internal, err.Error())
+		}
 
-      // There really shouldn't be more than one entry so log if we see more than one
-      if len(indexToDelete) > 1 {
-        log.Printf("We found a container %s, with more than one shippingOption of %s", c.GetId(), req.GetId())
-      }
+		for _, item := range containers {
+			proto := item.GetProto()
+			if proto == nil {
+				continue
+			}
+			c := proto.(*pb.Container)
+			indexToDelete := []int{}
+			for i, shippingOption := range c.GetShippingOptions() {
+				if shippingOption.GetShippingId() == req.GetId() {
+					indexToDelete = append(indexToDelete, i)
+				}
+			}
 
-      if len(indexToDelete) > 0 {
-        newOptions := append(c.GetShippingOptions()[:indexToDelete[0]], c.GetShippingOptions()[indexToDelete[0]+1:]...)
-        c.ShippingOptions = newOptions
-        err := db.GetContainersCollection().Update(ctx, c)
-        if err != nil {
-          log.Printf("Error encountered updating a container when deleting a shipping item :%s", req.GetId())
-          return nil, status.Error(codes.Internal, err.Error())
-        }
-      }
-    }
+			// There really shouldn't be more than one entry so log if we see more than one
+			if len(indexToDelete) > 1 {
+				log.Printf("We found a container %s, with more than one shippingOption of %s", c.GetId(), req.GetId())
+			}
+
+			if len(indexToDelete) > 0 {
+				newOptions := append(c.GetShippingOptions()[:indexToDelete[0]], c.GetShippingOptions()[indexToDelete[0]+1:]...)
+				c.ShippingOptions = newOptions
+				err := db.GetContainersCollection().Update(ctx, c)
+				if err != nil {
+					log.Printf("Error encountered updating a container when deleting a shipping item :%s", req.GetId())
+					return nil, status.Error(codes.Internal, err.Error())
+				}
+			}
+		}
 
 		err = db.GetShippingCollection().Delete(ctx, req.GetId())
 	}

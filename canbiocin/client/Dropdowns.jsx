@@ -320,7 +320,7 @@ export function SavedRecipeDropdown({recipeId, value, onChange}) {
   )
 }
 
-export const ShippingDropdown = React.memo(function ShippingDropdown({value, onChange}) {
+export const ShippingDropdown = React.memo(function ShippingDropdown({value, container, onChange}) {
   const [options, setOptions] = React.useState([]);
   const { grpcRequest, hasScope } = useGrpc();
 
@@ -346,7 +346,11 @@ export const ShippingDropdown = React.memo(function ShippingDropdown({value, onC
     const handler = setTimeout(() => {
       const fetchOptions = async () => {
         try {
-          const response = await grpcRequest("listShipping", {});
+          let req = {}
+          if (container && container.id) {
+            req.containerId = container.id
+          }
+          const response = await grpcRequest("listShipping", req);
           setOptions(response.shipping)
         } catch (error) {
           console.log(error);
@@ -356,7 +360,7 @@ export const ShippingDropdown = React.memo(function ShippingDropdown({value, onC
       fetchOptions();
     }, 500);
     return () => { clearTimeout(handler) }
-  }, [grpcRequest]);
+  }, [grpcRequest, container]);
 
   const handleChange = React.useCallback((event, newValue) => {
     if (onChange) {

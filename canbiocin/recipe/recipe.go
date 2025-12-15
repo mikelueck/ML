@@ -153,6 +153,12 @@ func generatePostbioticRow(
 	return row, nil
 }
 
+func getNumContainers(grams int32, servingSizeGrams int32, containerSizeGrams int32) int32 {
+	servingsPerContainer := int32(math.Floor(float64(containerSizeGrams) / float64(servingSizeGrams)))
+	numContainers := math.Ceil(float64(grams) / float64(servingsPerContainer*servingSizeGrams))
+	return int32(numContainers)
+}
+
 func generatePackagingRow(
 	ctx context.Context,
 	servingSizeGrams int32,
@@ -160,22 +166,23 @@ func generatePackagingRow(
 	grams int32,
 	targetMargin int32,
 	currencyRate float64,
-	packaging *pb.Packaging) (*pb.IngredientDetails, error) {
-	servingsPerContainer := int32(math.Floor(float64(containerSizeGrams) / float64(servingSizeGrams)))
+	packaging *pb.AllPackaging) (*pb.IngredientDetails, error) {
 
-	totalCost := packaging.GetTotalCost()
-	unitsPerPackage := packaging.GetUnitsPackage()
+	numContainers := getNumContainers(grams, servingSizeGrams, containerSizeGrams)
+	p := getPackaging(packaging)
+
+	totalCost := p.GetTotalCost()
+	unitsPerPackage := p.GetUnitsPackage()
 	cbCostPerContainer := utils.Div(totalCost, float64(unitsPerPackage))
-	numContainers := math.Ceil(float64(grams) / float64(servingsPerContainer*servingSizeGrams))
 
-	cbTotal := utils.Mult(cbCostPerContainer, numContainers)
+	cbTotal := utils.Mult(cbCostPerContainer, float64(numContainers))
 	margin := float64(100-targetMargin) / float64(100)
 	clientCostPerContainer := utils.Div(cbCostPerContainer, margin)
 	clientTotal := utils.Div(cbTotal, margin)
 
 	row := &pb.IngredientDetails{
 		Ingredient:             &pb.Ingredient{Item: &pb.Ingredient_Packaging{Packaging: packaging}},
-		TotalGrams:             numContainers,
+		TotalGrams:             float64(numContainers),
 		CbCostPerContainer:     cbCostPerContainer,
 		ClientCostPerContainer: clientCostPerContainer,
 		CbTotal:                cbTotal,
@@ -195,12 +202,10 @@ func generateBlendingRow(
 	currencyRate float64,
 	blending *pb.Milling_Blending_Packaging) (*pb.IngredientDetails, error) {
 
-	servingsPerContainer := int32(math.Floor(float64(containerSizeGrams) / float64(servingSizeGrams)))
-
 	cbTotal := utils.Mult(blending.GetCost(), float64(count))
 
-	numContainers := math.Ceil(float64(grams) / float64(servingsPerContainer*servingSizeGrams))
-	cbCostPerContainer := utils.Div(cbTotal, numContainers)
+	numContainers := getNumContainers(grams, servingSizeGrams, containerSizeGrams)
+	cbCostPerContainer := utils.Div(cbTotal, float64(numContainers))
 
 	margin := float64(100-targetMargin) / float64(100)
 	clientCostPerContainer := utils.Div(cbCostPerContainer, margin)
@@ -225,6 +230,7 @@ func ComputeQuantities(
 	servingSizeGrams int32,
 	grams int32,
 	container *pb.Container,
+	shipping *pb.Shipping,
 	packaging []*pb.Packaging,
 	containerSizeGrams int32,
 	targetMargin int32,
@@ -240,6 +246,7 @@ func ComputeQuantities(
 		ServingSizeGrams:   servingSizeGrams,
 		TotalGrams:         grams,
 		Container:          container,
+		Shipping:           shipping,
 		ContainerSizeGrams: containerSizeGrams,
 		TargetMargin:       targetMargin,
 		CurrencyRate:       currencyRate}
@@ -278,20 +285,56 @@ func ComputeQuantities(
 	// Handle the packaging
 	if container != nil {
 		row, err := generatePackagingRow(
-			ctx, servingSizeGrams, containerSizeGrams, grams, targetMargin, currencyRate, container.GetPackaging())
+			ctx,
+			servingSizeGrams,
+			containerSizeGrams,
+			grams,
+			targetMargin,
+			currencyRate,
+			&pb.AllPackaging{Item: &pb.AllPackaging_Container{Container: container}})
 		if err != nil {
 			return nil, err
 		}
 		rows = append(rows, row)
-	}
-	if packaging != nil && len(packaging) > 0 {
-		for _, p := range packaging {
+
+		if shipping != nil {
+			numContainers := getNumContainers(grams, servingSizeGrams, containerSizeGrams)
+
+			numContainersPerShipping := int32(1)
+			// See how many containers fit in the shipping container
+			for _, option := range container.GetShippingOptions() {
+				if option.GetShippingId() == shipping.GetId() {
+					numContainersPerShipping = option.GetNumContainers()
+				}
+			}
 			row, err := generatePackagingRow(
-				ctx, servingSizeGrams, containerSizeGrams, grams, targetMargin, currencyRate, p)
+				ctx,
+				1,                        // size per container is one for shipping
+				numContainersPerShipping, // number of containers per shipping
+				numContainers,
+				targetMargin,
+				currencyRate,
+				&pb.AllPackaging{Item: &pb.AllPackaging_Shipping{Shipping: shipping}})
 			if err != nil {
 				return nil, err
 			}
 			rows = append(rows, row)
+		}
+		if packaging != nil && len(packaging) > 0 {
+			for _, p := range packaging {
+				row, err := generatePackagingRow(
+					ctx,
+					servingSizeGrams,
+					containerSizeGrams,
+					grams,
+					targetMargin,
+					currencyRate,
+					&pb.AllPackaging{Item: &pb.AllPackaging_Packaging{Packaging: p}})
+				if err != nil {
+					return nil, err
+				}
+				rows = append(rows, row)
+			}
 		}
 	}
 
@@ -382,6 +425,17 @@ func RoundToPercision(f float64, percision int32) float64 {
 const padding string = "____________"
 const end string = "============"
 
+func getPackaging(ap *pb.AllPackaging) *pb.Packaging {
+	if ap.GetContainer() != nil {
+		return ap.GetContainer().GetPackaging()
+	} else if ap.GetPackaging() != nil {
+		return ap.GetPackaging()
+	} else if ap.GetShipping() != nil {
+		return ap.GetShipping().GetPackaging()
+	}
+	return nil
+}
+
 func PrintRow(row *pb.IngredientDetails) {
 	fmt.Printf("| %30s | %12s | %12s | %12s | %12s | %12s | %12s | %12s | %12s |\n", padding, padding, padding, padding, padding, padding, padding, padding, padding)
 
@@ -395,7 +449,7 @@ func PrintRow(row *pb.IngredientDetails) {
 	} else if row.GetIngredient().GetPostbiotic() != nil {
 		name = row.GetIngredient().GetPostbiotic().GetName()
 	} else if row.GetIngredient().GetPackaging() != nil {
-		name = row.GetIngredient().GetPackaging().GetName()
+		name = getPackaging(row.GetIngredient().GetPackaging()).GetName()
 	} else if row.GetIngredient().GetBlending() != nil {
 		name = row.GetIngredient().GetBlending().GetName()
 	}

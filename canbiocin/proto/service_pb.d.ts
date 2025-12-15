@@ -8,8 +8,7 @@ import type { Ingredient, Recipe, RecipeDetails } from "./recipe_pb.js";
 import type { Probiotic } from "./probiotics_pb.js";
 import type { Prebiotic } from "./prebiotics_pb.js";
 import type { Postbiotic } from "./postbiotics_pb.js";
-import type { Container } from "./container_pb.js";
-import type { Packaging, Shipping } from "./other_pb.js";
+import type { AllPackaging, Container, Packaging, Shipping } from "./other_pb.js";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 
 /**
@@ -421,6 +420,11 @@ export declare type CalculateRecipeRequest = Message<"CalculateRecipeRequest"> &
    * @generated from field: Container container = 4;
    */
   container?: Container;
+
+  /**
+   * @generated from field: Shipping shipping = 9;
+   */
+  shipping?: Shipping;
 
   /**
    * @generated from field: repeated Packaging packaging = 7;
@@ -867,6 +871,10 @@ export declare const ListPackagingResponseSchema: GenMessage<ListPackagingRespon
  * @generated from message ListShippingRequest
  */
 export declare type ListShippingRequest = Message<"ListShippingRequest"> & {
+  /**
+   * @generated from field: string container_id = 1;
+   */
+  containerId: string;
 };
 
 /**
@@ -890,40 +898,6 @@ export declare type ListShippingResponse = Message<"ListShippingResponse"> & {
  * Use `create(ListShippingResponseSchema)` to create a new message.
  */
 export declare const ListShippingResponseSchema: GenMessage<ListShippingResponse>;
-
-/**
- * @generated from message AllPackaging
- */
-export declare type AllPackaging = Message<"AllPackaging"> & {
-  /**
-   * @generated from oneof AllPackaging.item
-   */
-  item: {
-    /**
-     * @generated from field: Container container = 1;
-     */
-    value: Container;
-    case: "container";
-  } | {
-    /**
-     * @generated from field: Packaging packaging = 2;
-     */
-    value: Packaging;
-    case: "packaging";
-  } | {
-    /**
-     * @generated from field: Shipping shipping = 3;
-     */
-    value: Shipping;
-    case: "shipping";
-  } | { case: undefined; value?: undefined };
-};
-
-/**
- * Describes the message AllPackaging.
- * Use `create(AllPackagingSchema)` to create a new message.
- */
-export declare const AllPackagingSchema: GenMessage<AllPackaging>;
 
 /**
  * @generated from message ListAllPackagingRequest

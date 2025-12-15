@@ -9,8 +9,11 @@ import { InputDialog } from './Dialog';
 import { AlertDialog } from './Dialog';
 import { emptyIngredientForType } from "./utils.js";
 import { valueToPrecision } from './utils.js';
+import { getNameForIngredient } from './utils.js';
 import { ContainerDropdown } from './Dropdowns';
+import { ShippingDropdown } from './Dropdowns';
 import { IngredientCellRender } from './DataGridUtils';
+import { ConfirmDialog } from './Dialog';
 
 import { EditToolbar } from './DataGridEditToolbar';
 
@@ -50,6 +53,9 @@ function getItemValue(row) {
 }
 
 function getRowId(row) {
+  if (row.ingredient.item.case == "packaging") {
+    return getItemValue(row).item.value.id
+  } 
   return getItemValue(row).id
 }
 
@@ -346,7 +352,7 @@ const packagingColumns = (columnsToShow, currencyRate) => { return [
     headerName: 'Name', 
     sortable:true,
     valueGetter: (value, row) => {
-      return getItemValue(row).name;
+      return getNameForIngredient(row.ingredient);
     },
     flex: 6,
     renderHeader: () => (
@@ -434,7 +440,6 @@ function IngredientRows({title, columnDef, ingredients, type}) {
   if (rows.length == 0) {
     return "" 
   }
-
   
   return (
       <Box sx={{ width: '100%' }}>
@@ -696,6 +701,69 @@ const ContainerFieldOrDropdown = React.memo(function ContainerFieldOrDropdown({r
          prevContainer.packaging?.name === nextContainer.packaging?.name;
 });
 
+const ShippingFieldOrDropdown = React.memo(function ShippingFieldOrDropdown({recipe, editable, onShippingChange}) {
+  const shippingValue = React.useMemo(() => {
+    return recipe?.shipping || null;
+  }, [recipe?.shipping?.id, recipe?.shipping?.packaging?.name]);
+
+  const displayValue = React.useMemo(() => {
+    return recipe?.shipping?.packaging?.name || "";
+  }, [recipe?.shipping?.packaging?.name]);
+    
+  if (!recipe?.container) {
+    return ""
+  }
+  if (editable) {
+    return (
+    <ShippingDropdown
+      value={shippingValue}
+      container={recipe?.container}
+      onChange={onShippingChange}
+      editable={editable}
+    />
+    )
+  } else {
+    return (
+    <Field
+        id='shipping'
+        label='Shipping' 
+        value={displayValue}
+        size="small"
+        type="string"
+        variant="standard"
+        editable={false}
+    />
+    )
+  }
+}, (prevProps, nextProps) => {
+  // Custom comparison: only re-render if editable, shipping, or onChange changes
+  if (prevProps.editable !== nextProps.editable) return false;
+  if (prevProps.onShippingChange !== nextProps.onShippingChange) return false;
+  
+  let prev = prevProps.recipe?.container;
+  let next = nextProps.recipe?.container;
+  
+  // If both are null/undefined, they're equal
+  if (!prev && !next) return true;
+  
+  // If one is null and the other isn't, they're different
+  if (!prev || !next) return false;
+
+  if (prev.id !== next.id) return false
+
+  prev = prevProps.recipe?.shipping;
+  next = nextProps.recipe?.shipping;
+  
+  // If both are null/undefined, they're equal
+  if (!prev && !next) return true;
+  
+  // If one is null and the other isn't, they're different
+  if (!prev || !next) return false;
+  
+  // Compare by id
+  return prev.id === next.id
+});
+
 export default function () {
   let initSizeG = 10000
   const [isLoading, setIsLoading] = React.useState(true)
@@ -703,6 +771,7 @@ export default function () {
   const [totalGrams, setTotalGrams] = React.useState(initSizeG)
   const [searchParams, setSearchParams] = useSearchParams();
   const [container, setContainer] = React.useState(null);
+  const [shipping, setShipping] = React.useState(null);
   const [packagingItems, setPackagingItems] = React.useState([]);
   const [numContainers, setNumContainers] = React.useState(1)
   const [containerSizeG, setContainerSizeG] = React.useState(initSizeG)
@@ -710,7 +779,6 @@ export default function () {
   const [currencyRate, setCurrencyRate] = React.useState(0.77)
   const [recipe, setRecipe] = React.useState(null)
   const [isSaving, setIsSaving] = React.useState(false)
-  const [isDeleting, setIsDeleting] = React.useState(false)
   const [savedRecipeName, setSavedRecipeName] = React.useState("")
   const [savedRecipeTime, setSavedRecipeTime] = React.useState("")
   const [saveNameOpen, setSaveNameOpen] = React.useState(false)
@@ -749,8 +817,18 @@ export default function () {
 
   const handleContainerChange = React.useCallback((event) => {
     setContainer(event)
-    updateNumContainers(totalGrams, servingGrams, containerSizeG)
+    setShipping(null)
+    let size = containerSizeG
+    if (event.sizeG) {
+      setContainerSizeG(event.sizeG)
+      size = event.sizeG
+    }
+    updateNumContainers(totalGrams, servingGrams, size)
   }, [totalGrams, servingGrams, containerSizeG, updateNumContainers])
+
+  const handleShippingChange = React.useCallback((event) => {
+    setShipping(event)
+  }, [])
 
   const handleContainerSizeChange = (event) => {
     setContainerSizeG(event.target.value)
@@ -777,6 +855,10 @@ export default function () {
         setIsSaving(true)
       } else {
         setSaveNameOpen(true)
+      }
+      if (!recipe.container || !recipe.shipping) {
+        setError("Warning: You are saving a recipe but you haven't selected a container or shipping packaging")
+        setErrorOpen(true)
       }
     }
   }
@@ -1047,6 +1129,7 @@ export default function () {
     setServingGrams(r.servingSizeGrams)
     setTotalGrams(r.totalGrams)
     setContainer(r.container)
+    setShipping(r.shipping)
     setPackagingItems(r.packaging)
     setTargetMargin(r.targetMargin)
     setCurrencyRate(r.currencyRate)
@@ -1088,39 +1171,9 @@ export default function () {
     saveRecipeMix()
   }, [isSaving, recipe]);
 
-  const handleDeleteClick = () => {
-    if (savedRecipeId) {
-        setIsDeleting(true)
-    }
-  }
-
   const handleEditClick = () => {
     setEditable(true)
   }
-
-  React.useEffect(() => {
-    const deleteRecipeMix = async () => {
-      if (isDeleting) {
-        let isError = false
-        try {
-            const response = await grpcRequest("deleteSavedRecipe", {savedRecipeId: savedRecipeId});
-        } catch (e) {
-          isError = true
-          setError(e.message);
-          console.log(e)
-        } finally {
-          setIsDeleting(false)
-          if (isError) {
-            setErrorOpen(true);
-          } else {
-            navigate(`/recipe?recipeId=${recipe.recipe.id}`, { replace: true })
-          }
-        }
-      }
-    }
-    deleteRecipeMix()
-  }, [isDeleting, savedRecipeId]);
-
 
 
   React.useEffect(() => {
@@ -1141,6 +1194,7 @@ export default function () {
                    servingSizeGrams: servingGrams, 
                    totalGrams: totalGrams,
                    container: container,
+                   shipping: shipping,
                    packaging: packagingItems,
                    containerSizeGrams: containerSizeG,
                    targetMargin: targetMargin,
@@ -1162,7 +1216,7 @@ export default function () {
       clearTimeout(handler)
     }
     
-  }, [savedRecipeId, recipeId, editable, servingGrams, totalGrams, container, packagingItems, containerSizeG, targetMargin, currencyRate]);
+  }, [savedRecipeId, recipeId, editable, servingGrams, totalGrams, container, shipping, packagingItems, containerSizeG, targetMargin, currencyRate]);
 
   function SaveToolbar() {
     const { hasScope } = useGrpc();
@@ -1186,12 +1240,51 @@ export default function () {
     )
   }
 
-  function DeleteToolbar() {
+  function DeleteToolbar({savedRecipeId}) {
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false)
+    const [isDeleting, setIsDeleting] = React.useState(false)
+
     const { hasScope } = useGrpc();
+
+    const handleDeleteClick = () => {
+      setDeleteConfirmOpen(true);
+    };
+
+    const handleDeleteConfirmClose = () => {
+      setDeleteConfirmOpen(false);
+    }
+
+    const handleDeleteConfirm = () => {
+      setDeleteConfirmOpen(false);
+      setIsDeleting(true)
+    }
 
     if (!hasScope(scopes.SAVE_RECIPE)) {
       return ""
     }
+
+    React.useEffect(() => {
+      const deleteRecipeMix = async () => {
+        if (isDeleting) {
+          let isError = false
+          try {
+              const response = await grpcRequest("deleteSavedRecipe", {savedRecipeId: savedRecipeId});
+          } catch (e) {
+            isError = true
+            setError(e.message);
+            console.log(e)
+          } finally {
+            setIsDeleting(false)
+            if (isError) {
+              setErrorOpen(true);
+            } else {
+              navigate(`/recipe?recipeId=${recipe.recipe.id}`, { replace: true })
+            }
+          }
+        }
+      }
+      deleteRecipeMix()
+    }, [isDeleting, savedRecipeId]);
 
     if (editable) {
       return (<></>)
@@ -1214,6 +1307,12 @@ export default function () {
         >
           <DeleteIcon />
         </IconButton>
+        <ConfirmDialog
+          title="Delete Saved Formulation"
+          content="Are you sure you want to delete this formulation?"
+          open={deleteConfirmOpen}
+          onClose={handleDeleteConfirmClose}
+          onConfirm={handleDeleteConfirm} />
         </>
     )
   }
@@ -1245,7 +1344,7 @@ export default function () {
         </Box>
         <Box sx={{ flexGrow: 1}} />
         <SaveToolbar />
-        <DeleteToolbar />
+        <DeleteToolbar savedRecipeId={savedRecipeId}/>
         <InputDialog
           title="Formulation name"
           content="Please provide a name for the formulation"
@@ -1260,29 +1359,52 @@ export default function () {
           onClose={handleErrorClose} />
       </Toolbar>
     </AppBar>
-    <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
-      <Field
-          id='serving_size_grams'
-          label='Serving size grams' 
-          value={servingGrams}
-          size="small"
-          type="number"
-          variant="standard"
-          onChange={handleServingGramsChange}
-          editable={editable}
-          units="g"
-      />
-      <Field
-          id='total_grams'
-          label='Total grams' 
-          value={totalGrams}
-          size="small"
-          type="number"
-          variant="standard"
-          onChange={handleTotalGramsChange}
-          editable={editable}
-          units="g"
-      />
+    <Grid container spacing={2}>
+    <Grid container size={6} columnSpacing={{ xs:1, sm: 2, md: 3 }} spacing={2}  sx={{ p: 2, justifyContent: "flex-start" }}>
+    <Field
+        id='serving_size_grams'
+        label='Serving size grams' 
+        value={servingGrams}
+        size="small"
+        type="number"
+        variant="standard"
+        onChange={handleServingGramsChange}
+        editable={editable}
+        units="g"
+    />
+    <Field
+        id='total_grams'
+        label='Total grams' 
+        value={totalGrams}
+        size="small"
+        type="number"
+        variant="standard"
+        onChange={handleTotalGramsChange}
+        editable={editable}
+        units="g"
+    />
+    </Grid>
+    <Grid container size={6} columnSpacing={{ xs:1, sm: 2, md: 3 }} spacing={2} sx={{ p: 2, justifyContent: "flex-end" }}>
+    <Field
+        id='servings_per_container'
+        label='Servings per container' 
+        value={Math.floor(containerSizeG / servingGrams)}
+        size="small"
+        type="number"
+        sx={{width: 130}}
+        variant="standard"
+        editable={false}
+    />
+    <Field
+        id='num_containers'
+        label='# containers' 
+        value={numContainers}
+        size="small"
+        type="number"
+        variant="standard"
+        editable={false}
+    />
+    </Grid>
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
       <ContainerFieldOrDropdown
@@ -1300,24 +1422,10 @@ export default function () {
           units="g"
           onChange={handleContainerSizeChange}
       />
-      <Field
-          id='servings_per_container'
-          label='Servings per container' 
-          value={Math.floor(containerSizeG / servingGrams)}
-          size="small"
-          type="number"
-          variant="standard"
-          editable={false}
-      />
-      <Field
-          id='num_containers'
-          label='# containers' 
-          value={numContainers}
-          size="small"
-          type="number"
-          variant="standard"
-          editable={false}
-      />
+      <ShippingFieldOrDropdown
+          recipe={recipe}
+          editable={editable}
+          onShippingChange={handleShippingChange} />
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
       <PackagingSelect 

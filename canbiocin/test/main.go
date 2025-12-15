@@ -17,6 +17,7 @@ func main() {
 
 	recipes, err := db.GetRecipesCollection().QueryByCompanyAndName(ctx, "GMP Labs", "GMP.PRO.BW")
 	containers, err := db.GetContainersCollection().List(ctx)
+	shipping, err := db.GetShippingCollection().List(ctx)
 
 	packaging, err := db.GetPackagingCollection().List(ctx)
 	p := []*pb.Packaging{}
@@ -28,7 +29,18 @@ func main() {
 	}
 	if len(recipes) > 0 {
 		r := recipes[0]
-		rows, err := recipe.ComputeQuantities(ctx, r, 1, 10000, containers[0].GetProto().(*pb.Container), p, 10000, 65, 1, false)
+		rows, err := recipe.ComputeQuantities(
+			ctx,
+			r,
+			1,
+			10000,
+			containers[0].GetProto().(*pb.Container),
+			shipping[0].GetProto().(*pb.Shipping),
+			p,
+			10000,
+			65,
+			1,
+			false)
 		if err != nil {
 			fmt.Printf("Bad Compute: %v\n", err)
 		}

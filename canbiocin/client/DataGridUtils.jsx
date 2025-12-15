@@ -2,6 +2,8 @@ const React = require('React');
 
 import { Typography } from '@mui/material';
 import { moneyToString, moneyToFloat, floatToMoney } from './money.js';
+import { getNameForIngredient } from './utils.js';
+import { getLinkInfoForIngredient } from './utils.js';
 
 import { DataGrid } from '@mui/x-data-grid';
 
@@ -64,7 +66,9 @@ export function IngredientCellRender({params, itemGetter}) {
       value = params.row.item.value
     }
 
-    let name = ""
+    const name = getNameForIngredient(item)
+    const linkInfo = getLinkInfoForIngredient(item)
+
     let data = null
 
     if (item.case == "probiotic") {
@@ -77,7 +81,6 @@ export function IngredientCellRender({params, itemGetter}) {
         headerName:"cost",
       }]
 
-      name = value.strain
       let stock = params.row.isMe ? value.meBCfuG : value.stockBCfuG
     
       let cost = params.row.isMe && value.costKg && value.kgPerMeKg && value.costOfMe ? 
@@ -98,7 +101,6 @@ export function IngredientCellRender({params, itemGetter}) {
         headerName:"cost",
       }]
 
-      name = value.name
       data = {columns: cols,
               rows: [
                 {id: 1,
@@ -114,7 +116,6 @@ export function IngredientCellRender({params, itemGetter}) {
 // Figure this out
 // sometimes we get the columns from the item other times we get it from the row
 
-      name = value.name
       let cpc = null 
       if (value.cbCostPerContainer) {
         cpc = value.cbCostPerContainer
@@ -127,19 +128,19 @@ export function IngredientCellRender({params, itemGetter}) {
                 {id: 1,
                 cbCostPerContainer: cpc ? moneyToString(cpc, 2) + " / container" : "",
               }]}
-    } else {
-      name = value.name
     }
 
     return (
     <div>
       <Typography variant="body1" component="span">
-        <Link to={{
-          pathname: "/ingredient",
-          search: `?type=${item.case}&ingredientId=${value.id}`, 
-        }}>
-      {name}
-        </Link>
+        { linkInfo ?
+            <Link to={{
+              pathname: `${linkInfo.pathname}`,
+              search: `${linkInfo.search}`, 
+            }}> 
+          {name}
+            </Link>
+        : name }
       </Typography>
       <br />
       <NestedDataGrid data={data} />

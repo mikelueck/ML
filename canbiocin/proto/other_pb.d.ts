@@ -121,3 +121,89 @@ export declare type Milling_Blending_Packaging = Message<"Milling_Blending_Packa
  */
 export declare const Milling_Blending_PackagingSchema: GenMessage<Milling_Blending_Packaging>;
 
+/**
+ * @generated from message ShippingOption
+ */
+export declare type ShippingOption = Message<"ShippingOption"> & {
+  /**
+   * @generated from field: string shipping_id = 1;
+   */
+  shippingId: string;
+
+  /**
+   * @generated from field: int32 num_containers = 2;
+   */
+  numContainers: number;
+};
+
+/**
+ * Describes the message ShippingOption.
+ * Use `create(ShippingOptionSchema)` to create a new message.
+ */
+export declare const ShippingOptionSchema: GenMessage<ShippingOption>;
+
+/**
+ * @generated from message Container
+ */
+export declare type Container = Message<"Container"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: Packaging packaging = 2;
+   */
+  packaging?: Packaging;
+
+  /**
+   * @generated from field: int32 size_g = 3;
+   */
+  sizeG: number;
+
+  /**
+   * @generated from field: repeated ShippingOption shipping_options = 4;
+   */
+  shippingOptions: ShippingOption[];
+};
+
+/**
+ * Describes the message Container.
+ * Use `create(ContainerSchema)` to create a new message.
+ */
+export declare const ContainerSchema: GenMessage<Container>;
+
+/**
+ * @generated from message AllPackaging
+ */
+export declare type AllPackaging = Message<"AllPackaging"> & {
+  /**
+   * @generated from oneof AllPackaging.item
+   */
+  item: {
+    /**
+     * @generated from field: Container container = 1;
+     */
+    value: Container;
+    case: "container";
+  } | {
+    /**
+     * @generated from field: Packaging packaging = 2;
+     */
+    value: Packaging;
+    case: "packaging";
+  } | {
+    /**
+     * @generated from field: Shipping shipping = 3;
+     */
+    value: Shipping;
+    case: "shipping";
+  } | { case: undefined; value?: undefined };
+};
+
+/**
+ * Describes the message AllPackaging.
+ * Use `create(AllPackagingSchema)` to create a new message.
+ */
+export declare const AllPackagingSchema: GenMessage<AllPackaging>;
+

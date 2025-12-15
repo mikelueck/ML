@@ -29,3 +29,24 @@ message Milling_Blending_Packaging {
     Supplier supplier = 4;
     google.protobuf.Timestamp most_recent_quote_date = 5;
 }
+
+message ShippingOption {
+  string shipping_id = 1;
+  int32 num_containers = 2;
+}
+
+message Container {
+    string id = 1;
+    Packaging packaging = 2;
+    int32 size_g = 3;
+    repeated ShippingOption shipping_options = 4;
+}
+
+message AllPackaging {
+    oneof item {
+      Container container = 1;
+      Packaging packaging = 2;
+      Shipping shipping = 3;
+    }
+}
+

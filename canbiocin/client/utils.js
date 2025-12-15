@@ -3,9 +3,7 @@ const recipe_pb = require('../proto/recipe_pb.js');
 const probiotic_pb = require('../proto/probiotics_pb.js');
 const prebiotic_pb = require('../proto/prebiotics_pb.js');
 const postbiotic_pb = require('../proto/postbiotics_pb.js');
-const container_pb = require('../proto/container_pb.js');
 const other_pb = require('../proto/other_pb.js');
-const service_pb = require('../proto/service_pb.js');
 const supplier_pb = require('../proto/supplier_pb.js');
 const money_pb = require('../proto/money_pb.js');
 import { timestampToDate } from './timestamp.js';
@@ -27,21 +25,95 @@ export const valueToPrecision = (n, p, suffix, prefix) => {
     return output.join('')
 }
 
+export const getPackagingForIngredient = (i) => {
+  if (!i?.value?.item) {
+    return null
+  }  
+
+  if (i?.case != "packaging") {
+    alert("Expected 'Ingredient[case]==packaging'")
+  }
+
+  let item = i.value.item
+
+  let type = item.case
+  switch (type) {
+    case 'packaging':
+      return item.value
+      break;
+    case 'container':
+    case 'shipping':
+      return item.value.packaging
+      break;
+    default:
+      alert(`missing type: ${type}`)
+      return null
+  }
+}
+
+function getItemForIngredient(i) {
+  if (!i) {
+    return null
+  }  
+
+  let item = null
+
+  if (i.case) {
+    item = i
+  } else if (i.item) {
+    item = i.item
+  }
+
+  return item
+}
+
+export const getLinkInfoForIngredient = (i) => {
+  if (!i) {
+    return null
+  }  
+
+  let retval = {}
+
+  let item = getItemForIngredient(i)
+  if (!item) {
+    return null 
+  }
+
+  if (item?.case == "packaging") {
+    item = item.value.item
+    retval.pathname = "/packaging",
+    retval.search = `?type=${item.case}&packagingId=${item.value.id}` 
+  } else {
+    retval.pathname = "/ingredient", // assume it's an ingredient
+    retval.search = `?type=${item.case}&ingredientId=${item.value.id}` 
+  }
+  return retval
+}
+
 export const getNameForIngredient = (i) => {
   if (!i) {
     return null
   }  
 
-  let type = i.item.case
+  let item = getItemForIngredient(i)
+
+  if (!item?.case) {
+    return item?.value?.name
+  }
+
+  let type = item.case
 
   switch (type) {
     case 'probiotic':
-      return i.item.value.strain
+      return item.value.strain
       break;
     case 'prebiotic':
     case 'postbiotic':
-      return i.item.value.name
+    case 'blending':
+      return item.value.name
       break;
+    case 'packaging':
+      return getPackagingForIngredient(item)?.name
     default:
       alert(`missing type: ${type}`)
       return null
@@ -147,7 +219,7 @@ export const emptyPostbiotic = (p) => {
 }
 
 export const emptyPackaging = (type) => {
-  let retval = create(service_pb.AllPackagingSchema, {})
+  let retval = create(other_pb.AllPackagingSchema, {})
   retval.item.case = type
 
   let packaging = create(other_pb.PackagingSchema, {
@@ -158,7 +230,7 @@ export const emptyPackaging = (type) => {
 
   switch (type) {
     case "container":
-      retval.item.value = create(container_pb.ContainerSchema, {
+      retval.item.value = create(other_pb.ContainerSchema, {
         packaging: packaging,
         shippingOptions: [],
       })
@@ -209,7 +281,7 @@ export const emptyIngredientForType = (type) => {
 }
 
 export const emptyShippingOption = () => {
-  return create(container_pb.ShippingOptionSchema, {
+  return create(other_pb.ShippingOptionSchema, {
       shippingId: "",
       numContainers: 0,
       })

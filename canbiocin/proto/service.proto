@@ -1,7 +1,6 @@
 syntax = "proto3";
 option go_package = "github.com/canbiocin/proto";
 
-import "canbiocin/proto/container.proto";
 import "canbiocin/proto/recipe.proto";
 import "canbiocin/proto/probiotics.proto";
 import "canbiocin/proto/prebiotics.proto";
@@ -108,6 +107,7 @@ message CalculateRecipeRequest {
   int32 serving_size_grams = 2;
   int32 total_grams = 3;
   Container container = 4;
+  Shipping shipping = 9;
   repeated Packaging packaging = 7;
   int32 container_size_grams = 6;
   int32 target_margin = 5;
@@ -218,18 +218,11 @@ message ListPackagingResponse {
 }
 
 message ListShippingRequest {
+    string container_id = 1; // optional
 }
 
 message ListShippingResponse {
     repeated Shipping shipping = 1;
-}
-
-message AllPackaging {
-    oneof item {
-      Container container = 1;
-      Packaging packaging = 2;
-      Shipping shipping = 3;
-    }
 }
 
 message ListAllPackagingRequest {

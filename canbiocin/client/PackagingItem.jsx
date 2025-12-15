@@ -41,7 +41,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-function getItemValue(packaging) {
+function getItemPackagingValue(packaging) {
   switch (getItemCase(packaging)) {
     case "container":
       return getContainer(packaging).packaging
@@ -52,6 +52,10 @@ function getItemValue(packaging) {
     default:
       return packaging.item.value
   }
+}
+
+function getItemValue(packaging) {
+  return packaging.item.value
 }
 
 function getContainer(packaging) {
@@ -77,7 +81,7 @@ const commonFields = {
 
 const fieldsByType = {
   "packaging": {...commonFields},
-  "container": {...commonFields},
+  "container": {...commonFields, "sizeG": true},
   "shipping": {...commonFields},
 }
 
@@ -414,19 +418,23 @@ function Packaging({packageType, packaging, editable, handleChange}) {
       return NewFormItem({field, label, type, units, renderItem, props_provider, extra_params});
   }
 
+  const MyNewFormItemPackaging = ({field, label, type, units, renderItem, extra_params = {}}) => {
+      let props_provider = PropsProvider(getItemPackagingValue(packaging), editable, handleChange)
+      return NewFormItem({field, label, type, units, renderItem, props_provider, extra_params});
+  }
+
   const isContainer = (getContainer(packaging) != null)
   return (
     <>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {/*{MyNewFormItem({field:'id', extra_params:{editable:false}})}*/}
-      {MyNewFormItem({field:'name'})}
+      {MyNewFormItemPackaging({field:'name'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {MyNewFormItem({field:'totalCost', label: 'Total Cost', type: 'money'})}
-      {MyNewFormItem({field:'unitsPackage', label: 'Units / Package', type: 'number'})}
+      {MyNewFormItemPackaging({field:'totalCost', label: 'Total Cost', type: 'money'})}
+      {MyNewFormItemPackaging({field:'unitsPackage', label: 'Units / Package', type: 'number'})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {MyNewFormItem({
+      {MyNewFormItemPackaging({
         field: 'mostRecentQuoteDate', 
         label: 'Most Recent Quote Date',
         type:DATEPICKER,
@@ -437,9 +445,10 @@ function Packaging({packageType, packaging, editable, handleChange}) {
         }})}
     </Grid>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
-      {MyNewFormItem({field:'notes', extra_params:{multiline: true, rows: 4}})}
+      {MyNewFormItemPackaging({field:'notes', extra_params:{multiline: true, rows: 4}})}
     </Grid>
     { isContainer && 
+      <>
       <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
         <ShippingOptions
             title="Packaging"
@@ -457,6 +466,10 @@ function Packaging({packageType, packaging, editable, handleChange}) {
             fieldToFocus="name"
         />           
       </Grid> 
+      <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={4}>
+        {MyNewFormItem({field:'sizeG', label: 'Size', type: 'number', units: 'g'})}
+      </Grid>
+      </>
     }
     </>
   )

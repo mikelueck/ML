@@ -4,9 +4,8 @@
 
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import type { Message } from "@bufbuild/protobuf";
-import type { Milling_Blending_Packaging, Packaging } from "./other_pb.js";
+import type { AllPackaging, Container, Milling_Blending_Packaging, Packaging, Shipping } from "./other_pb.js";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
-import type { Container } from "./container_pb.js";
 import type { Probiotic } from "./probiotics_pb.js";
 import type { Prebiotic } from "./prebiotics_pb.js";
 import type { Postbiotic } from "./postbiotics_pb.js";
@@ -136,9 +135,9 @@ export declare type Recipe = Message<"Recipe"> & {
   postbiotics: PostbioticIngredient[];
 
   /**
-   * @generated from field: repeated Packaging packaging = 8;
+   * @generated from field: repeated AllPackaging packaging = 8;
    */
-  packaging: Packaging[];
+  packaging: AllPackaging[];
 
   /**
    * @generated from field: int32 probiotic_overage_percent = 6;
@@ -197,6 +196,11 @@ export declare type RecipeDetails = Message<"RecipeDetails"> & {
   container?: Container;
 
   /**
+   * @generated from field: Shipping shipping = 13;
+   */
+  shipping?: Shipping;
+
+  /**
    * @generated from field: repeated Packaging packaging = 11;
    */
   packaging: Packaging[];
@@ -250,9 +254,9 @@ export declare type Ingredient = Message<"Ingredient"> & {
     case: "postbiotic";
   } | {
     /**
-     * @generated from field: Packaging packaging = 4;
+     * @generated from field: AllPackaging packaging = 4;
      */
-    value: Packaging;
+    value: AllPackaging;
     case: "packaging";
   } | {
     /**

@@ -258,6 +258,227 @@ func (x *Milling_Blending_Packaging) GetMostRecentQuoteDate() *timestamppb.Times
 	return nil
 }
 
+type ShippingOption struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ShippingId    string `protobuf:"bytes,1,opt,name=shipping_id,json=shippingId,proto3" json:"shipping_id,omitempty"`
+	NumContainers int32  `protobuf:"varint,2,opt,name=num_containers,json=numContainers,proto3" json:"num_containers,omitempty"`
+}
+
+func (x *ShippingOption) Reset() {
+	*x = ShippingOption{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_other_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ShippingOption) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ShippingOption) ProtoMessage() {}
+
+func (x *ShippingOption) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_other_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ShippingOption.ProtoReflect.Descriptor instead.
+func (*ShippingOption) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_other_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ShippingOption) GetShippingId() string {
+	if x != nil {
+		return x.ShippingId
+	}
+	return ""
+}
+
+func (x *ShippingOption) GetNumContainers() int32 {
+	if x != nil {
+		return x.NumContainers
+	}
+	return 0
+}
+
+type Container struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id              string            `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Packaging       *Packaging        `protobuf:"bytes,2,opt,name=packaging,proto3" json:"packaging,omitempty"`
+	SizeG           int32             `protobuf:"varint,3,opt,name=size_g,json=sizeG,proto3" json:"size_g,omitempty"`
+	ShippingOptions []*ShippingOption `protobuf:"bytes,4,rep,name=shipping_options,json=shippingOptions,proto3" json:"shipping_options,omitempty"`
+}
+
+func (x *Container) Reset() {
+	*x = Container{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_other_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Container) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Container) ProtoMessage() {}
+
+func (x *Container) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_other_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Container.ProtoReflect.Descriptor instead.
+func (*Container) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_other_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Container) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Container) GetPackaging() *Packaging {
+	if x != nil {
+		return x.Packaging
+	}
+	return nil
+}
+
+func (x *Container) GetSizeG() int32 {
+	if x != nil {
+		return x.SizeG
+	}
+	return 0
+}
+
+func (x *Container) GetShippingOptions() []*ShippingOption {
+	if x != nil {
+		return x.ShippingOptions
+	}
+	return nil
+}
+
+type AllPackaging struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Types that are assignable to Item:
+	//
+	//	*AllPackaging_Container
+	//	*AllPackaging_Packaging
+	//	*AllPackaging_Shipping
+	Item isAllPackaging_Item `protobuf_oneof:"item"`
+}
+
+func (x *AllPackaging) Reset() {
+	*x = AllPackaging{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_canbiocin_proto_other_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AllPackaging) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AllPackaging) ProtoMessage() {}
+
+func (x *AllPackaging) ProtoReflect() protoreflect.Message {
+	mi := &file_canbiocin_proto_other_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AllPackaging.ProtoReflect.Descriptor instead.
+func (*AllPackaging) Descriptor() ([]byte, []int) {
+	return file_canbiocin_proto_other_proto_rawDescGZIP(), []int{5}
+}
+
+func (m *AllPackaging) GetItem() isAllPackaging_Item {
+	if m != nil {
+		return m.Item
+	}
+	return nil
+}
+
+func (x *AllPackaging) GetContainer() *Container {
+	if x, ok := x.GetItem().(*AllPackaging_Container); ok {
+		return x.Container
+	}
+	return nil
+}
+
+func (x *AllPackaging) GetPackaging() *Packaging {
+	if x, ok := x.GetItem().(*AllPackaging_Packaging); ok {
+		return x.Packaging
+	}
+	return nil
+}
+
+func (x *AllPackaging) GetShipping() *Shipping {
+	if x, ok := x.GetItem().(*AllPackaging_Shipping); ok {
+		return x.Shipping
+	}
+	return nil
+}
+
+type isAllPackaging_Item interface {
+	isAllPackaging_Item()
+}
+
+type AllPackaging_Container struct {
+	Container *Container `protobuf:"bytes,1,opt,name=container,proto3,oneof"`
+}
+
+type AllPackaging_Packaging struct {
+	Packaging *Packaging `protobuf:"bytes,2,opt,name=packaging,proto3,oneof"`
+}
+
+type AllPackaging_Shipping struct {
+	Shipping *Shipping `protobuf:"bytes,3,opt,name=shipping,proto3,oneof"`
+}
+
+func (*AllPackaging_Container) isAllPackaging_Item() {}
+
+func (*AllPackaging_Packaging) isAllPackaging_Item() {}
+
+func (*AllPackaging_Shipping) isAllPackaging_Item() {}
+
 var File_canbiocin_proto_other_proto protoreflect.FileDescriptor
 
 var file_canbiocin_proto_other_proto_rawDesc = []byte{
@@ -306,10 +527,34 @@ var file_canbiocin_proto_other_proto_rawDesc = []byte{
 	0x64, 0x61, 0x74, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f,
 	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d,
 	0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x13, 0x6d, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x63, 0x65,
-	0x6e, 0x74, 0x51, 0x75, 0x6f, 0x74, 0x65, 0x44, 0x61, 0x74, 0x65, 0x42, 0x1c, 0x5a, 0x1a, 0x67,
-	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x61, 0x6e, 0x62, 0x69, 0x6f,
-	0x63, 0x69, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x6e, 0x74, 0x51, 0x75, 0x6f, 0x74, 0x65, 0x44, 0x61, 0x74, 0x65, 0x22, 0x58, 0x0a, 0x0e, 0x53,
+	0x68, 0x69, 0x70, 0x70, 0x69, 0x6e, 0x67, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1f, 0x0a,
+	0x0b, 0x73, 0x68, 0x69, 0x70, 0x70, 0x69, 0x6e, 0x67, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0a, 0x73, 0x68, 0x69, 0x70, 0x70, 0x69, 0x6e, 0x67, 0x49, 0x64, 0x12, 0x25,
+	0x0a, 0x0e, 0x6e, 0x75, 0x6d, 0x5f, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x73,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0d, 0x6e, 0x75, 0x6d, 0x43, 0x6f, 0x6e, 0x74, 0x61,
+	0x69, 0x6e, 0x65, 0x72, 0x73, 0x22, 0x98, 0x01, 0x0a, 0x09, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69,
+	0x6e, 0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x02, 0x69, 0x64, 0x12, 0x28, 0x0a, 0x09, 0x70, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x69, 0x6e, 0x67,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x50, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x69,
+	0x6e, 0x67, 0x52, 0x09, 0x70, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x69, 0x6e, 0x67, 0x12, 0x15, 0x0a,
+	0x06, 0x73, 0x69, 0x7a, 0x65, 0x5f, 0x67, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x73,
+	0x69, 0x7a, 0x65, 0x47, 0x12, 0x3a, 0x0a, 0x10, 0x73, 0x68, 0x69, 0x70, 0x70, 0x69, 0x6e, 0x67,
+	0x5f, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f,
+	0x2e, 0x53, 0x68, 0x69, 0x70, 0x70, 0x69, 0x6e, 0x67, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x52,
+	0x0f, 0x73, 0x68, 0x69, 0x70, 0x70, 0x69, 0x6e, 0x67, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x22, 0x97, 0x01, 0x0a, 0x0c, 0x41, 0x6c, 0x6c, 0x50, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x69, 0x6e,
+	0x67, 0x12, 0x2a, 0x0a, 0x09, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72,
+	0x48, 0x00, 0x52, 0x09, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x65, 0x72, 0x12, 0x2a, 0x0a,
+	0x09, 0x70, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x69, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x0a, 0x2e, 0x50, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x69, 0x6e, 0x67, 0x48, 0x00, 0x52, 0x09,
+	0x70, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x69, 0x6e, 0x67, 0x12, 0x27, 0x0a, 0x08, 0x73, 0x68, 0x69,
+	0x70, 0x70, 0x69, 0x6e, 0x67, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x53, 0x68,
+	0x69, 0x70, 0x70, 0x69, 0x6e, 0x67, 0x48, 0x00, 0x52, 0x08, 0x73, 0x68, 0x69, 0x70, 0x70, 0x69,
+	0x6e, 0x67, 0x42, 0x06, 0x0a, 0x04, 0x69, 0x74, 0x65, 0x6d, 0x42, 0x1c, 0x5a, 0x1a, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x61, 0x6e, 0x62, 0x69, 0x6f, 0x63,
+	0x69, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -324,28 +569,36 @@ func file_canbiocin_proto_other_proto_rawDescGZIP() []byte {
 	return file_canbiocin_proto_other_proto_rawDescData
 }
 
-var file_canbiocin_proto_other_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_canbiocin_proto_other_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_canbiocin_proto_other_proto_goTypes = []interface{}{
 	(*Packaging)(nil),                  // 0: Packaging
 	(*Shipping)(nil),                   // 1: Shipping
 	(*Milling_Blending_Packaging)(nil), // 2: Milling_Blending_Packaging
-	(*Money)(nil),                      // 3: Money
-	(*Supplier)(nil),                   // 4: Supplier
-	(*timestamppb.Timestamp)(nil),      // 5: google.protobuf.Timestamp
+	(*ShippingOption)(nil),             // 3: ShippingOption
+	(*Container)(nil),                  // 4: Container
+	(*AllPackaging)(nil),               // 5: AllPackaging
+	(*Money)(nil),                      // 6: Money
+	(*Supplier)(nil),                   // 7: Supplier
+	(*timestamppb.Timestamp)(nil),      // 8: google.protobuf.Timestamp
 }
 var file_canbiocin_proto_other_proto_depIdxs = []int32{
-	3, // 0: Packaging.total_cost:type_name -> Money
-	4, // 1: Packaging.supplier:type_name -> Supplier
-	5, // 2: Packaging.most_recent_quote_date:type_name -> google.protobuf.Timestamp
-	0, // 3: Shipping.packaging:type_name -> Packaging
-	3, // 4: Milling_Blending_Packaging.cost:type_name -> Money
-	4, // 5: Milling_Blending_Packaging.supplier:type_name -> Supplier
-	5, // 6: Milling_Blending_Packaging.most_recent_quote_date:type_name -> google.protobuf.Timestamp
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	6,  // 0: Packaging.total_cost:type_name -> Money
+	7,  // 1: Packaging.supplier:type_name -> Supplier
+	8,  // 2: Packaging.most_recent_quote_date:type_name -> google.protobuf.Timestamp
+	0,  // 3: Shipping.packaging:type_name -> Packaging
+	6,  // 4: Milling_Blending_Packaging.cost:type_name -> Money
+	7,  // 5: Milling_Blending_Packaging.supplier:type_name -> Supplier
+	8,  // 6: Milling_Blending_Packaging.most_recent_quote_date:type_name -> google.protobuf.Timestamp
+	0,  // 7: Container.packaging:type_name -> Packaging
+	3,  // 8: Container.shipping_options:type_name -> ShippingOption
+	4,  // 9: AllPackaging.container:type_name -> Container
+	0,  // 10: AllPackaging.packaging:type_name -> Packaging
+	1,  // 11: AllPackaging.shipping:type_name -> Shipping
+	12, // [12:12] is the sub-list for method output_type
+	12, // [12:12] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_canbiocin_proto_other_proto_init() }
@@ -392,6 +645,47 @@ func file_canbiocin_proto_other_proto_init() {
 				return nil
 			}
 		}
+		file_canbiocin_proto_other_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ShippingOption); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_other_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Container); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_canbiocin_proto_other_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AllPackaging); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+	}
+	file_canbiocin_proto_other_proto_msgTypes[5].OneofWrappers = []interface{}{
+		(*AllPackaging_Container)(nil),
+		(*AllPackaging_Packaging)(nil),
+		(*AllPackaging_Shipping)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -399,7 +693,7 @@ func file_canbiocin_proto_other_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_canbiocin_proto_other_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
