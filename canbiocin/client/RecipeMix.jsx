@@ -24,6 +24,7 @@ import { Field } from './Field';
 
 import { AppBar,
          Box, 
+         CircularProgress,
          Dialog,
          DialogTitle,
          Grid,
@@ -542,7 +543,6 @@ function PackagingSelect({columnDef, newRowFn, editable, packaging, apiRef, setP
 }
 
 function RecipeMix({recipe, currencyRate}) {
-
   let totalColsToShow = new Map()
   totalColsToShow.set('mg_serving')
   totalColsToShow.set('amount_needed')
@@ -569,11 +569,7 @@ function RecipeMix({recipe, currencyRate}) {
   
 
   if (recipe == null) {
-    return (
-        <>
-        "Error"
-        </>
-    )
+    return ""
   }
 
   return (
@@ -1165,12 +1161,16 @@ export default function () {
 
 
   React.useEffect(() => {
+    if (editable || !recipe) {
+      // Start the isLoading spinner ASAP
+      setIsLoading(true)
+    }
     const handler = setTimeout(() => {
       const fetchData = async () => {
-        setIsLoading(true);
         try {
           // If we have a savedRecipeId we load it here
           if (editable || !recipe) {
+            setIsLoading(true)
             if (savedRecipeId && !editable) {
               const response = await grpcRequest("getSavedRecipe",
                   {savedRecipeId: savedRecipeId});
@@ -1189,6 +1189,7 @@ export default function () {
                    currencyRate: currencyRate });
               response.recipeDetails.name = savedRecipeName
               setRecipe(response.recipeDetails)
+              setIsLoading(false)
             }
           }
         } catch (error) {
@@ -1481,7 +1482,10 @@ export default function () {
       />
     </Grid>
     </Grid>
-    <RecipeMix recipe={recipe} currencyRate={currencyRate} />
+    {isLoading ? 
+      <CircularProgress /> :
+      <RecipeMix recipe={recipe} currencyRate={currencyRate} />
+    }
     </>
   )
 }
