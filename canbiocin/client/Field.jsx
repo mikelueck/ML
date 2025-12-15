@@ -15,7 +15,7 @@ function addInputProp(props, name, value) {
   
 }
 
-const FONT_SIZE = 9
+const FONT_SIZE = 11
 const DEFAULT_INPUT_WIDTH = 100
 const DEFAULT_MULTILINE_INPUT_WIDTH = 300
 
@@ -62,6 +62,9 @@ export function Field(props) {
     }
     if (!props.editable) {
       addInputProp(textProps, "readOnly", true)
+    }
+    if (props.disabled) {
+      addInputProp(textProps, "disabled", true)
     }
 
   return (

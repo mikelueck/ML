@@ -512,9 +512,6 @@ function PackagingSelect({columnDef, newRowFn, editable, packaging, apiRef, setP
 
   return (
     <Box sx={{ width: '100%' }}>
-    <Typography variant="h5" align="left">
-      Packaging
-    </Typography>
     <div style={{ display: 'flex', flexDirection: 'column' }}>
     <DataGrid
       apiRef={apiRef}
@@ -583,13 +580,6 @@ function RecipeMix({recipe, currencyRate}) {
     <>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }}spacing={2}>
       <Field
-          id='id'
-          label='ID' 
-          value={recipe.recipe.id}
-          size="small"
-          variant="standard"
-      />
-      <Field
           id='name'
           label='Name' 
           value={recipe.recipe.name}
@@ -598,7 +588,7 @@ function RecipeMix({recipe, currencyRate}) {
       />
       <Field
           id='overage'
-          label='Probiotic Overage %' 
+          label='Probiotic Overage' 
           value={recipe.recipe.probioticOveragePercent}
           size="small"
           variant="standard"
@@ -607,45 +597,43 @@ function RecipeMix({recipe, currencyRate}) {
       />
     </Grid>
     
-    <Box sx={{ m:1 }}>
-      <Box sx={{ m:5 }}>
+      <Box sx={{ m:2 }}>
       <TotalRow 
           title="Totals" 
           columnDef={prebioticColumns(totalColsToShow, currencyRate)} 
           ingredients={recipe.ingredients} />
 
       </Box>
-      <Box sx={{ m:5 }}>
+      <Box sx={{ m:2 }}>
       <IngredientRows 
           title="Probiotics" 
           columnDef={probioticColumns(colsToShow, currencyRate)} 
           ingredients={recipe.ingredients} type="probiotic" />
       </Box>
-      <Box sx={{ m:5 }}>
+      <Box sx={{ m:2 }}>
       <IngredientRows 
           title="Prebiotics" 
           columnDef={prebioticColumns(colsToShow, currencyRate)} 
           ingredients={recipe.ingredients} type="prebiotic" />
       </Box>
-      <Box sx={{ m:5 }}>
+      <Box sx={{ m:2 }}>
       <IngredientRows 
           title="Postbiotics" 
           columnDef={prebioticColumns(colsToShow, currencyRate)} 
           ingredients={recipe.ingredients} type="postbiotic" />
       </Box>
-      <Box sx={{ m:5 }}>
+      <Box sx={{ m:2 }}>
       <IngredientRows 
           title="Packaging" 
           columnDef={packagingColumns(packagingColsToShow, currencyRate)} 
           ingredients={recipe.ingredients} type="packaging" />
       </Box>
-      <Box sx={{ m:5 }}>
+      <Box sx={{ m:2 }}>
       <IngredientRows 
           title="Milling/Blending/Packaging" 
           columnDef={packagingColumns(blendingColsToShow, currencyRate)} 
           ingredients={recipe.ingredients} type="blending" />
       </Box>
-    </Box>
     </>
   )
 }
@@ -1361,6 +1349,30 @@ export default function () {
     </AppBar>
     <Grid container spacing={2}>
     <Grid container size={6} columnSpacing={{ xs:1, sm: 2, md: 3 }} spacing={2}  sx={{ p: 2, justifyContent: "flex-start" }}>
+    <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
+      <Field
+          id='targetMargin'
+          label='Target Margin' 
+          value={targetMargin}
+          size="small"
+          type="number"
+          variant="standard"
+          onChange={handleTargetMarginChange}
+          editable={editable}
+          units="%"
+      />
+      <Field
+          id='currencyRate'
+          label='US$ Currency' 
+          value={currencyRate}
+          size="small"
+          type="number"
+          variant="standard"
+          onChange={handleCurrencyRateChange}
+          editable={editable}
+      />
+    </Grid>
+    <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
     <Field
         id='serving_size_grams'
         label='Serving size grams' 
@@ -1384,6 +1396,7 @@ export default function () {
         units="g"
     />
     </Grid>
+    </Grid>
     <Grid container size={6} columnSpacing={{ xs:1, sm: 2, md: 3 }} spacing={2} sx={{ p: 2, justifyContent: "flex-end" }}>
     <Field
         id='servings_per_container'
@@ -1392,8 +1405,9 @@ export default function () {
         size="small"
         type="number"
         sx={{width: 130}}
-        variant="standard"
+        variant="filled"
         editable={false}
+        disabled
     />
     <Field
         id='num_containers'
@@ -1401,12 +1415,31 @@ export default function () {
         value={numContainers}
         size="small"
         type="number"
-        variant="standard"
+        variant="filled"
         editable={false}
+        disabled
     />
     </Grid>
     </Grid>
-    <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
+    <Typography variant="h5" align="left" sx={{ m:2 }}>
+      Packaging and Shipping
+    </Typography>
+    <Grid 
+        container 
+        sx={{
+          '--Grid-borderWidth': '1px',
+          borderTop: 'var(--Grid-borderWidth) solid',
+          borderLeft: 'var(--Grid-borderWidth) solid',
+          borderColor: 'divider',
+          '& > div': {
+            borderRight: 'var(--Grid-borderWidth) solid',
+            borderBottom: 'var(--Grid-borderWidth) solid',
+            borderColor: 'divider',
+          },
+          m:2,
+        }}>
+    <Grid container size={6} rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} >
+      <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p:2 }} >
       <ContainerFieldOrDropdown
         recipe={recipe}
         editable={editable}
@@ -1422,12 +1455,15 @@ export default function () {
           units="g"
           onChange={handleContainerSizeChange}
       />
+      </Grid>
+      <Grid container size={6} rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p:2 }} >
       <ShippingFieldOrDropdown
           recipe={recipe}
           editable={editable}
           onShippingChange={handleShippingChange} />
+      </Grid>
     </Grid>
-    <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
+    <Grid size={6} container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} >
       <PackagingSelect 
           title="Packaging" 
           newRowFn={newRowFn}
@@ -1444,28 +1480,6 @@ export default function () {
           fieldToFocus={editNameField}
       />
     </Grid>
-    <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
-      <Field
-          id='targetMargin'
-          label='Target Margin' 
-          value={targetMargin}
-          size="small"
-          type="number"
-          variant="standard"
-          onChange={handleTargetMarginChange}
-          editable={editable}
-          units="%"
-      />
-      <Field
-          id='currencyRate'
-          label='US$ Currency' 
-          value={currencyRate}
-          size="small"
-          type="number"
-          variant="standard"
-          onChange={handleCurrencyRateChange}
-          editable={editable}
-      />
     </Grid>
     <RecipeMix recipe={recipe} currencyRate={currencyRate} />
     </>

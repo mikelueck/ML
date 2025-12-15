@@ -79,6 +79,10 @@ export const getLinkInfoForIngredient = (i) => {
     return null 
   }
 
+  if (item?.case == "blending") {
+    return null
+  }
+
   if (item?.case == "packaging") {
     item = item.value.item
     retval.pathname = "/packaging",
