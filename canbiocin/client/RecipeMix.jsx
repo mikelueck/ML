@@ -590,8 +590,8 @@ function PackagingSelect({title, columnDef, newRowFn, editable, packaging, apiRe
   }
 
   return (
-    <Box sx={{ width: '100%' }}>
-    <Typography variant="h5" component="span">
+    <Box sx={{ width: '100%', m:1 }}>
+    <Typography variant="h5" component="div">
       {title}
     </Typography>
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -729,6 +729,7 @@ const ContainerFieldOrDropdown = React.memo(function ContainerFieldOrDropdown({r
   if (editable) {
     return (
     <ContainerDropdown
+      label=''
       value={containerValue}
       onChange={onContainerChange}
       editable={editable}
@@ -738,7 +739,7 @@ const ContainerFieldOrDropdown = React.memo(function ContainerFieldOrDropdown({r
     return (
     <Field
         id='container'
-        label='Container' 
+        label='' 
         value={displayValue}
         size="small"
         type="string"
@@ -781,6 +782,7 @@ const ShippingFieldOrDropdown = React.memo(function ShippingFieldOrDropdown({rec
   if (editable) {
     return (
     <ShippingDropdown
+      label=''
       value={shippingValue}
       container={recipe?.container}
       onChange={onShippingChange}
@@ -791,7 +793,7 @@ const ShippingFieldOrDropdown = React.memo(function ShippingFieldOrDropdown({rec
     return (
     <Field
         id='shipping'
-        label='Shipping' 
+        label=''
         value={displayValue}
         size="small"
         type="string"
@@ -1486,7 +1488,26 @@ export default function () {
         value={Math.floor(containerSizeG / servingGrams)}
         size="small"
         type="number"
-        sx={{width: 130}}
+        sx={{ // This is a long label so we add some extra styles
+        // This seems to make the whole field longer
+        // Target the InputLabel root
+        '& .MuiInputLabel-root': {
+          whiteSpace: 'normal', // Allow text to wrap
+          wordBreak: 'break-word', // Break long words if necessary
+          // You might need to adjust top padding/margin for multi-line labels
+          // depending on your font size and number of lines
+          top: '0', 
+          maxHeight: 'unset',
+          // Additional styling for when the label is focused/shrunk might be needed
+          '&.MuiInputLabel-shrink': {
+            whiteSpace: 'nowrap', // Keep it nowrap when shrunk (standard Material Design behavior)
+          },
+        },
+        // Adjust the input area padding to prevent overlap with a multi-line label
+        '& .MuiOutlinedInput-root': {
+            paddingTop: '25px', // Increase top padding to accommodate a multi-line label
+        }
+        }}
         variant="filled"
         editable={false}
         disabled
@@ -1521,7 +1542,13 @@ export default function () {
           m:2,
         }}>
     <Grid container size={6} rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} >
-      <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p:2 }} >
+      <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ m:1 }} >
+      <Grid item size={12}>
+      <Typography variant="h5" component="div">
+        Container
+      </Typography>
+      </Grid>
+      <Grid container size={12} rowSpacing={2}>
       <ContainerFieldOrDropdown
         recipe={recipe}
         editable={editable}
@@ -1538,11 +1565,19 @@ export default function () {
           onChange={handleContainerSizeChange}
       />
       </Grid>
-      <Grid container size={12} rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p:2 }} >
+      </Grid>
+      <Grid container size={12} rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ m:1 }} >
+      <Grid item size={12}>
+      <Typography variant="h5" component="div">
+        Shipping
+      </Typography>
+      </Grid>
+      <Grid item size={12}>
       <ShippingFieldOrDropdown
           recipe={recipe}
           editable={editable}
           onShippingChange={handleShippingChange} />
+      </Grid>
       </Grid>
     </Grid>
     <Grid size={6} container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} >

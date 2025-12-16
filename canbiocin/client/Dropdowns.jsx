@@ -176,12 +176,11 @@ export function CategoryDropdown({value, onChange}) {
   )
 }
 
-export const ContainerDropdown = React.memo(function ContainerDropdown({value, onChange}) {
+export const ContainerDropdown = React.memo(function ContainerDropdown({label, value, onChange}) {
   const [options, setOptions] = React.useState([]);
   const { grpcRequest, hasScope } = useGrpc();
 
   let id_prefix = "container"
-  let label = "Container"
 
   const getOptionLabel = React.useCallback((option) => {
       return option ? `${option.packaging.name}` : ""
@@ -320,12 +319,11 @@ export function SavedRecipeDropdown({recipeId, value, onChange}) {
   )
 }
 
-export const ShippingDropdown = React.memo(function ShippingDropdown({value, container, onChange}) {
+export const ShippingDropdown = React.memo(function ShippingDropdown({label, value, container, onChange}) {
   const [options, setOptions] = React.useState([]);
   const { grpcRequest, hasScope } = useGrpc();
 
   let id_prefix = "shipping"
-  let label = "Shipping"
 
   const getOptionLabel = React.useCallback((option) => {
       return option ? `${option.packaging.name}` : ""
