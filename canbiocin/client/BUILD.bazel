@@ -23,6 +23,7 @@ webpack_bundle(
       "App.jsx",
       "DataGridEditToolbar.jsx",
       "DataGridUtils.jsx",
+      "DataGridFunctions.js",
       "Grid.jsx",
       "Dialog.jsx",
       "Dropdowns.jsx",

@@ -55,7 +55,6 @@ function NestedDataGrid({ data }) {
 }
 
 export function IngredientCellRender({params, itemGetter}) {
-
     let item = null
     let value = null
     if (itemGetter) {

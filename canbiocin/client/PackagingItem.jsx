@@ -9,6 +9,7 @@ import { SppDropdown } from './Dropdowns';
 import { CategoryDropdown } from './Dropdowns';
 import { emptyPackaging } from './utils.js';
 import { emptyShippingOption } from './utils.js';
+import { cancelDataGridEdit } from './DataGridFunctions.js';
 
 import { useGrpc } from './GrpcContext';
 import { scopes } from './scopes.js';
@@ -300,6 +301,15 @@ function Packaging({packageType, packaging, editable, handleChange}) {
   const [allShippingOptions, setAllShippingOptions] = React.useState([]);
   const [shippingOptionsById, setShippingOptionsById] = React.useState(new Map());
   const [shippingOptions, setShippingOptions] = React.useState([])
+
+  React.useEffect(() => {
+    const cancelEdit = async () => {
+      if (!editable && Object.keys(shippingOptionsRowModesModel).length) {
+        cancelDataGridEdit(apiRef, shippingOptionsRowModesModel) 
+      }
+    } 
+    cancelEdit();
+  }, [editable])
 
   React.useEffect(() => {
     const setOptions = async () => {
