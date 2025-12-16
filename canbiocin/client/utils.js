@@ -60,6 +60,9 @@ function getItemForIngredient(i) {
 
   if (i.case) {
     item = i
+  } else if (i.value) {
+    // The total rows look like this.
+    item = i
   } else if (i.item) {
     item = i.item
   }
@@ -79,7 +82,7 @@ export const getLinkInfoForIngredient = (i) => {
     return null 
   }
 
-  if (item?.case == "blending") {
+  if (!item.case || item?.case == "blending") {
     return null
   }
 
