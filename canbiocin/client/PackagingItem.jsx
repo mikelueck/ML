@@ -41,6 +41,41 @@ import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
 
+const validateNumber = (params) => {
+  const hasError = params.props.value <= 0;
+  let msg = ""
+  if (hasError) {
+    msg = "Must be greater than 0"
+  }
+  if (msg) {
+    return {...params.props, error: msg}
+  } else {
+    return {...params.props, error: false}
+  }
+}
+
+const renderEditCell = (params) => {
+  const { error } = params;
+  return (
+    <>
+    <Tooltip {...params} open={!!error} title={error} arrow placement='top-start' PopperProps={{
+         sx: {
+           '&[data-popper-reference-hidden]': {
+             display: 'none',
+             'pointerEvents': 'none'
+           },
+         }
+      }} 
+      sx={(theme) => (error ? {
+        backgroundColor: theme.palette.error.main,
+        color: theme.palette.error.contrastText,
+      }: {})}>
+    <GridEditInputCell {...params}/>
+    </Tooltip>
+    </>
+  )
+}
+
 function getItemPackagingValue(packaging) {
   switch (getItemCase(packaging)) {
     case "container":
@@ -119,6 +154,8 @@ function ShippingOptions({newRowFn, editable, shippingOptions, shippingOptionsBy
       },
       type: "number",
       flex: 1,
+      preProcessEditCellProps: validateNumber,
+      renderEditCell: renderEditCell,
       renderHeader: () => (
         <strong>{'Count'}</strong>
       ),
