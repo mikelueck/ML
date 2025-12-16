@@ -578,7 +578,7 @@ function TotalRow({title, columnDef, ingredients}) {
   )
 }
 
-function PackagingSelect({columnDef, newRowFn, editable, packaging, apiRef, setPackaging, rowModesModel, setRowModesModel, onRowModesModelChange, onRowEditStop, processRowUpdate, fieldToFocus }) {
+function PackagingSelect({title, columnDef, newRowFn, editable, packaging, apiRef, setPackaging, rowModesModel, setRowModesModel, onRowModesModelChange, onRowEditStop, processRowUpdate, fieldToFocus }) {
 
   const onProcessRowUpdateError = (e) => {
     alert("ProcessRowUpdateError fixme")
@@ -591,6 +591,9 @@ function PackagingSelect({columnDef, newRowFn, editable, packaging, apiRef, setP
 
   return (
     <Box sx={{ width: '100%' }}>
+    <Typography variant="h5" component="span">
+      {title}
+    </Typography>
     <div style={{ display: 'flex', flexDirection: 'column' }}>
     <DataGrid
       apiRef={apiRef}
@@ -1500,7 +1503,7 @@ export default function () {
     />
     </Grid>
     </Grid>
-    <Typography variant="h5" align="left" sx={{ m:2 }}>
+    <Typography variant="h4" align="left" sx={{ m:2 }}>
       Packaging and Shipping
     </Typography>
     <Grid 
