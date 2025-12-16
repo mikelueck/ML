@@ -617,6 +617,8 @@ function PackagingSelect({title, columnDef, newRowFn, editable, packaging, apiRe
       }}
       hideFooter
       showToolbar
+      disableColumnMenu
+      disableColumnSorting
     />
     </div>
     </Box>
@@ -655,6 +657,13 @@ function RecipeMix({recipe, currencyRate}) {
 
   return (
     <>
+    <Box 
+      sx={{
+        borderRadius: 2,
+        border: 4,
+        borderColor: 'primary.main',
+        m: 1,
+      }}>
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }}spacing={2}>
       <Field
           id='name'
@@ -710,6 +719,7 @@ function RecipeMix({recipe, currencyRate}) {
           title="Milling/Blending/Packaging" 
           columnDef={packagingColumns(blendingColsToShow, currencyRate)} 
           ingredients={recipe.ingredients} type="blending" />
+      </Box>
       </Box>
     </>
   )
@@ -1431,8 +1441,23 @@ export default function () {
           onClose={handleErrorClose} />
       </Toolbar>
     </AppBar>
-    <Grid container spacing={2}>
-    <Grid container size={6} columnSpacing={{ xs:1, sm: 2, md: 3 }} spacing={2}  sx={{ p: 2, justifyContent: "flex-start" }}>
+    <Box 
+      sx={{
+        borderRadius: 2,
+        backgroundColor: 'primary.light',
+        m: 1,
+        p: 1,
+      }}>
+    <Grid container spacing={2} sx={{ m:2}}>
+    <Grid container 
+      size={6} 
+      columnSpacing={{ xs:1, sm: 2, md: 3 }} 
+      spacing={2}  
+      sx={{ p: 2, 
+            backgroundColor: 'white',
+            justifyContent: "flex-start" 
+      }}>
+
     <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
       <Field
           id='targetMargin'
@@ -1530,6 +1555,7 @@ export default function () {
     <Grid 
         container 
         sx={{
+          backgroundColor: 'white',
           '--Grid-borderWidth': '1px',
           borderTop: 'var(--Grid-borderWidth) solid',
           borderLeft: 'var(--Grid-borderWidth) solid',
@@ -1539,7 +1565,7 @@ export default function () {
             borderBottom: 'var(--Grid-borderWidth) solid',
             borderColor: 'divider',
           },
-          m:2,
+          m:1,
         }}>
     <Grid container size={6} rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} >
       <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ m:1 }} >
@@ -1584,7 +1610,7 @@ export default function () {
       <PackagingSelect 
           title="Packaging" 
           newRowFn={newRowFn}
-          columnDef={packagingCols(true).concat(editable ? actionColumns(true, packagingRowModels) : [])} 
+          columnDef={packagingCols(editable).concat(editable ? actionColumns(true, packagingRowModels) : [])} 
           editable={editable}
           packaging={packagingItems}
           setPackaging={setPackaging(packagingItems)}
@@ -1598,6 +1624,10 @@ export default function () {
       />
     </Grid>
     </Grid>
+    </Box>
+    <Typography variant="h4" align="left" sx={{ m:2 }}>
+      Details:
+    </Typography>
     {isLoading ? 
       <CircularProgress /> :
       <RecipeMix recipe={recipe} currencyRate={currencyRate} />
