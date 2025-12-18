@@ -10,3 +10,6 @@ auth0 tf generate --output-dir tmp-auth0-tf
 
 #import and generate 
 ./setupenv.sh terraform plan -generate-config-out=auth0.tf
+
+# You can't create users with terraform so you will have to import them
+#./setupenv.sh terraform import auth0_user.mflueck "google-oauth2|<id>"

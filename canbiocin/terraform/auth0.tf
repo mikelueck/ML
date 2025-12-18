@@ -420,6 +420,7 @@ locals {
   read_only_perms = ["read:ingredients", "read:recipes", "read:other"]
   update_ingredients_perms = ["write:ingredients", "read:other"]
   update_recipes_perms = ["write:recipes"]
+  save_recipes_perms = ["save:recipes"]
   delete_all_perms = ["delete:ingredients", "delete:recipes", "delete:other"]
 }
 
@@ -472,6 +473,7 @@ resource "auth0_role_permissions" "admin" {
     for_each = toset(setunion(local.read_only_perms, 
                               local.update_ingredients_perms, 
                               local.update_recipes_perms,
+                              local.save_recipes_perms,
                               local.delete_all_perms))
     content {
       name = permissions.value
@@ -1419,6 +1421,23 @@ resource "auth0_resource_server_scopes" "auth0_management_api" {
     description = "Update signing keys"
     name        = "update:signing_keys"
   }
+  scopes {
+    description = "Create Token Exchange Profile"
+    name        = "create:token_exchange_profiles"
+  }
+  scopes {
+    description = "Delete Token Exchange Profile"
+    name        = "delete:token_exchange_profiles"
+  }
+  scopes {
+    description = "Read Token Exchange Profiles"
+    name        = "read:token_exchange_profiles"
+  }
+  scopes {
+    description = "Update Token Exchange Profile"
+    name        = "update:token_exchange_profiles"
+  }
+
 }
 
 resource "auth0_resource_server" "auth0_management_api" {

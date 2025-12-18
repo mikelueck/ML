@@ -8,6 +8,8 @@ import { getLinkInfoForIngredient } from './utils.js';
 import { DataGrid } from '@mui/x-data-grid';
 
 import { Link } from 'react-router';
+import { useGrpc } from './GrpcContext';
+import { scopes } from './scopes.js';
 
 function NestedDataGrid({ data }) {
   if (!data) {
@@ -55,6 +57,8 @@ function NestedDataGrid({ data }) {
 }
 
 export function IngredientCellRender({params, itemGetter}) {
+    const { hasScope } = useGrpc();
+
     let item = null
     let value = null
     if (itemGetter) {
@@ -67,10 +71,12 @@ export function IngredientCellRender({params, itemGetter}) {
 
     const name = getNameForIngredient(item)
     const linkInfo = getLinkInfoForIngredient(item)
+    let hasNeededScope = false
 
     let data = null
 
     if (item.case == "probiotic") {
+      hasNeededScope = hasScope(scopes.READ_INGREDIENT)
       let cols = [{
         field: "stockBCfuG",
         headerName:"stock",
@@ -91,6 +97,7 @@ export function IngredientCellRender({params, itemGetter}) {
                 costKg: cost ? moneyToString(cost, 2) + " / kg" : ""
               }]}
     } else if (item.case == "prebiotic" || item.case == "postbiotic") {
+      hasNeededScope = hasScope(scopes.READ_INGREDIENT)
       let cols = [{
         field: "function",
         headerName:"function",
@@ -108,6 +115,7 @@ export function IngredientCellRender({params, itemGetter}) {
               }]}
                   
     } else if (item.case == "packaging") {
+      hasNeededScope = hasScope(scopes.READ_OTHER)
       let cols = [{
         field: 'cbCostPerContainer', 
         headerName:"cost",
@@ -132,7 +140,7 @@ export function IngredientCellRender({params, itemGetter}) {
     return (
     <div>
       <Typography variant="body1" component="span">
-        { linkInfo ?
+        { linkInfo && hasNeededScope ?
             <Link to={{
               pathname: `${linkInfo.pathname}`,
               search: `${linkInfo.search}`, 

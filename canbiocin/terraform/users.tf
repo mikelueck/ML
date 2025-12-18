@@ -19,8 +19,6 @@ resource "auth0_user" "mflueck" {
 resource "auth0_user_roles" "mflueck" {
   user_id = auth0_user.mflueck.id
   roles = [
-    auth0_role.read_only.id,
-    auth0_role.update_ingredients.id,
-    auth0_role.update_recipe.id,
+    auth0_role.admin.id,
   ]
 }

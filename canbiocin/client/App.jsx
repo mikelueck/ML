@@ -8,6 +8,7 @@ const PackagingDialog = lazy(() =>  import('./PackagingItem'));
 const TabLayout = lazy(() =>  import('./Tabs'));
 
 import { useAuth0 } from "./auth.js"
+import { requiresAuth } from "./auth.js"
 
 import Loading from "./Loading";
 import LoginButton from "./Login";
@@ -15,13 +16,11 @@ import LoginButton from "./Login";
 export function App() {
   const { user, isAuthenticated, isLoading, error } = useAuth0();
 
-  const useAuth = true
-
-  if (useAuth && isLoading) {
+  if (requiresAuth && isLoading) {
     return ( <Loading /> )
   }
 
-  if (useAuth && !isLoading && !isAuthenticated) {
+  if (requiresAuth && !isLoading && !isAuthenticated) {
     return (
       <LoginButton />
     )
