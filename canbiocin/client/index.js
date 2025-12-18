@@ -51,6 +51,7 @@ root.render(
         }}
         useRefreshTokens={true}
         useRefreshTokensFallback={true}
+        cacheLocation="localstorage"
       >
         <GrpcProvider>
         <App/>
