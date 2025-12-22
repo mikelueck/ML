@@ -50,7 +50,7 @@ funcToScope.set("deleteShipping", scopes.DEL_OTHER)
 funcToScope.set("listAllPackaging", scopes.READ_OTHER)
 
 
-export function scope(f) {
+export function scopeForMethod(f) {
   if (funcToScope.has(f)) {
     return funcToScope.get(f)
   }

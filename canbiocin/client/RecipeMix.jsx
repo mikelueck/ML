@@ -664,7 +664,7 @@ function RecipeMix({recipe, currencyRate}) {
         borderColor: 'primary.main',
         m: 1,
       }}>
-    <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }}spacing={2}>
+    <Grid container rowSpacing={1} columnSpacing={{ xs:1, sm: 2, md: 3 }} sx={{ p: 2 }} spacing={2}>
       <Field
           id='name'
           label='Name' 

@@ -10,20 +10,20 @@ const TabLayout = lazy(() =>  import('./Tabs'));
 import { useAuth0 } from "./auth.js"
 import { requiresAuth } from "./auth.js"
 
+import { useGrpc } from './GrpcContext';
 import Loading from "./Loading";
 import LoginButton from "./Login";
 
 export function App() {
   const { user, isAuthenticated, isLoading, error } = useAuth0();
 
-  if (requiresAuth && isLoading) {
-    return ( <Loading /> )
-  }
+  const { hasAccess } = useGrpc();
 
-  if (requiresAuth && !isLoading && !isAuthenticated) {
-    return (
-      <LoginButton />
-    )
+  if (!isAuthenticated) {
+    return (<LoginButton/>)
+  }
+  if (!hasAccess) {
+    return "Please see your admistrator for access permissions"
   }
 
   return (

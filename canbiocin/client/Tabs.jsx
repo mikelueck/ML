@@ -3,6 +3,7 @@ import React, { lazy } from 'react';
 import PropTypes from 'prop-types';
 
 import { Box,
+         Grid,
          Tab,
          Tabs,
          Tooltip,
@@ -11,6 +12,11 @@ import { Box,
 const Ingredients = lazy(() => import('./Ingredients'));
 const Formulations = lazy(() => import('./Formulations'));
 const Packaging = lazy(() => import('./Packaging'));
+
+import { useAuth0 } from "./auth.js"
+import LoginButton from "./Login";
+import LogoutButton from "./Logout";
+import Loading from "./Loading";
 
 import { useGrpc } from './GrpcContext';
 import { scopes } from './scopes.js';
@@ -51,6 +57,7 @@ function a11yProps(index) {
 
 export default function () {
   const [value, setValue] = React.useState(getTabFromHash(window.location.hash));
+  const { user, isAuthenticated, isLoading, error } = useAuth0();
   const { hasScope } = useGrpc();
 
   const handleChange = (event, newValue) => {
@@ -66,12 +73,20 @@ export default function () {
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="">
-          {hasScope(scopes.READ_RECIPE) ? <Tab label="Formulations" {...a11yProps(0)} /> : "" }
-          {hasScope(scopes.READ_INGREDIENT) ? <Tab label="Ingredients" {...a11yProps(1)} /> : "" }
-          {hasScope(scopes.READ_PACKAGING) ? <Tab label="Packaging" {...a11yProps(2)} /> : "" }
-          <Tab label="Suppliers" {...a11yProps(3)} />
-        </Tabs>
+        <Grid container>
+          <Grid container size={11} sx={{ justifyContent: "flex-start"}} > 
+          <Tabs value={value} onChange={handleChange} aria-label="">
+            {hasScope(scopes.READ_RECIPE) ? <Tab label="Formulations" {...a11yProps(0)} /> : "" }
+            {hasScope(scopes.READ_INGREDIENT) ? <Tab label="Ingredients" {...a11yProps(1)} /> : "" }
+            {hasScope(scopes.READ_OTHER) ? <Tab label="Packaging" {...a11yProps(2)} /> : "" }
+            <Tab label="Suppliers" {...a11yProps(3)} />
+          </Tabs>
+          </Grid>
+          <Grid container size={1} sx={{ justifyContent: "flex-end"}} > 
+            {isLoading ? <Loading/> : "" }
+            {!isLoading && isAuthenticated ? <LogoutButton/> : <LoginButton/>}
+          </Grid>
+        </Grid>
       </Box>
       <CustomTabPanel value={value} index={0}>
         <Formulations />
